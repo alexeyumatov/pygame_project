@@ -1,4 +1,5 @@
 import pygame
+from player_config import all_sprites, Player
 import mediapipe as mp
 import cv2
 
@@ -13,8 +14,11 @@ if __name__ == '__main__':
     screen = pygame.display.set_mode(size)
     clock = pygame.time.Clock()
     FPS = 60
-    last_status, hand_type = "", ""
+    left, right, up = False, False, False
 
+    hero = Player()
+
+    last_status, hand_type = "", ""
     cap = cv2.VideoCapture(0)
     w, h = 640, 480
     cap.set(3, w)
@@ -24,6 +28,7 @@ if __name__ == '__main__':
     running = True
     with mp_hands.Hands(max_num_hands=1, min_tracking_confidence=0.9, min_detection_confidence=0.9) as hands:
         while running:
+            clock.tick(FPS)
 
             success, frame = cap.read()
             frame = cv2.flip(frame, 1)
@@ -79,6 +84,21 @@ if __name__ == '__main__':
                     running = False
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     print(last_status, hand_type)
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_LEFT:
+                    left = True
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT:
+                    right = True
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_UP:
+                    up = True
+                if event.type == pygame.KEYUP and event.key == pygame.K_LEFT:
+                    left = False
+                if event.type == pygame.KEYUP and event.key == pygame.K_RIGHT:
+                    right = False
+                if event.type == pygame.KEYUP and event.key == pygame.K_UP:
+                    up = False
+
+            screen.fill((255, 255, 255))
+            all_sprites.draw(screen)
+            hero.update(left, right, up)
             pygame.display.flip()
-            clock.tick(FPS)
     pygame.quit()
