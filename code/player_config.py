@@ -1,28 +1,8 @@
 import pygame
-import os
-import sys
+from load_image import load_image
+from groups import all_sprites
 
-pygame.init()
-size = width, height = 1280, 720
-screen = pygame.display.set_mode(size)
 g = 10
-
-
-def load_image(name, colorkey=None):
-    fullname = os.path.join('data', name)
-    if not os.path.isfile(fullname):
-        print(f"Файл с изображением '{fullname}' не найден")
-        sys.exit()
-    image = pygame.image.load(fullname)
-
-    if colorkey is not None:
-        image = image.convert()
-        if colorkey == -1:
-            colorkey = image.get_at((0, 0))
-        image.set_colorkey(colorkey)
-    else:
-        image = image.convert_alpha()
-    return image
 
 
 class Player(pygame.sprite.Sprite):
@@ -71,6 +51,3 @@ class Player(pygame.sprite.Sprite):
             else:
                 self.velx = 0
             self.rect = self.rect.move(self.velx, 0)
-
-
-all_sprites = pygame.sprite.Group()

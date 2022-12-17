@@ -2,6 +2,8 @@ import pygame
 from player_config import all_sprites, Player
 import mediapipe as mp
 import cv2
+from Location import Location
+from groups import all_sprites, floor_group
 
 
 mp_hands = mp.solutions.hands
@@ -73,6 +75,9 @@ if __name__ == '__main__':
     left_stop, right_stop = False, False
 
     hero = Player()
+    floor = Location()
+    floor_group.add(floor)
+
     # cap = cv2.VideoCapture(0)
     # w, h = 640, 480
     # cap.set(3, w)
