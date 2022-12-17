@@ -69,34 +69,38 @@ if __name__ == '__main__':
     clock = pygame.time.Clock()
     FPS = 60
     left, right, up = False, False, False
+    left_stop, right_stop = False, False
 
     hero = Player()
-    cap = cv2.VideoCapture(0)
-    w, h = 640, 480
-    cap.set(3, w)
-    cap.set(4, h)
-    cords = {}
+    # cap = cv2.VideoCapture(0)
+    # w, h = 640, 480
+    # cap.set(3, w)
+    # cap.set(4, h)
+    # cords = {}
 
     running = True
     with mp_hands.Hands(max_num_hands=1, min_tracking_confidence=0.9, min_detection_confidence=0.9) as hands:
         while running:
-
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    print(last_status, hand_type)
+                    pass
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_LEFT:
-                    left = True
+                    left_stop, right_stop = False, False
+                    right, left = False, True
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT:
-                    right = True
+                    left_stop, right_stop = False, False
+                    right, left = True, False
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_UP:
                     up = True
                 if event.type == pygame.KEYUP and event.key == pygame.K_LEFT:
-                    left = False
+                    left_stop, right_stop = True, False
+                    left, right = False, False
                     hero.velx = 15
                 if event.type == pygame.KEYUP and event.key == pygame.K_RIGHT:
-                    right = False
+                    left_stop, right_stop = False, True
+                    left, right = False, False
                     hero.velx = 15
                 if event.type == pygame.KEYUP and event.key == pygame.K_UP:
                     up = False
@@ -104,6 +108,8 @@ if __name__ == '__main__':
             screen.fill((255, 255, 255))
             all_sprites.draw(screen)
             hero.update(left, right, up)
+            hero.acceleration(left, right)
+            hero.stop(left_stop, right_stop)
             pygame.display.flip()
 
             clock.tick(FPS)

@@ -38,6 +38,9 @@ class Player(pygame.sprite.Sprite):
         self.vely = 0
 
     def update(self, left, right, up):
+        pass
+
+    def acceleration(self, left, right):
         if left:
             if self.velx < 15:
                 self.velx += 2
@@ -46,11 +49,13 @@ class Player(pygame.sprite.Sprite):
             if self.velx < 15:
                 self.velx += 2
             self.rect = self.rect.move(self.velx, 0)
-        elif not left:
+
+    def stop(self, left, right):
+        if left:
             if self.velx > 0:
                 self.velx -= 1
             self.rect = self.rect.move(-self.velx, 0)
-        elif not right:
+        elif right:
             if self.velx > 0:
                 self.velx -= 1
             self.rect = self.rect.move(self.velx, 0)
