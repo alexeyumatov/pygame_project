@@ -3,7 +3,7 @@ from load_image import load_image
 from groups import all_sprites, floor_group
 
 g = 10
-y = 150
+y = 50
 
 
 class Player(pygame.sprite.Sprite):
