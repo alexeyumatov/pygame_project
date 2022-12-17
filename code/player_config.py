@@ -1,8 +1,9 @@
 import pygame
 from load_image import load_image
-from groups import all_sprites
+from groups import all_sprites, floor_group
 
 g = 10
+y = 150
 
 
 class Player(pygame.sprite.Sprite):
@@ -14,15 +15,18 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.mask = pygame.mask.from_surface(self.image)
         self.rect.x = 200
-        self.rect.y = 300
+        self.rect.y = y
         self.velx = 0
         self.vely = 0
         self.phase = 0
 
     def update(self, height, FPS):
+        if pygame.sprite.spritecollideany(self, floor_group):
+            self.rect = self.rect.move(0, -5)
+            print(pygame.sprite.spritecollideany(self, floor_group))
         if self.phase == 0:
             self.vely = 0
-            self.rect.y = 300
+            self.rect.y = y
         elif self.phase > 0:
             self.phase -= 2
             self.vely += g / 30
