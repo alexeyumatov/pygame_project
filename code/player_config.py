@@ -9,7 +9,6 @@ screen = pygame.display.set_mode(size)
 
 def load_image(name, colorkey=None):
     fullname = os.path.join('data', name)
-    # если файл не существует, то выходим
     if not os.path.isfile(fullname):
         print(f"Файл с изображением '{fullname}' не найден")
         sys.exit()
@@ -35,13 +34,25 @@ class Player(pygame.sprite.Sprite):
         self.mask = pygame.mask.from_surface(self.image)
         self.rect.x = 200
         self.rect.y = 200
-        self.velx = 10
+        self.velx = 0
         self.vely = 0
 
     def update(self, left, right, up):
         if left:
+            if self.velx < 15:
+                self.velx += 2
             self.rect = self.rect.move(-self.velx, 0)
         elif right:
+            if self.velx < 15:
+                self.velx += 2
+            self.rect = self.rect.move(self.velx, 0)
+        elif not left:
+            if self.velx > 0:
+                self.velx -= 1
+            self.rect = self.rect.move(-self.velx, 0)
+        elif not right:
+            if self.velx > 0:
+                self.velx -= 1
             self.rect = self.rect.move(self.velx, 0)
 
 
