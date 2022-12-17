@@ -5,6 +5,7 @@ import sys
 pygame.init()
 size = width, height = 1280, 720
 screen = pygame.display.set_mode(size)
+g = 10
 
 
 def load_image(name, colorkey=None):
@@ -33,12 +34,19 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.mask = pygame.mask.from_surface(self.image)
         self.rect.x = 200
-        self.rect.y = 200
+        self.rect.y = 300
         self.velx = 0
         self.vely = 0
+        self.phase = 0
 
-    def update(self, left, right, up):
-        pass
+    def update(self, height, FPS):
+        if self.phase == 0:
+            self.vely = 0
+            self.rect.y = 300
+        elif self.phase > 0:
+            self.phase -= 2
+            self.vely += g / 30
+            self.rect.y += 30 * self.vely / 20
 
     def acceleration(self, left, right):
         if left:
@@ -53,11 +61,15 @@ class Player(pygame.sprite.Sprite):
     def stop(self, left, right):
         if left:
             if self.velx > 0:
-                self.velx -= 1
+                self.velx -= 2
+            else:
+                self.velx = 0
             self.rect = self.rect.move(-self.velx, 0)
         elif right:
             if self.velx > 0:
-                self.velx -= 1
+                self.velx -= 2
+            else:
+                self.velx = 0
             self.rect = self.rect.move(self.velx, 0)
 
 

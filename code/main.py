@@ -9,6 +9,7 @@ mp_drawing = mp.solutions.drawing_utils
 
 
 def hands_detection():
+    cords = {}
     last_status, hand_type = "", ""
     success, frame = cap.read()
     frame = cv2.flip(frame, 1)
@@ -76,7 +77,6 @@ if __name__ == '__main__':
     # w, h = 640, 480
     # cap.set(3, w)
     # cap.set(4, h)
-    # cords = {}
 
     running = True
     with mp_hands.Hands(max_num_hands=1, min_tracking_confidence=0.9, min_detection_confidence=0.9) as hands:
@@ -107,7 +107,11 @@ if __name__ == '__main__':
 
             screen.fill((255, 255, 255))
             all_sprites.draw(screen)
-            hero.update(left, right, up)
+            if up:
+                if hero.phase == 0:
+                    hero.phase = 82
+                    hero.vely = -7
+            hero.update(height, FPS)
             hero.acceleration(left, right)
             hero.stop(left_stop, right_stop)
             pygame.display.flip()
