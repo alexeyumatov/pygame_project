@@ -74,9 +74,9 @@ if __name__ == '__main__':
     left, right, up = False, False, False
     left_stop, right_stop = False, False
 
-    hero = Player()
-    floor = Location()
+    floor = Location(all_sprites, floor_group)
     floor_group.add(floor)
+    hero = Player()
 
     # cap = cv2.VideoCapture(0)
     # w, h = 640, 480
@@ -116,7 +116,7 @@ if __name__ == '__main__':
                 if hero.phase == 0:
                     hero.phase = 82
                     hero.vely = -7
-            hero.update(height, FPS)
+            hero.update(floor_group)
             hero.acceleration(left, right)
             hero.stop(left_stop, right_stop)
             pygame.display.flip()
