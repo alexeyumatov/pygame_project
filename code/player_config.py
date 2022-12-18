@@ -25,9 +25,10 @@ class Player(pygame.sprite.Sprite):
         self.vely = 0
         self.phase, self.animCount = 0, 0
         self.view = "right"
+        self.state = True
 
     def update(self):
-        if self.phase == 0:
+        if self.phase == 0 and self.state:
             self.vely = 0
             self.rect.y = self.ground
 
@@ -47,7 +48,9 @@ class Player(pygame.sprite.Sprite):
             self.rect.y += 30 * self.vely / 20
 
     def acceleration(self, left, right):
+        self.state = True
         if left:
+            self.state = False
             if self.view != "left":
                 self.view = "left"
                 self.flip()
@@ -56,6 +59,7 @@ class Player(pygame.sprite.Sprite):
             self.rect = self.rect.move(-self.velx, 0)
 
         elif right:
+            self.state = False
             if self.view != "right":
                 self.view = "right"
                 self.flip()
