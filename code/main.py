@@ -98,11 +98,17 @@ if __name__ == '__main__':
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     pass
                 if event.type == pygame.KEYDOWN and (event.key == pygame.K_LEFT or event.key == pygame.K_a):
-                    left_stop, right_stop = False, False
-                    right, left = False, True
+                    if right:
+                        pass
+                    else:
+                        left_stop, right_stop = False, False
+                        right, left = False, True
                 if event.type == pygame.KEYDOWN and (event.key == pygame.K_RIGHT or event.key == pygame.K_d):
-                    left_stop, right_stop = False, False
-                    right, left = True, False
+                    if left:
+                        pass
+                    else:
+                        left_stop, right_stop = False, False
+                        right, left = True, False
                 if event.type == pygame.KEYDOWN and (event.key == pygame.K_UP or event.key == pygame.K_SPACE):
                     up = True
                 if event.type == pygame.KEYUP and (event.key == pygame.K_LEFT or event.key == pygame.K_a):
