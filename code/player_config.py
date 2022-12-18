@@ -13,6 +13,18 @@ class Player(pygame.sprite.Sprite):
                    load_image('hero/hero_static/Player_Static_Animation_5.png'),
                    load_image('hero/hero_static/Player_Static_Animation_6.png')]
 
+    walk_images = [
+        load_image('hero/hero_walk/Player_Walk_Animation_1.png'),
+        load_image('hero/hero_walk/Player_Walk_Animation_2.png'),
+        load_image('hero/hero_walk/Player_Walk_Animation_3.png'),
+        load_image('hero/hero_walk/Player_Walk_Animation_4.png'),
+        load_image('hero/hero_walk/Player_Walk_Animation_5.png'),
+        load_image('hero/hero_walk/Player_Walk_Animation_6.png'),
+        load_image('hero/hero_walk/Player_Walk_Animation_7.png'),
+        load_image('hero/hero_walk/Player_Walk_Animation_8.png'),
+        load_image('hero/hero_walk/Player_Walk_Animation_9.png'),
+        load_image('hero/hero_walk/Player_Walk_Animation_10.png')]
+
     def __init__(self):
         super().__init__(all_sprites)
         self.image = Player.idle_images[0]
@@ -47,9 +59,22 @@ class Player(pygame.sprite.Sprite):
             self.vely += g / 30
             self.rect.y += 30 * self.vely / 20
 
+        if not self.state:
+
+            if self.animCount + 1 >= 60:
+                self.animCount = 0
+
+            self.image = Player.walk_images[self.animCount // 6]
+
+            if self.view == "left":
+                self.flip()
+
+            self.animCount += 1
+
     def acceleration(self, left, right):
         self.state = True
         if left:
+            self.rect.y = self.ground - 10
             self.state = False
             if self.view != "left":
                 self.view = "left"
@@ -59,6 +84,7 @@ class Player(pygame.sprite.Sprite):
             self.rect = self.rect.move(-self.velx, 0)
 
         elif right:
+            self.rect.y = self.ground - 10
             self.state = False
             if self.view != "right":
                 self.view = "right"
@@ -69,12 +95,14 @@ class Player(pygame.sprite.Sprite):
 
     def stop(self, left, right):
         if left:
+            self.rect.y = self.ground
             if self.velx > 0:
                 self.velx -= 2
             else:
                 self.velx = 0
             self.rect = self.rect.move(-self.velx, 0)
         elif right:
+            self.rect.y = self.ground
             if self.velx > 0:
                 self.velx -= 2
             else:
