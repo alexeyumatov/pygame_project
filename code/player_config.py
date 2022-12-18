@@ -19,6 +19,7 @@ class Player(pygame.sprite.Sprite):
         self.velx = 0
         self.vely = 0
         self.phase = 0
+        self.view = "right"
 
     def update(self):
         if self.phase == 0:
@@ -31,10 +32,17 @@ class Player(pygame.sprite.Sprite):
 
     def acceleration(self, left, right):
         if left:
+            if self.view != "left":
+                self.view = "left"
+                self.flip()
             if self.velx < 15:
                 self.velx += 2
             self.rect = self.rect.move(-self.velx, 0)
+
         elif right:
+            if self.view != "right":
+                self.view = "right"
+                self.flip()
             if self.velx < 15:
                 self.velx += 2
             self.rect = self.rect.move(self.velx, 0)
@@ -60,3 +68,6 @@ class Player(pygame.sprite.Sprite):
             return True
         if not pygame.sprite.collide_mask(self, elem):
             self.rect.y += 2
+
+    def flip(self):
+        self.image = pygame.transform.flip(self.image, True, False)
