@@ -31,11 +31,15 @@ class Player(pygame.sprite.Sprite):
             self.vely = 0
             self.rect.y = self.ground
 
-            # if self.animCount + 1 >= 42:
-            #     self.animCount = 0
+            if self.animCount + 1 >= 42:
+                self.animCount = 0
 
-            # self.image = Player.idle_images[self.animCount // 7]
-            # self.animCount += 1
+            self.image = Player.idle_images[self.animCount // 7]
+
+            if self.view == "left":
+                self.flip()
+
+            self.animCount += 1
 
         elif self.phase > 0:
             self.phase -= 2
