@@ -6,11 +6,16 @@ g = 10
 
 
 class Player(pygame.sprite.Sprite):
-    image = load_image('hero/hero_idle.png')
+    idle_images = [load_image('hero/hero_static/Player_Static_Animation_1.png'),
+                   load_image('hero/hero_static/Player_Static_Animation_2.png'),
+                   load_image('hero/hero_static/Player_Static_Animation_3.png'),
+                   load_image('hero/hero_static/Player_Static_Animation_4.png'),
+                   load_image('hero/hero_static/Player_Static_Animation_5.png'),
+                   load_image('hero/hero_static/Player_Static_Animation_6.png')]
 
     def __init__(self):
         super().__init__(all_sprites)
-        self.image = Player.image
+        self.image = Player.idle_images[0]
         self.rect = self.image.get_rect()
         self.mask = pygame.mask.from_surface(self.image)
         self.rect.x = 200
@@ -18,13 +23,20 @@ class Player(pygame.sprite.Sprite):
         self.ground = 0
         self.velx = 0
         self.vely = 0
-        self.phase = 0
+        self.phase, self.animCount = 0, 0
         self.view = "right"
 
     def update(self):
         if self.phase == 0:
             self.vely = 0
             self.rect.y = self.ground
+
+            if self.animCount + 1 >= 42:
+                self.animCount = 0
+
+            self.image = Player.idle_images[self.animCount // 7]
+            self.animCount += 1
+
         elif self.phase > 0:
             self.phase -= 2
             self.vely += g / 30

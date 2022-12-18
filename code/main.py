@@ -65,6 +65,12 @@ def hands_detection():
     return hand_type, last_status
 
 
+def draw_window():
+    screen.fill((100, 100, 100))
+    all_sprites.draw(screen)
+    pygame.display.flip()
+
+
 if __name__ == '__main__':
     pygame.init()
     size = width, height = 1280, 720
@@ -73,7 +79,7 @@ if __name__ == '__main__':
     FPS = 60
     left, right, up = False, False, False
     left_stop, right_stop = False, False
-    hero_load = False
+    hero_load, onGround = False, True
 
     floor = Location(all_sprites, floor_group)
     hero = Player()
@@ -91,27 +97,25 @@ if __name__ == '__main__':
                     running = False
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     pass
-                if event.type == pygame.KEYDOWN and event.key == pygame.K_LEFT:
+                if event.type == pygame.KEYDOWN and (event.key == pygame.K_LEFT or event.key == pygame.K_a):
                     left_stop, right_stop = False, False
                     right, left = False, True
-                if event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT:
+                if event.type == pygame.KEYDOWN and (event.key == pygame.K_RIGHT or event.key == pygame.K_d):
                     left_stop, right_stop = False, False
                     right, left = True, False
-                if event.type == pygame.KEYDOWN and event.key == pygame.K_UP:
+                if event.type == pygame.KEYDOWN and (event.key == pygame.K_UP or event.key == pygame.K_SPACE):
                     up = True
-                if event.type == pygame.KEYUP and event.key == pygame.K_LEFT:
+                if event.type == pygame.KEYUP and (event.key == pygame.K_LEFT or event.key == pygame.K_a):
                     left_stop, right_stop = True, False
                     left, right = False, False
                     hero.velx = 15
-                if event.type == pygame.KEYUP and event.key == pygame.K_RIGHT:
+                if event.type == pygame.KEYUP and (event.key == pygame.K_RIGHT or event.key == pygame.K_d):
                     left_stop, right_stop = False, True
                     left, right = False, False
                     hero.velx = 15
-                if event.type == pygame.KEYUP and event.key == pygame.K_UP:
+                if event.type == pygame.KEYUP and (event.key == pygame.K_UP or event.key == pygame.K_SPACE):
                     up = False
 
-            screen.fill((255, 255, 255))
-            all_sprites.draw(screen)
             if not hero_load:
                 hero_load = hero.player_init(floor_group)
             else:
@@ -124,7 +128,8 @@ if __name__ == '__main__':
                 hero.update()
                 hero.acceleration(left, right)
                 hero.stop(left_stop, right_stop)
-            pygame.display.flip()
+
+            draw_window()
 
             clock.tick(FPS)
     pygame.quit()

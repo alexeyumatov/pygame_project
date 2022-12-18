@@ -12,6 +12,3 @@ class Location(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.y = 720 - int(self.rect.height)
         self.mask = pygame.mask.from_surface(self.image)
-
-
-
