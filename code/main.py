@@ -73,10 +73,10 @@ if __name__ == '__main__':
     FPS = 60
     left, right, up = False, False, False
     left_stop, right_stop = False, False
+    hero_load = False
 
+    floor = Location(all_sprites, floor_group)
     hero = Player()
-    floor = Location()
-    floor_group.add(floor)
 
     # cap = cv2.VideoCapture(0)
     # w, h = 640, 480
@@ -112,13 +112,18 @@ if __name__ == '__main__':
 
             screen.fill((255, 255, 255))
             all_sprites.draw(screen)
-            if up:
-                if hero.phase == 0:
-                    hero.phase = 82
-                    hero.vely = -7
-            hero.update(height, FPS)
-            hero.acceleration(left, right)
-            hero.stop(left_stop, right_stop)
+            if not hero_load:
+                hero_load = hero.player_init(floor_group)
+            else:
+                if up:
+                    if hero.phase == 0:
+                        hero.phase = 82
+                        hero.vely = -7
+                    if hero.phase != 0:
+                        up = False
+                hero.update()
+                hero.acceleration(left, right)
+                hero.stop(left_stop, right_stop)
             pygame.display.flip()
 
             clock.tick(FPS)
