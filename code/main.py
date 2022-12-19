@@ -4,7 +4,7 @@ import mediapipe as mp
 import cv2
 from Location import Location
 from groups import all_sprites, floor_group, left_walls, right_walls
-
+from load_image import load_image
 
 mp_hands = mp.solutions.hands
 mp_drawing = mp.solutions.drawing_utils
@@ -65,10 +65,34 @@ mp_drawing = mp.solutions.drawing_utils
 #     return hand_type, last_status
 
 
+pause_background = load_image('pause/Pause.png')
+pause_button = load_image('pause/Pause_Button.png')
+paused = False
+
+
 def draw_window():
     screen.fill((100, 100, 100))
     all_sprites.draw(screen)
     pygame.display.flip()
+
+
+def pause():
+    paused = True
+    while paused:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    paused = False
+                elif event.key == pygame.K_q:
+                    pygame.quit()
+                    quit()
+        screen.blit(pause_background, (0, 0))
+        screen.blit(pause_button, (0, 0))
+        pygame.display.update()
+        clock.tick(5)
 
 
 if __name__ == '__main__':
@@ -87,7 +111,10 @@ if __name__ == '__main__':
     ceiling = Location('Locations/location_ceiling.png', all_sprites)
     hero = Player()
 
+    sprites = [pause_background, pause_button, floor,
+               left_wall, right_wall, ceiling]
     # cap = cv2.VideoCapture(0)
+
     # w, h = 640, 480
     # cap.set(3, w)
     # cap.set(4, h)
@@ -95,35 +122,51 @@ if __name__ == '__main__':
     running = True
     with mp_hands.Hands(max_num_hands=1, min_tracking_confidence=0.9, min_detection_confidence=0.9) as hands:
         while running:
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
+
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    pass
-                if event.type == pygame.KEYDOWN and (event.key == pygame.K_LEFT or event.key == pygame.K_a):
-                    if right:
+                    pressed = []
+                    if paused is True:
+                        pos = pygame.mouse.get_pos()
+                        for s in sprites:
+                            if s.rect.collidepoint(pos):
+                                pressed.append(s)
+
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        pause()
                         pass
-                    else:
-                        left_stop, right_stop = False, False
-                        right, left = False, True
-                if event.type == pygame.KEYDOWN and (event.key == pygame.K_RIGHT or event.key == pygame.K_d):
-                    if left:
+                    if event.key == pygame.K_LEFT or event.key == pygame.K_a:
+                        if right:
+                            pass
+                        else:
+                            left_stop, right_stop = False, False
+                            right, left = False, True
+                    if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
+                        if left:
+                            pass
+                        else:
+                            left_stop, right_stop = False, False
+                            right, left = True, False
+                    if event.key == pygame.K_UP or event.key == pygame.K_SPACE:
+                        up = True
                         pass
-                    else:
-                        left_stop, right_stop = False, False
-                        right, left = True, False
-                if event.type == pygame.KEYDOWN and (event.key == pygame.K_UP or event.key == pygame.K_SPACE):
-                    up = True
-                if event.type == pygame.KEYUP and (event.key == pygame.K_LEFT or event.key == pygame.K_a):
-                    left_stop, right_stop = True, False
-                    left, right = False, False
-                    hero.velx = 15
-                if event.type == pygame.KEYUP and (event.key == pygame.K_RIGHT or event.key == pygame.K_d):
-                    left_stop, right_stop = False, True
-                    left, right = False, False
-                    hero.velx = 15
-                if event.type == pygame.KEYUP and (event.key == pygame.K_UP or event.key == pygame.K_SPACE):
-                    up = False
+
+                if event.type == pygame.KEYUP:
+                    if event.key == pygame.K_LEFT or event.key == pygame.K_a:
+                        left_stop, right_stop = True, False
+                        left, right = False, False
+                        hero.velx = 15
+                    if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
+                        left_stop, right_stop = False, True
+                        left, right = False, False
+                        hero.velx = 15
+                    if event.key == pygame.K_UP or event.key == pygame.K_SPACE:
+                        up = False
+                        pass
 
             if not hero_load:
                 hero_load = hero.player_init(floor_group)
