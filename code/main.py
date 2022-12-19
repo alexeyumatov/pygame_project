@@ -3,7 +3,7 @@ from player_config import all_sprites, Player, ground
 import mediapipe as mp
 import cv2
 from Location import Location
-from groups import all_sprites, floor_group, left_walls, right_walls
+from groups import all_sprites, floor_group, left_walls, right_walls, exit_button
 from load_image import load_image
 
 mp_hands = mp.solutions.hands
@@ -66,8 +66,22 @@ mp_drawing = mp.solutions.drawing_utils
 
 
 pause_background = load_image('pause/Pause.png')
-pause_button = load_image('pause/Pause_Button.png')
+pause_button = pygame.sprite.Sprite()
+pause_button.image = load_image('pause/Pause_Button.png')
+pause_button.rect = pause_button.image.get_rect()
+pause_button.mask = pygame.mask.from_surface(pause_button.image)
+exit_button.add(pause_button)
+
+floor = Location('Locations/location_floor.png', all_sprites, floor_group)
+left_wall = Location('Locations/location_left_wall.png', all_sprites,
+                     left_walls)
+right_wall = Location('Locations/location_right_wall.png', all_sprites,
+                      right_walls)
+ceiling = Location('Locations/location_ceiling.png', all_sprites)
+
 paused = False
+sprites = [pause_background, pause_button, floor,
+           left_wall, right_wall, ceiling]
 
 
 def draw_window():
@@ -86,13 +100,17 @@ def pause():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     paused = False
-                elif event.key == pygame.K_q:
+                if event.key == pygame.K_q:
                     pygame.quit()
                     quit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    pos = pygame.mouse.get_pos()
+                    if pause_button.rect.collidepoint(pos):
+                        print(1)
         screen.blit(pause_background, (0, 0))
-        screen.blit(pause_button, (0, 0))
+        exit_button.draw(screen)
         pygame.display.update()
-        clock.tick(5)
+        clock.tick(60)
 
 
 if __name__ == '__main__':
@@ -105,14 +123,8 @@ if __name__ == '__main__':
     left_stop, right_stop = False, False
     hero_load, onGround = False, True
 
-    floor = Location('Locations/location_floor.png', all_sprites, floor_group)
-    left_wall = Location('Locations/location_left_wall.png', all_sprites, left_walls)
-    right_wall = Location('Locations/location_right_wall.png', all_sprites, right_walls)
-    ceiling = Location('Locations/location_ceiling.png', all_sprites)
     hero = Player()
 
-    sprites = [pause_background, pause_button, floor,
-               left_wall, right_wall, ceiling]
     # cap = cv2.VideoCapture(0)
 
     # w, h = 640, 480
@@ -126,14 +138,13 @@ if __name__ == '__main__':
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
+                    pass
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    pressed = []
-                    if paused is True:
-                        pos = pygame.mouse.get_pos()
-                        for s in sprites:
-                            if s.rect.collidepoint(pos):
-                                pressed.append(s)
+                    pass
+
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    pass
 
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
@@ -179,7 +190,7 @@ if __name__ == '__main__':
                     if hero.phase != 0:
                         up = False
                 hero.collider(left_walls, right_walls)
-                hero.update()
+                hero.update(floor_group)
                 hero.acceleration(left, right)
                 hero.stop(left_stop, right_stop)
 

@@ -40,7 +40,12 @@ class Player(pygame.sprite.Sprite):
         self.view = "right"
         self.state = True
 
-    def update(self):
+    def update(self, collide_group):
+        elem = [el for el in collide_group][0]
+
+        if not pygame.sprite.collide_mask(self, elem):
+            self.player_init(collide_group)
+
         if self.phase == 0 and self.state:
             self.vely = 0
             self.rect.y = ground
@@ -122,7 +127,7 @@ class Player(pygame.sprite.Sprite):
             ground += self.rect.y
             return True
         if not pygame.sprite.collide_mask(self, elem):
-            self.rect.y += 2
+            self.rect.y += 7
 
     def flip(self):
         self.image = pygame.transform.flip(self.image, True, False)
