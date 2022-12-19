@@ -3,6 +3,7 @@ from load_image import load_image
 from groups import all_sprites
 
 g = 10
+ground = 0
 
 
 class Player(pygame.sprite.Sprite):
@@ -32,7 +33,6 @@ class Player(pygame.sprite.Sprite):
         self.mask = pygame.mask.from_surface(self.image)
         self.rect.x = 200
         self.rect.y = 150
-        self.ground = 0
         self.velx = 0
         self.vely = 0
         self.phase, self.animCount = 0, 0
@@ -42,7 +42,7 @@ class Player(pygame.sprite.Sprite):
     def update(self):
         if self.phase == 0 and self.state:
             self.vely = 0
-            self.rect.y = self.ground
+            self.rect.y = ground
 
             if self.animCount + 1 >= 42:
                 self.animCount = 0
@@ -54,12 +54,11 @@ class Player(pygame.sprite.Sprite):
 
             self.animCount += 1
 
-        elif self.phase > 0:
-            self.phase -= 2
-            self.vely += g / 30
-            self.rect.y += 30 * self.vely / 20
-
         if not self.state:
+            if self.phase > 0:
+                pass
+            else:
+                self.rect.y = ground - 15
 
             if self.animCount + 1 >= 60:
                 self.animCount = 0
@@ -71,38 +70,39 @@ class Player(pygame.sprite.Sprite):
 
             self.animCount += 1
 
+        if self.phase > 0:
+            self.phase -= 2
+            self.vely += g / 30
+            self.rect.y += 30 * self.vely / 20
+
     def acceleration(self, left, right):
         self.state = True
         if left:
-            self.rect.y = self.ground - 10
             self.state = False
             if self.view != "left":
                 self.view = "left"
                 self.flip()
-            if self.velx < 15:
-                self.velx += 2
+            if self.velx < 13:
+                self.velx += 0.6
             self.rect = self.rect.move(-self.velx, 0)
 
         elif right:
-            self.rect.y = self.ground - 10
             self.state = False
             if self.view != "right":
                 self.view = "right"
                 self.flip()
-            if self.velx < 15:
-                self.velx += 2
+            if self.velx < 13:
+                self.velx += 0.6
             self.rect = self.rect.move(self.velx, 0)
 
     def stop(self, left, right):
         if left:
-            self.rect.y = self.ground
             if self.velx > 0:
                 self.velx -= 2
             else:
                 self.velx = 0
             self.rect = self.rect.move(-self.velx, 0)
         elif right:
-            self.rect.y = self.ground
             if self.velx > 0:
                 self.velx -= 2
             else:
@@ -110,9 +110,10 @@ class Player(pygame.sprite.Sprite):
             self.rect = self.rect.move(self.velx, 0)
 
     def player_init(self, collide_group):
+        global ground
         elem = [el for el in collide_group][0]
         if pygame.sprite.collide_mask(self, elem):
-            self.ground += self.rect.y
+            ground += self.rect.y
             return True
         if not pygame.sprite.collide_mask(self, elem):
             self.rect.y += 2

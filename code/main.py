@@ -1,5 +1,5 @@
 import pygame
-from player_config import all_sprites, Player
+from player_config import all_sprites, Player, ground
 import mediapipe as mp
 import cv2
 from Location import Location
@@ -73,7 +73,7 @@ def draw_window():
 
 if __name__ == '__main__':
     pygame.init()
-    size = width, height = 1280, 720
+    size = width, height = 1920, 1080
     screen = pygame.display.set_mode(size)
     clock = pygame.time.Clock()
     FPS = 60
@@ -125,6 +125,7 @@ if __name__ == '__main__':
             if not hero_load:
                 hero_load = hero.player_init(floor_group)
             else:
+                # ПРЫЖОК
                 if up:
                     if hero.phase == 0:
                         hero.phase = 82

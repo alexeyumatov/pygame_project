@@ -4,11 +4,14 @@ from groups import all_sprites
 
 
 class Location(pygame.sprite.Sprite):
-    image = load_image('Locations/Loc12.png')
+    image = load_image('Locations/Loc2.png')
 
     def __init__(self, *group):
         super().__init__(*group)
         self.image = Location.image
         self.rect = self.image.get_rect()
-        self.rect.y = 720 - int(self.rect.height)
+        self.rect.y = 1080 - int(self.rect.height)
         self.mask = pygame.mask.from_surface(self.image)
+        print(self.mask)
+
+
