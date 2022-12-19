@@ -35,6 +35,7 @@ class Player(pygame.sprite.Sprite):
         self.rect.y = 150
         self.velx = 0
         self.vely = 0
+        self.isColided_left, self.isColided_right = False, False
         self.phase, self.animCount = 0, 0
         self.view = "right"
         self.state = True
@@ -77,37 +78,42 @@ class Player(pygame.sprite.Sprite):
 
     def acceleration(self, left, right):
         self.state = True
-        if left:
-            self.state = False
-            if self.view != "left":
-                self.view = "left"
-                self.flip()
-            if self.velx < 13:
-                self.velx += 0.6
-            self.rect = self.rect.move(-self.velx, 0)
+        if not self.isColided_left:
+            if left:
+                self.state = False
+                if self.view != "left":
+                    self.view = "left"
+                    self.flip()
+                if self.velx < 13:
+                    self.velx += 0.6
+                self.rect = self.rect.move(-self.velx, 0)
 
-        elif right:
-            self.state = False
-            if self.view != "right":
-                self.view = "right"
-                self.flip()
-            if self.velx < 13:
-                self.velx += 0.6
-            self.rect = self.rect.move(self.velx, 0)
+        if not self.isColided_right:
+            if right:
+                self.state = False
+                if self.view != "right":
+                    self.view = "right"
+                    self.flip()
+                if self.velx < 13:
+                    self.velx += 0.6
+                self.rect = self.rect.move(self.velx, 0)
 
     def stop(self, left, right):
-        if left:
-            if self.velx > 0:
-                self.velx -= 2
-            else:
-                self.velx = 0
-            self.rect = self.rect.move(-self.velx, 0)
-        elif right:
-            if self.velx > 0:
-                self.velx -= 2
-            else:
-                self.velx = 0
-            self.rect = self.rect.move(self.velx, 0)
+        if not self.isColided_left:
+            if left:
+                if self.velx > 0:
+                    self.velx -= 2
+                else:
+                    self.velx = 0
+                self.rect = self.rect.move(-self.velx, 0)
+
+        if not self.isColided_right:
+            if right:
+                if self.velx > 0:
+                    self.velx -= 2
+                else:
+                    self.velx = 0
+                self.rect = self.rect.move(self.velx, 0)
 
     def player_init(self, collide_group):
         global ground
@@ -120,3 +126,15 @@ class Player(pygame.sprite.Sprite):
 
     def flip(self):
         self.image = pygame.transform.flip(self.image, True, False)
+
+    def collider(self, left_walls, right_walls):
+        left_wall = [el for el in left_walls][0]
+        right_wall = [el for el in right_walls][0]
+        if pygame.sprite.collide_mask(self, left_wall):
+            self.isColided_left = True
+        else:
+            self.isColided_left = False
+        if pygame.sprite.collide_mask(self, right_wall):
+            self.isColided_right = True
+        else:
+            self.isColided_right = False
