@@ -67,9 +67,8 @@ mp_drawing = mp.solutions.drawing_utils
 
 pause_background = load_image('pause/Pause.png')
 pause_button = pygame.sprite.Sprite()
-pause_button.image = load_image('pause/Pause_Button.png')
+pause_button.image = pygame.image.load('data/pause/Pause_Button.png').convert_alpha()
 pause_button.rect = pause_button.image.get_rect()
-pause_button.mask = pygame.mask.from_surface(pause_button.image)
 exit_button.add(pause_button)
 
 floor = Location('Locations/location_floor.png', all_sprites, floor_group)
@@ -100,13 +99,11 @@ def pause():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     paused = False
-                if event.key == pygame.K_q:
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                pos = pygame.mouse.get_pos()
+                if pause_button.rect.collidepoint(pos):
                     pygame.quit()
                     quit()
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    pos = pygame.mouse.get_pos()
-                    if pause_button.rect.collidepoint(pos):
-                        print(1)
         screen.blit(pause_background, (0, 0))
         exit_button.draw(screen)
         pygame.display.update()
@@ -138,9 +135,6 @@ if __name__ == '__main__':
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
-                    pass
-
-                if event.type == pygame.MOUSEBUTTONDOWN:
                     pass
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
