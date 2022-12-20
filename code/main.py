@@ -3,7 +3,7 @@ from player_config import all_sprites, Player, ground
 import mediapipe as mp
 import cv2
 from Location import Location
-from groups import all_sprites, floor_group, left_walls, right_walls, exit_button
+from groups import all_sprites, floor_group, left_walls, right_walls
 from load_image import load_image
 
 mp_hands = mp.solutions.hands
@@ -66,10 +66,6 @@ mp_drawing = mp.solutions.drawing_utils
 
 
 pause_background = load_image('pause/Pause.png')
-pause_button = pygame.sprite.Sprite()
-pause_button.image = pygame.image.load('data/pause/Pause_Button.png').convert_alpha()
-pause_button.rect = pause_button.image.get_rect()
-exit_button.add(pause_button)
 
 floor = Location('Locations/location_floor.png', all_sprites, floor_group)
 left_wall = Location('Locations/location_left_wall.png', all_sprites,
@@ -79,8 +75,6 @@ right_wall = Location('Locations/location_right_wall.png', all_sprites,
 ceiling = Location('Locations/location_ceiling.png', all_sprites)
 
 paused = False
-sprites = [pause_background, pause_button, floor,
-           left_wall, right_wall, ceiling]
 
 
 def draw_window():
@@ -99,15 +93,13 @@ def pause():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     paused = False
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                pos = pygame.mouse.get_pos()
-                if pause_button.rect.collidepoint(pos):
+                if event.key == pygame.K_q:
                     pygame.quit()
                     quit()
+
         screen.blit(pause_background, (0, 0))
-        exit_button.draw(screen)
         pygame.display.update()
-        clock.tick(60)
+        clock.tick(5)
 
 
 if __name__ == '__main__':
