@@ -31,7 +31,7 @@ class Player(pygame.sprite.Sprite):
         self.image = Player.idle_images[0]
         self.rect = self.image.get_rect()
         self.mask = pygame.mask.from_surface(self.image)
-        self.rect.x = 200
+        self.rect.x = 100
         self.rect.y = 150
         self.velx = 0
         self.vely = 0
@@ -39,15 +39,20 @@ class Player(pygame.sprite.Sprite):
         self.phase, self.animCount = 0, 0
         self.view = "right"
         self.state = True
+        self.OnGround = False
 
     # collide_group
-    def update(self):
-        # elem = [el for el in collide_group][0]
+    def update(self, collide_group):
+        elem = [el for el in collide_group][0]
 
-        # if not pygame.sprite.collide_mask(self, elem):
-        #     self.player_init(collide_group)
+        if not pygame.sprite.collide_mask(self, elem):
+            self.OnGround = False
 
-        if self.phase == 0 and self.state:
+        if self.OnGround is False:
+            self.fall(collide_group)
+
+        # СТОИМ НА МЕСТЕ И ОТДЫХАЕМ
+        if self.phase == 0 and self.state and self.OnGround is True:
             self.vely = 0
             self.rect.y = ground
 
@@ -61,6 +66,7 @@ class Player(pygame.sprite.Sprite):
 
             self.animCount += 1
 
+        # ХОДИМ
         if not self.state:
             if self.phase > 0:
                 pass
@@ -77,7 +83,9 @@ class Player(pygame.sprite.Sprite):
 
             self.animCount += 1
 
+        # ПРЫГАЕМ (ПАДЕНИЕ)
         if self.phase > 0:
+            self.OnGround = True
             self.phase -= 2
             self.vely += g / 30
             self.rect.y += 30 * self.vely / 20
@@ -87,6 +95,7 @@ class Player(pygame.sprite.Sprite):
         if not self.isColided_left:
             if left:
                 self.state = False
+                self.OnGround = True
                 if self.view != "left":
                     self.view = "left"
                     self.flip()
@@ -97,6 +106,7 @@ class Player(pygame.sprite.Sprite):
         if not self.isColided_right:
             if right:
                 self.state = False
+                self.OnGround = True
                 if self.view != "right":
                     self.view = "right"
                     self.flip()
@@ -107,6 +117,7 @@ class Player(pygame.sprite.Sprite):
     def stop(self, left, right):
         if not self.isColided_left:
             if left:
+                self.OnGround = True
                 if self.velx > 0:
                     self.velx -= 2
                 else:
@@ -115,20 +126,12 @@ class Player(pygame.sprite.Sprite):
 
         if not self.isColided_right:
             if right:
+                self.OnGround = True
                 if self.velx > 0:
                     self.velx -= 2
                 else:
                     self.velx = 0
                 self.rect = self.rect.move(self.velx, 0)
-
-    def player_init(self, collide_group):
-        global ground
-        elem = [el for el in collide_group][0]
-        if pygame.sprite.collide_mask(self, elem):
-            ground += self.rect.y
-            return True
-        if not pygame.sprite.collide_mask(self, elem):
-            self.rect.y += 7
 
     def flip(self):
         self.image = pygame.transform.flip(self.image, True, False)
@@ -144,3 +147,18 @@ class Player(pygame.sprite.Sprite):
             self.isColided_right = True
         else:
             self.isColided_right = False
+
+    def fall(self, collide_group):
+        global ground
+        ground = 0
+        elem = [el for el in collide_group][0]
+        while self.OnGround is False:
+            if pygame.sprite.collide_mask(self, elem):
+                print("On Ground")
+                ground = self.rect.y
+                self.OnGround = True
+                return True
+            if not pygame.sprite.collide_mask(self, elem):
+                self.rect.y += 1
+                self.OnGround = False
+

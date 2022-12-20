@@ -110,7 +110,7 @@ if __name__ == '__main__':
     FPS = 60
     left, right, up = False, False, False
     left_stop, right_stop = False, False
-    hero_load, onGround = False, True
+    onGround = False
 
     hero = Player()
 
@@ -165,20 +165,21 @@ if __name__ == '__main__':
                         up = False
                         pass
 
-            if not hero_load:
-                hero_load = hero.player_init(floor_group)
+            if not onGround:
+                onGround = hero.fall(floor_group)
             else:
                 # ПРЫЖОК
                 if up:
                     if hero.phase == 0:
-                        hero.phase = 82
+                        hero.phase = 70
                         hero.vely = -7
                     if hero.phase != 0:
                         up = False
                 hero.collider(left_walls, right_walls)
-                hero.update()
+                hero.update(floor_group)
                 hero.acceleration(left, right)
                 hero.stop(left_stop, right_stop)
+                print(hero.phase)
 
             draw_window()
 
