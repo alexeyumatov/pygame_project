@@ -3,7 +3,6 @@ from load_image import load_image
 from groups import all_sprites
 
 g = 10
-ground = 0
 
 
 class Player(pygame.sprite.Sprite):
@@ -54,7 +53,6 @@ class Player(pygame.sprite.Sprite):
         # СТОИМ НА МЕСТЕ И ОТДЫХАЕМ
         if self.phase == 0 and self.state and self.OnGround is True:
             self.vely = 0
-            self.rect.y = ground
 
             if self.animCount + 1 >= 42:
                 self.animCount = 0
@@ -71,7 +69,7 @@ class Player(pygame.sprite.Sprite):
             if self.phase > 0:
                 pass
             else:
-                self.rect.y = ground - 15
+                self.rect.y -= 15
 
             if self.animCount + 1 >= 60:
                 self.animCount = 0
@@ -85,7 +83,7 @@ class Player(pygame.sprite.Sprite):
 
         # ПРЫГАЕМ (ПАДЕНИЕ)
         if self.phase > 0:
-            self.OnGround = True
+            self.OnGround = False
             self.phase -= 2
             self.vely += g / 30
             self.rect.y += 30 * self.vely / 20
@@ -149,13 +147,9 @@ class Player(pygame.sprite.Sprite):
             self.isColided_right = False
 
     def fall(self, collide_group):
-        global ground
-        ground = 0
         elem = [el for el in collide_group][0]
         while self.OnGround is False:
             if pygame.sprite.collide_mask(self, elem):
-                print("On Ground")
-                ground = self.rect.y
                 self.OnGround = True
                 return True
             if not pygame.sprite.collide_mask(self, elem):

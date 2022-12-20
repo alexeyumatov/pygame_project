@@ -1,5 +1,5 @@
 import pygame
-from player_config import all_sprites, Player, ground
+from player_config import all_sprites, Player
 import mediapipe as mp
 import cv2
 from Location import Location
@@ -179,7 +179,6 @@ if __name__ == '__main__':
                 hero.update(floor_group)
                 hero.acceleration(left, right)
                 hero.stop(left_stop, right_stop)
-                print(hero.phase)
 
             draw_window()
 
