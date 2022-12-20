@@ -176,7 +176,7 @@ if __name__ == '__main__':
                     if hero.phase != 0:
                         up = False
                 hero.collider(left_walls, right_walls)
-                hero.update(floor_group)
+                hero.update()
                 hero.acceleration(left, right)
                 hero.stop(left_stop, right_stop)
 

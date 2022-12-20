@@ -40,11 +40,12 @@ class Player(pygame.sprite.Sprite):
         self.view = "right"
         self.state = True
 
-    def update(self, collide_group):
-        elem = [el for el in collide_group][0]
+    # collide_group
+    def update(self):
+        # elem = [el for el in collide_group][0]
 
-        if not pygame.sprite.collide_mask(self, elem):
-            self.player_init(collide_group)
+        # if not pygame.sprite.collide_mask(self, elem):
+        #     self.player_init(collide_group)
 
         if self.phase == 0 and self.state:
             self.vely = 0
