@@ -44,10 +44,10 @@ class Player(pygame.sprite.Sprite):
     def update(self, collide_group):
         elem = [el for el in collide_group][0]
 
-        if not pygame.sprite.collide_mask(self, elem):
+        if not pygame.sprite.collide_mask(self, elem) and self.phase == 0:
             self.OnGround = False
 
-        if self.OnGround is False:
+        if self.OnGround is False and self.phase == 0:
             self.fall(collide_group)
 
         # СТОИМ НА МЕСТЕ И ОТДЫХАЕМ
