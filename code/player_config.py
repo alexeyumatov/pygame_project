@@ -2,7 +2,7 @@ import pygame
 from load_image import load_image
 from groups import all_sprites
 
-g = 10
+g = 5
 
 
 class Player(pygame.sprite.Sprite):
@@ -44,15 +44,23 @@ class Player(pygame.sprite.Sprite):
     def update(self, collide_group):
         elem = [el for el in collide_group][0]
 
-        if not pygame.sprite.collide_mask(self, elem) and self.phase == 0:
-            self.OnGround = False
+        hits = pygame.sprite.collide_mask(self, elem)
+        if self.vely > 0:
+            if hits:
+                self.rect.y = elem.rect.top
+                self.vely = 0
 
-        if self.OnGround is False and self.phase == 0:
-            self.fall(collide_group)
+        if not hits:
+            self.rect.y += g
+
+        # if not pygame.sprite.collide_mask(self, elem):
+        #     self.OnGround = False
+        #
+        # if self.OnGround is False:
+        #     self.fall(collide_group)
 
         # СТОИМ НА МЕСТЕ И ОТДЫХАЕМ
-        if self.phase == 0 and self.state and self.OnGround is True:
-            self.vely = 0
+        if self.state and self.OnGround is True:
 
             if self.animCount + 1 >= 42:
                 self.animCount = 0
@@ -66,10 +74,6 @@ class Player(pygame.sprite.Sprite):
 
         # ХОДИМ
         if not self.state:
-            if self.phase > 0:
-                pass
-            else:
-                self.rect.y -= 15
 
             if self.animCount + 1 >= 60:
                 self.animCount = 0
@@ -80,13 +84,6 @@ class Player(pygame.sprite.Sprite):
                 self.flip()
 
             self.animCount += 1
-
-        # ПРЫГАЕМ (ПАДЕНИЕ)
-        if self.phase > 0:
-            self.OnGround = False
-            self.phase -= 2
-            self.vely += g / 30
-            self.rect.y += 30 * self.vely / 20
 
     def acceleration(self, left, right):
         self.state = True
@@ -156,3 +153,9 @@ class Player(pygame.sprite.Sprite):
                 self.rect.y += 1
                 self.OnGround = False
 
+    def jump(self, collide_group):
+        elem = [el for el in collide_group][0]
+        hits = pygame.sprite.collide_mask(self, elem)
+        if hits:
+            self.vely = -50
+            self.rect.y += self.vely
