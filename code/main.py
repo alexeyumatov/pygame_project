@@ -152,6 +152,9 @@ if __name__ == '__main__':
                         up = True
                         pass
 
+                    if event.key == pygame.K_e:
+                        pass
+
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_LEFT or event.key == pygame.K_a:
                         left_stop, right_stop = True, False

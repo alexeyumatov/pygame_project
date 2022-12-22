@@ -35,7 +35,7 @@ class Player(pygame.sprite.Sprite):
         self.velx = 0
         self.vely = 0
         self.isColided_left, self.isColided_right = False, False
-        self.phase, self.animCount = 0, 0
+        self.animCount = 0
         self.view = "right"
         self.state = True
         self.OnGround = False
@@ -44,14 +44,14 @@ class Player(pygame.sprite.Sprite):
     def update(self, collide_group):
         elem = [el for el in collide_group][0]
 
-        if not pygame.sprite.collide_mask(self, elem) and self.phase == 0:
+        if not pygame.sprite.collide_mask(self, elem):
             self.OnGround = False
 
-        if self.OnGround is False and self.phase == 0:
+        if self.OnGround is False:
             self.fall(collide_group)
 
         # СТОИМ НА МЕСТЕ И ОТДЫХАЕМ
-        if self.phase == 0 and self.state and self.OnGround is True:
+        if self.state and self.OnGround is True:
             self.vely = 0
 
             if self.animCount + 1 >= 42:
@@ -66,10 +66,7 @@ class Player(pygame.sprite.Sprite):
 
         # ХОДИМ
         if not self.state:
-            if self.phase > 0:
-                pass
-            else:
-                self.rect.y -= 15
+            self.rect.y -= 15
 
             if self.animCount + 1 >= 60:
                 self.animCount = 0
@@ -80,13 +77,6 @@ class Player(pygame.sprite.Sprite):
                 self.flip()
 
             self.animCount += 1
-
-        # ПРЫГАЕМ (ПАДЕНИЕ)
-        if self.phase > 0:
-            self.OnGround = False
-            self.phase -= 2
-            self.vely += g / 30
-            self.rect.y += 30 * self.vely / 20
 
     def acceleration(self, left, right):
         self.state = True
