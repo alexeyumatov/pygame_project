@@ -149,7 +149,18 @@ if __name__ == '__main__':
                             left_stop, right_stop = False, False
                             right, left = True, False
                     if event.key == pygame.K_UP or event.key == pygame.K_SPACE:
-                        hero.jump(floor_group)
+                        elem = [el for el in floor_group][0]
+                        hits = pygame.sprite.collide_mask(hero, elem)
+                        if hits:
+                            jump_act = True
+                            velocity = 0
+                            while jump_act:
+                                hero.jump(velocity)
+                                print(1)
+                                if velocity < -60:
+                                    jump_act = False
+                                else:
+                                    velocity -= 10
 
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_LEFT or event.key == pygame.K_a:

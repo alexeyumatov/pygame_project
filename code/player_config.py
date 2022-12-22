@@ -45,19 +45,11 @@ class Player(pygame.sprite.Sprite):
         elem = [el for el in collide_group][0]
 
         hits = pygame.sprite.collide_mask(self, elem)
-        if self.vely > 0:
-            if hits:
-                self.rect.y = elem.rect.top
-                self.vely = 0
+        if hits:
+            self.vely = 0
 
         if not hits:
             self.rect.y += g
-
-        # if not pygame.sprite.collide_mask(self, elem):
-        #     self.OnGround = False
-        #
-        # if self.OnGround is False:
-        #     self.fall(collide_group)
 
         # СТОИМ НА МЕСТЕ И ОТДЫХАЕМ
         if self.state and self.OnGround is True:
@@ -153,9 +145,6 @@ class Player(pygame.sprite.Sprite):
                 self.rect.y += 1
                 self.OnGround = False
 
-    def jump(self, collide_group):
-        elem = [el for el in collide_group][0]
-        hits = pygame.sprite.collide_mask(self, elem)
-        if hits:
-            self.vely = -50
-            self.rect.y += self.vely
+    def jump(self, velocity):
+        self.rect.y += velocity
+
