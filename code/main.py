@@ -108,7 +108,7 @@ if __name__ == '__main__':
     screen = pygame.display.set_mode(size)
     clock = pygame.time.Clock()
     FPS = 60
-    left, right, up = False, False, False
+    left, right = False, False
     left_stop, right_stop = False, False
     onGround = False
 
@@ -161,20 +161,10 @@ if __name__ == '__main__':
                         left_stop, right_stop = False, True
                         left, right = False, False
                         hero.velx = 15
-                    if event.key == pygame.K_UP or event.key == pygame.K_SPACE:
-                        up = False
-                        pass
 
             if not onGround:
                 onGround = hero.fall(floor_group)
             else:
-                # ПРЫЖОК
-                if up:
-                    if hero.phase == 0:
-                        hero.phase = 70
-                        hero.vely = -7
-                    if hero.phase != 0:
-                        up = False
                 hero.collider(left_walls, right_walls)
                 hero.update(floor_group)
                 hero.acceleration(left, right)

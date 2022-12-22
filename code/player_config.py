@@ -81,13 +81,6 @@ class Player(pygame.sprite.Sprite):
 
             self.animCount += 1
 
-        # ПРЫГАЕМ (ПАДЕНИЕ)
-        if self.phase > 0:
-            self.OnGround = False
-            self.phase -= 2
-            self.vely += g / 30
-            self.rect.y += 30 * self.vely / 20
-
     def acceleration(self, left, right):
         self.state = True
         if not self.isColided_left:
