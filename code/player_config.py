@@ -39,6 +39,7 @@ class Player(pygame.sprite.Sprite):
         self.view = "right"
         self.state = True
         self.OnGround = False
+        self.isDash = False
 
     # collide_group
     def update(self, collide_group):
@@ -145,4 +146,10 @@ class Player(pygame.sprite.Sprite):
             if not pygame.sprite.collide_mask(self, elem):
                 self.rect.y += 1
                 self.OnGround = False
+
+    def dash(self, left, right):
+        if self.isDash is True:
+            print("dash")
+            self.isDash = False
+
 

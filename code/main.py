@@ -151,9 +151,10 @@ if __name__ == '__main__':
                     if event.key == pygame.K_UP or event.key == pygame.K_SPACE:
                         up = True
                         pass
-
                     if event.key == pygame.K_e:
                         pass
+                    if event.key == pygame.K_SPACE:
+                        hero.isDash = True
 
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_LEFT or event.key == pygame.K_a:
@@ -172,7 +173,7 @@ if __name__ == '__main__':
                 hero.update(floor_group)
                 hero.acceleration(left, right)
                 hero.stop(left_stop, right_stop)
-
+                hero.dash(left, right)
             draw_window()
 
             clock.tick(FPS)
