@@ -99,7 +99,7 @@ def pause():
 
         screen.blit(pause_background, (0, 0))
         pygame.display.update()
-        clock.tick(30)
+        clock.tick(5)
 
 
 if __name__ == '__main__':
@@ -108,7 +108,7 @@ if __name__ == '__main__':
     screen = pygame.display.set_mode(size)
     clock = pygame.time.Clock()
     FPS = 60
-    left, right= False, False
+    left, right = False, False
     left_stop, right_stop = False, False
     onGround = False
 
@@ -148,7 +148,12 @@ if __name__ == '__main__':
                         else:
                             left_stop, right_stop = False, False
                             right, left = True, False
+                    if event.key == pygame.K_UP or event.key == pygame.K_SPACE:
+                        up = True
+                        pass
 
+                    if event.key == pygame.K_e:
+                        pass
 
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_LEFT or event.key == pygame.K_a:
@@ -159,8 +164,6 @@ if __name__ == '__main__':
                         left_stop, right_stop = False, True
                         left, right = False, False
                         hero.velx = 15
-                    if event.key == pygame.K_UP or event.key == pygame.K_SPACE:
-                        pass
 
             if not onGround:
                 onGround = hero.fall(floor_group)

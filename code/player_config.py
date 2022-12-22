@@ -2,7 +2,7 @@ import pygame
 from load_image import load_image
 from groups import all_sprites
 
-g = 5
+g = 10
 
 
 class Player(pygame.sprite.Sprite):
@@ -35,7 +35,7 @@ class Player(pygame.sprite.Sprite):
         self.velx = 0
         self.vely = 0
         self.isColided_left, self.isColided_right = False, False
-        self.phase, self.animCount = 0, 0
+        self.animCount = 0
         self.view = "right"
         self.state = True
         self.OnGround = False
@@ -44,15 +44,15 @@ class Player(pygame.sprite.Sprite):
     def update(self, collide_group):
         elem = [el for el in collide_group][0]
 
-        hits = pygame.sprite.collide_mask(self, elem)
-        if hits:
-            self.vely = 0
+        if not pygame.sprite.collide_mask(self, elem):
+            self.OnGround = False
 
-        if not hits:
-            self.rect.y += g
+        if self.OnGround is False:
+            self.fall(collide_group)
 
         # СТОИМ НА МЕСТЕ И ОТДЫХАЕМ
         if self.state and self.OnGround is True:
+            self.vely = 0
 
             if self.animCount + 1 >= 42:
                 self.animCount = 0
@@ -66,6 +66,7 @@ class Player(pygame.sprite.Sprite):
 
         # ХОДИМ
         if not self.state:
+            self.rect.y -= 15
 
             if self.animCount + 1 >= 60:
                 self.animCount = 0
@@ -144,3 +145,4 @@ class Player(pygame.sprite.Sprite):
             if not pygame.sprite.collide_mask(self, elem):
                 self.rect.y += 1
                 self.OnGround = False
+
