@@ -144,7 +144,3 @@ class Player(pygame.sprite.Sprite):
             if not pygame.sprite.collide_mask(self, elem):
                 self.rect.y += 1
                 self.OnGround = False
-
-    def jump(self, velocity):
-        self.rect.y += velocity
-
