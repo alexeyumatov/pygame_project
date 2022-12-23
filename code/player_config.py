@@ -30,15 +30,15 @@ class Player(pygame.sprite.Sprite):
         self.image = Player.idle_images[0]
         self.rect = self.image.get_rect()
         self.mask = pygame.mask.from_surface(self.image)
-        self.rect.x = 100
-        self.rect.y = 150
-        self.velx = 0
-        self.vely = 0
+
+        self.rect.x, self.rect.y = 100, 150
+        self.velx, self.vely = 0, 0
+
         self.isColided_left, self.isColided_right = False, False
         self.animCount = 0
         self.view = "right"
         self.state = True
-        self.OnGround = False
+        self.OnGround, self.onLadder = False, False
 
     # collide_group
     def update(self, collide_group):
@@ -80,46 +80,70 @@ class Player(pygame.sprite.Sprite):
 
     def acceleration(self, left, right):
         self.state = True
-        if not self.isColided_left:
-            if left:
-                self.state = False
-                self.OnGround = True
-                if self.view != "left":
-                    self.view = "left"
-                    self.flip()
-                if self.velx < 13:
-                    self.velx += 0.6
-                self.rect = self.rect.move(-self.velx, 0)
+        if not self.onLadder:
+            if not self.isColided_left:
+                if left:
+                    self.state = False
+                    self.OnGround = True
+                    if self.view != "left":
+                        self.view = "left"
+                        self.flip()
+                    if self.velx < 13:
+                        self.velx += 0.6
+                    self.rect = self.rect.move(-self.velx, 0)
 
-        if not self.isColided_right:
+            if not self.isColided_right:
+                if right:
+                    self.state = False
+                    self.OnGround = True
+                    if self.view != "right":
+                        self.view = "right"
+                        self.flip()
+                    if self.velx < 13:
+                        self.velx += 0.6
+                    self.rect = self.rect.move(self.velx, 0)
+        else:
             if right:
-                self.state = False
-                self.OnGround = True
-                if self.view != "right":
-                    self.view = "right"
-                    self.flip()
-                if self.velx < 13:
-                    self.velx += 0.6
-                self.rect = self.rect.move(self.velx, 0)
+                if self.vely < 12:
+                    self.vely += 0.6
+                self.rect = self.rect.move(0, self.vely)
+            if left:
+                if self.vely < 12:
+                    self.vely += 0.6
+                self.rect = self.rect.move(0, -self.vely)
 
     def stop(self, left, right):
-        if not self.isColided_left:
-            if left:
-                self.OnGround = True
-                if self.velx > 0:
-                    self.velx -= 2
-                else:
-                    self.velx = 0
-                self.rect = self.rect.move(-self.velx, 0)
+        if not self.onLadder:
+            if not self.isColided_left:
+                if left:
+                    self.OnGround = True
+                    if self.velx > 0:
+                        self.velx -= 2
+                    else:
+                        self.velx = 0
+                    self.rect = self.rect.move(-self.velx, 0)
 
-        if not self.isColided_right:
+            if not self.isColided_right:
+                if right:
+                    self.OnGround = True
+                    if self.velx > 0:
+                        self.velx -= 2
+                    else:
+                        self.velx = 0
+                    self.rect = self.rect.move(self.velx, 0)
+        else:
             if right:
-                self.OnGround = True
-                if self.velx > 0:
-                    self.velx -= 2
+                if self.vely > 0:
+                    self.vely -= 2
                 else:
-                    self.velx = 0
-                self.rect = self.rect.move(self.velx, 0)
+                    self.vely = 0
+                self.rect = self.rect.move(0, self.vely)
+            if left:
+                if self.vely > 0:
+                    self.vely -= 2
+                else:
+                    self.vely = 0
+                self.rect = self.rect.move(0, -self.vely)
 
     def flip(self):
         self.image = pygame.transform.flip(self.image, True, False)
@@ -146,3 +170,11 @@ class Player(pygame.sprite.Sprite):
                 self.rect.y += 1
                 self.OnGround = False
 
+    def ladder_climb(self, collide_group):
+        elem = [el for el in collide_group][0]
+
+        hits = pygame.sprite.collide_mask(self, elem)
+        if not hits:
+            return None
+        else:
+            self.onLadder = True

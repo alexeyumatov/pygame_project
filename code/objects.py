@@ -10,3 +10,5 @@ class Ladder(pygame.sprite.Sprite):
         self.image = Ladder.image
         self.rect = self.image.get_rect()
         self.mask = pygame.mask.from_surface(self.image)
+        self.rect.x = 500
+        self.rect.y = 400
