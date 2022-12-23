@@ -77,6 +77,7 @@ ceiling = Location('Locations/location_ceiling.png', all_sprites)
 paused = False
 
 
+
 def draw_window():
     screen.fill((100, 100, 100))
     all_sprites.draw(screen)
@@ -125,6 +126,9 @@ if __name__ == '__main__':
         while running:
 
             for event in pygame.event.get():
+                if event.type == hero.Dash_Reloading:
+                    hero.isDash = False
+
                 if event.type == pygame.QUIT:
                     running = False
                     pass
@@ -137,35 +141,32 @@ if __name__ == '__main__':
                         pause()
                         pass
                     if event.key == pygame.K_LEFT or event.key == pygame.K_a:
-                        if right:
-                            pass
-                        else:
-                            left_stop, right_stop = False, False
-                            right, left = False, True
+                        left_stop, right_stop = False, False
+                        left = True
+                        right = False
                     if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
-                        if left:
-                            pass
-                        else:
-                            left_stop, right_stop = False, False
-                            right, left = True, False
+                        left_stop, right_stop = False, False
+                        right = True
+                        left = False
                     if event.key == pygame.K_UP or event.key == pygame.K_SPACE:
                         up = True
                         pass
                     if event.key == pygame.K_e:
                         pass
-                    if event.key == pygame.K_SPACE:
+                    if event.key == pygame.K_LSHIFT:
                         hero.isDash = True
 
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_LEFT or event.key == pygame.K_a:
-                        left_stop, right_stop = True, False
-                        left, right = False, False
-                        hero.velx = 15
+                        if right is False:
+                            left_stop = True
+                            hero.velx = 15
+                        left = False
                     if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
-                        left_stop, right_stop = False, True
-                        left, right = False, False
-                        hero.velx = 15
-
+                        if left is False:
+                            right_stop = True
+                            hero.velx = 15
+                        right = False
             if not onGround:
                 onGround = hero.fall(floor_group)
             else:

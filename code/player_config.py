@@ -40,6 +40,10 @@ class Player(pygame.sprite.Sprite):
         self.state = True
         self.OnGround = False
         self.isDash = False
+        self.isDashing = False
+        self.Dash_distance = 15
+        self.Dash_coldown = 50
+        self.Dash_Reloading = pygame.USEREVENT + 1
 
     # collide_group
     def update(self, collide_group):
@@ -148,8 +152,24 @@ class Player(pygame.sprite.Sprite):
                 self.OnGround = False
 
     def dash(self, left, right):
-        if self.isDash is True:
-            print("dash")
-            self.isDash = False
+        if self.isDash is True and self.isColided_left is False \
+                and self.isColided_right is False and self.isDashing is False:
+            self.isDashing = True
+            if self.isDashing:
+                if left:
+                    self.OnGround = False
+                    self.rect.x -= self.Dash_distance
+                    self.isDashing = False
+                    # self.reload()
+                if right:
+                    self.OnGround = False
+                    self.rect.x += self.Dash_distance
+                    self.isDashing = False
+    #                 self.reload()
+    #
+    # def reload(self):
+    #     pygame.time.set_timer(self.Dash_Reloading, self.Dash_coldown * 1000)
+
+
 
 
