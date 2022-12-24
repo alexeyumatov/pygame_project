@@ -154,9 +154,10 @@ if __name__ == '__main__':
                             right, left = True, False
 
                     if event.key == pygame.K_e and not hero.onLadder:
-                        hero.ladder_climb(ladder_group)
+                        hero.ladder_climb(ladder_group, floor_group)
                     elif event.key == pygame.K_e and hero.onLadder:
                         hero.onLadder = False
+                        up, down, up_stop, down_stop = False, False, False, False
 
                     if hero.onLadder:
                         if event.key == pygame.K_w:
@@ -194,8 +195,10 @@ if __name__ == '__main__':
             else:
                 hero.collider(left_walls, right_walls)
                 if hero.onLadder:
-                    hero.acceleration(down, up)
-                    hero.stop(down_stop, up_stop)
+                    if not hero.ladder_climb(ladder_group, floor_group):
+                        up, down, up_stop, down_stop = False, False, False, False
+                    hero.acceleration(up, down)
+                    hero.stop(up_stop, down_stop)
                 else:
                     hero.update(floor_group)
                     hero.acceleration(left, right)
