@@ -3,6 +3,7 @@ from load_image import load_image
 from groups import all_sprites
 
 g = 10
+clock = pygame.time.Clock()
 
 
 class Player(pygame.sprite.Sprite):
@@ -43,12 +44,13 @@ class Player(pygame.sprite.Sprite):
     # collide_group
     def update(self, collide_group):
         elem = [el for el in collide_group][0]
+        hits = pygame.sprite.collide_mask(self, elem)
 
-        if not pygame.sprite.collide_mask(self, elem):
+        if not hits:
             self.OnGround = False
 
         if self.OnGround is False:
-            self.fall(collide_group)
+            self.gravitation(collide_group)
 
         # СТОИМ НА МЕСТЕ И ОТДЫХАЕМ
         if self.state and self.OnGround is True:
@@ -64,9 +66,8 @@ class Player(pygame.sprite.Sprite):
 
             self.animCount += 1
 
-        # ХОДИМ
         if not self.state:
-            self.rect.y -= 15
+            # self.rect.y -= 12
 
             if self.animCount + 1 >= 60:
                 self.animCount = 0
@@ -78,69 +79,69 @@ class Player(pygame.sprite.Sprite):
 
             self.animCount += 1
 
-    def acceleration(self, left, right):
+    def acceleration(self, *parameters):
         self.state = True
-        if not self.onLadder:
-            if not self.isColided_left:
-                if left:
-                    self.state = False
-                    self.OnGround = True
-                    if self.view != "left":
-                        self.view = "left"
-                        self.flip()
-                    if self.velx < 13:
-                        self.velx += 0.6
-                    self.rect = self.rect.move(-self.velx, 0)
+        if not self.isColided_left:
+            if parameters[0]:
+                self.state = False
+                self.OnGround = True
+                if self.view != "left":
+                    self.view = "left"
+                    self.flip()
+                if self.velx < 13:
+                    self.velx += 0.6
+                self.rect = self.rect.move(-self.velx, 0)
 
-            if not self.isColided_right:
-                if right:
-                    self.state = False
-                    self.OnGround = True
-                    if self.view != "right":
-                        self.view = "right"
-                        self.flip()
-                    if self.velx < 13:
-                        self.velx += 0.6
-                    self.rect = self.rect.move(self.velx, 0)
-        else:
+        if not self.isColided_right:
+            if parameters[1]:
+                self.state = False
+                self.OnGround = True
+                if self.view != "right":
+                    self.view = "right"
+                    self.flip()
+                if self.velx < 13:
+                    self.velx += 0.6
+                self.rect = self.rect.move(self.velx, 0)
+
+        if self.onLadder:
             if not self.ladder_collide:
-                if right:
+                if parameters[3]:
                     if self.vely < 12:
                         self.vely += 0.6
                     self.rect = self.rect.move(0, self.vely)
-            if left:
+            if parameters[2]:
                 if self.vely < 12:
                     self.vely += 0.6
                 self.rect = self.rect.move(0, -self.vely)
 
-    def stop(self, left, right):
-        if not self.onLadder:
-            if not self.isColided_left:
-                if left:
-                    self.OnGround = True
-                    if self.velx > 0:
-                        self.velx -= 2
-                    else:
-                        self.velx = 0
-                    self.rect = self.rect.move(-self.velx, 0)
+    def stop(self, *parameters):
+        if not self.isColided_left:
+            if parameters[0]:
+                self.OnGround = True
+                if self.velx > 0:
+                    self.velx -= 2
+                else:
+                    self.velx = 0
+                self.rect = self.rect.move(-self.velx, 0)
 
-            if not self.isColided_right:
-                if right:
-                    self.OnGround = True
-                    if self.velx > 0:
-                        self.velx -= 2
-                    else:
-                        self.velx = 0
-                    self.rect = self.rect.move(self.velx, 0)
-        else:
+        if not self.isColided_right:
+            if parameters[1]:
+                self.OnGround = True
+                if self.velx > 0:
+                    self.velx -= 2
+                else:
+                    self.velx = 0
+                self.rect = self.rect.move(self.velx, 0)
+
+        if self.onLadder:
             if not self.ladder_collide:
-                if right:
+                if parameters[3]:
                     if self.vely > 0:
                         self.vely -= 2
                     else:
                         self.vely = 0
                     self.rect = self.rect.move(0, self.vely)
-            if left:
+            if parameters[2]:
                 if self.vely > 0:
                     self.vely -= 2
                 else:
@@ -162,7 +163,7 @@ class Player(pygame.sprite.Sprite):
         else:
             self.isColided_right = False
 
-    def fall(self, collide_group):
+    def gravitation(self, collide_group):
         elem = [el for el in collide_group][0]
         while self.OnGround is False:
             if pygame.sprite.collide_mask(self, elem):

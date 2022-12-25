@@ -191,14 +191,14 @@ if __name__ == '__main__':
                             up_stop, down_stop = False, True
 
             if not onGround:
-                onGround = hero.fall(floor_group)
+                onGround = hero.gravitation(floor_group)
             else:
                 hero.collider(left_walls, right_walls)
                 if hero.onLadder:
                     if not hero.ladder_climb(ladder_group, floor_group):
                         up, down, up_stop, down_stop = False, False, False, False
-                    hero.acceleration(up, down)
-                    hero.stop(up_stop, down_stop)
+                    hero.acceleration(left, right, up, down)
+                    hero.stop(left_stop, right_stop, up_stop, down_stop)
                 else:
                     hero.update(floor_group)
                     hero.acceleration(left, right)
