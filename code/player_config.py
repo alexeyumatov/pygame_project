@@ -3,7 +3,6 @@ from load_image import load_image
 from groups import all_sprites
 
 g = 10
-clock = pygame.time.Clock()
 
 
 class Player(pygame.sprite.Sprite):
@@ -35,7 +34,7 @@ class Player(pygame.sprite.Sprite):
         self.rect.x, self.rect.y = 100, 150
         self.velx, self.vely = 0, 0
 
-        self.isColided_left, self.isColided_right, self.ladder_collide = False, False, False
+        self.isColided_left, self.isColided_right = False, False
         self.animCount = 0
         self.view = "right"
         self.state = True
@@ -46,11 +45,13 @@ class Player(pygame.sprite.Sprite):
         elem = [el for el in collide_group][0]
         hits = pygame.sprite.collide_mask(self, elem)
 
-        if not hits:
-            self.OnGround = False
+        if self.vely > 0:
+            if hits:
+                self.rect.y = elem.rect.top
+                self.vely = 0
 
-        if self.OnGround is False:
-            self.gravitation(collide_group)
+        if not hits:
+            self.rect.y += g
 
         # СТОИМ НА МЕСТЕ И ОТДЫХАЕМ
         if self.state and self.OnGround is True:
@@ -66,8 +67,8 @@ class Player(pygame.sprite.Sprite):
 
             self.animCount += 1
 
+        # ХОДИМ
         if not self.state:
-            # self.rect.y -= 12
 
             if self.animCount + 1 >= 60:
                 self.animCount = 0
@@ -162,16 +163,6 @@ class Player(pygame.sprite.Sprite):
             self.isColided_right = True
         else:
             self.isColided_right = False
-
-    def gravitation(self, collide_group):
-        elem = [el for el in collide_group][0]
-        while self.OnGround is False:
-            if pygame.sprite.collide_mask(self, elem):
-                self.OnGround = True
-                return True
-            if not pygame.sprite.collide_mask(self, elem):
-                self.rect.y += 1
-                self.OnGround = False
 
     def ladder_climb(self, collide_group, floor_collide):
         ladders, floor = [el for el in collide_group][0], [el for el in floor_collide][0]

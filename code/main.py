@@ -190,19 +190,16 @@ if __name__ == '__main__':
                             up, down = False, False
                             up_stop, down_stop = False, True
 
-            if not onGround:
-                onGround = hero.gravitation(floor_group)
+            hero.collider(left_walls, right_walls)
+            if hero.onLadder:
+                if not hero.ladder_climb(ladder_group, floor_group):
+                    up, down, up_stop, down_stop = False, False, False, False
+                hero.acceleration(left, right, up, down)
+                hero.stop(left_stop, right_stop, up_stop, down_stop)
             else:
-                hero.collider(left_walls, right_walls)
-                if hero.onLadder:
-                    if not hero.ladder_climb(ladder_group, floor_group):
-                        up, down, up_stop, down_stop = False, False, False, False
-                    hero.acceleration(left, right, up, down)
-                    hero.stop(left_stop, right_stop, up_stop, down_stop)
-                else:
-                    hero.update(floor_group)
-                    hero.acceleration(left, right)
-                    hero.stop(left_stop, right_stop)
+                hero.update(floor_group)
+                hero.acceleration(left, right)
+                hero.stop(left_stop, right_stop)
 
             draw_window()
 
