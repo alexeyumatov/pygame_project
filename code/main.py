@@ -100,7 +100,7 @@ def pause():
 
         screen.blit(pause_background, (0, 0))
         pygame.display.update()
-        clock.tick(5)
+        clock.tick(30)
 
 
 if __name__ == '__main__':
@@ -134,7 +134,7 @@ if __name__ == '__main__':
                     pass
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    pass
+                    hero.shoot()
 
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
