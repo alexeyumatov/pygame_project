@@ -1,6 +1,6 @@
 import pygame
 from load_image import load_image
-from groups import all_sprites
+from groups import all_sprites, bullets, right_walls
 from objects import Bullet
 
 g = 10
@@ -40,7 +40,9 @@ class Player(pygame.sprite.Sprite):
         self.view = "right"
         self.state = True
         self.OnGround, self.onLadder = False, False
+
         self.bullet_onScreen = False
+        self.bulletList = []
 
     # collide_group
     def update(self, collide_group):
@@ -83,7 +85,12 @@ class Player(pygame.sprite.Sprite):
             self.animCount += 1
 
         if self.bullet_onScreen:
-            self.bullet.update()
+            for el in self.bulletList:
+                state = el.update(right_walls)
+                if state == 'killed':
+                    self.bulletList.remove(el)
+            if len(bullets) == 0:
+                self.bullet_onScreen = False
 
     def acceleration(self, *parameters):
         self.state = True
@@ -155,7 +162,10 @@ class Player(pygame.sprite.Sprite):
                 self.rect = self.rect.move(0, -self.vely)
 
     def shoot(self):
-        self.bullet = Bullet(self.rect.centerx, self.rect.top // 2, all_sprites)
+        if len(self.bulletList) > 3:
+            return None
+        bullet = Bullet(self.rect.centerx, self.rect.top * 1.5, all_sprites, bullets)
+        self.bulletList.append(bullet)
         self.bullet_onScreen = True
 
     def flip(self):

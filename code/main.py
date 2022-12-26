@@ -106,7 +106,7 @@ def pause():
 if __name__ == '__main__':
     pygame.init()
     size = width, height = 1920, 1080
-    screen = pygame.display.set_mode(size)
+    screen = pygame.display.set_mode(size, pygame.SCALED | pygame.FULLSCREEN)
     clock = pygame.time.Clock()
     FPS = 60
     left, right = False, False
