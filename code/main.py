@@ -10,7 +10,6 @@ from load_image import load_image
 mp_hands = mp.solutions.hands
 mp_drawing = mp.solutions.drawing_utils
 
-
 # def hands_detection():
 #     cords = {}
 #     last_status, hand_type = "", ""
@@ -117,6 +116,7 @@ if __name__ == '__main__':
 
     ladder = Ladder(450, 550, all_sprites, ladder_group)
     ladder2 = Ladder(450, 550 - 256, all_sprites, ladder_group)
+    ladder3 = Ladder(450, 550 - 256 - 256, all_sprites, ladder_group)
     hero = Player()
 
     # cap = cv2.VideoCapture(0)

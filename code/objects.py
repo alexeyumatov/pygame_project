@@ -38,4 +38,5 @@ class Bullet(pygame.sprite.Sprite):
         if pygame.sprite.collide_mask(self, elem):
             self.kill()
             return 'killed'
-        return 'alive'
+        else:
+            return 'alive'
