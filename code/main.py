@@ -115,7 +115,8 @@ if __name__ == '__main__':
     up_stop, down_stop = False, False
     onGround = False
 
-    ladder = Ladder(all_sprites, ladder_group)
+    ladder = Ladder(450, 550, all_sprites, ladder_group)
+    ladder2 = Ladder(450, 550 - 256, all_sprites, ladder_group)
     hero = Player()
 
     # cap = cv2.VideoCapture(0)
@@ -196,10 +197,12 @@ if __name__ == '__main__':
                     up, down, up_stop, down_stop = False, False, False, False
                 hero.acceleration(left, right, up, down)
                 hero.stop(left_stop, right_stop, up_stop, down_stop)
+                hero.bullet_update()
             else:
                 hero.update(floor_group)
                 hero.acceleration(left, right)
                 hero.stop(left_stop, right_stop)
+                hero.bullet_update()
 
             draw_window()
 

@@ -3,15 +3,15 @@ from load_image import load_image
 
 
 class Ladder(pygame.sprite.Sprite):
-    image = load_image('objects/Ladder.png', -1)
+    image = load_image('objects/Vertical_Ladder.png')
 
-    def __init__(self, *groups):
+    def __init__(self, x, y, *groups):
         super(Ladder, self).__init__(*groups)
         self.image = Ladder.image
         self.rect = self.image.get_rect()
         self.mask = pygame.mask.from_surface(self.image)
-        self.rect.x = 500
-        self.rect.y = 400
+        self.rect.x = x
+        self.rect.y = y
 
 
 class Bullet(pygame.sprite.Sprite):

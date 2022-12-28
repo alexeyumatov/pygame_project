@@ -49,11 +49,6 @@ class Player(pygame.sprite.Sprite):
         elem = [el for el in collide_group][0]
         hits = pygame.sprite.collide_mask(self, elem)
 
-        if self.vely > 0:
-            if hits:
-                self.rect.y = elem.rect.top
-                self.vely = 0
-
         if not hits:
             self.rect.y += g
 
@@ -83,14 +78,6 @@ class Player(pygame.sprite.Sprite):
                 self.flip()
 
             self.animCount += 1
-
-        if self.bullet_onScreen:
-            for el in self.bulletList:
-                state = el.update(right_walls)
-                if state == 'killed':
-                    self.bulletList.remove(el)
-            if len(bullets) == 0:
-                self.bullet_onScreen = False
 
     def acceleration(self, *parameters):
         self.state = True
@@ -168,6 +155,15 @@ class Player(pygame.sprite.Sprite):
         self.bulletList.append(bullet)
         self.bullet_onScreen = True
 
+    def bullet_update(self):
+        if self.bullet_onScreen:
+            for el in self.bulletList:
+                state = el.update(right_walls)
+                if state == 'killed':
+                    self.bulletList.remove(el)
+            if len(bullets) == 0:
+                self.bullet_onScreen = False
+
     def flip(self):
         self.image = pygame.transform.flip(self.image, True, False)
 
@@ -184,16 +180,21 @@ class Player(pygame.sprite.Sprite):
             self.isColided_right = False
 
     def ladder_climb(self, collide_group, floor_collide):
-        ladders, floor = [el for el in collide_group][0], [el for el in floor_collide][0]
+        floor = [el for el in floor_collide][0]
 
-        hits = pygame.sprite.collide_mask(self, ladders)
+        hits = pygame.sprite.spritecollide(self, collide_group, False)
         if not hits:
             self.onLadder = False
             return False
         else:
-            self.onLadder = True
-            if pygame.sprite.collide_mask(self, floor):
-                self.ladder_collide = True
-            else:
-                self.ladder_collide = False
-            return True
+            for el in collide_group:
+                hits_mask = pygame.sprite.collide_mask(self, el)
+                if hits_mask:
+                    self.onLadder = True
+                    if pygame.sprite.collide_mask(self, floor):
+                        self.ladder_collide = True
+                    else:
+                        self.ladder_collide = False
+                    return True
+                else:
+                    self.onLadder = False
