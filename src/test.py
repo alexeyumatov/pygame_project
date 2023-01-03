@@ -5,8 +5,8 @@ from groups import all_sprites
 
 if __name__ == '__main__':
     pygame.init()
-    level_x, level_y = draw_location(load_level('levels/level1.txt'))
-    size = width, height = 1920, 1080
+    level_x, level_y = draw_location(load_level('levels/level_maker.txt'))
+    size = width, height = 3840, 2432
     screen = pygame.display.set_mode(size, pygame.SCALED | pygame.FULLSCREEN)
     clock = pygame.time.Clock()
 

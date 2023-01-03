@@ -14,7 +14,10 @@ tile_images = {
     'bottom_right_corner': load_image('Locations/Bottom_Right_Corner.png'),
     'top_left_corner': load_image('Locations/Top_Left_Corner.png'),
     'top_right_corner': load_image('Locations/Top_Right_Corner.png'),
-    'dark_block': load_image('Locations/Dark_Block.png')
+    'dark_block': load_image('Locations/Dark_Block.png'),
+    'platform': load_image('Locations/Platform.png'),
+    'left_platform_corner': load_image('Locations/Left_Platform_Corner.png'),
+    'right_platform_corner': load_image('Locations/Right_Platform_Corner.png'),
 }
 
 tile_width = tile_height = 128
@@ -46,7 +49,12 @@ def draw_location(level_map):
                 Tile('right_wall', x, y, all_sprites, tiles_group)
             elif level_map[y][x] == '|':
                 Tile('ladder', x, y, all_sprites, ladder_group)
-
+            elif level_map[y][x] == ':':
+                Tile('left_platform_corner', x, y, all_sprites, tiles_group)
+            elif level_map[y][x] == ';':
+                Tile('right_platform_corner', x, y, all_sprites, tiles_group)
+            elif level_map[y][x] == '\"':
+                Tile('platform', x, y, all_sprites, tiles_group)
     return x, y
 
 

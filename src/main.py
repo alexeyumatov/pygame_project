@@ -98,7 +98,7 @@ if __name__ == '__main__':
     screen = pygame.display.set_mode(size, pygame.SCALED | pygame.FULLSCREEN)
     clock = pygame.time.Clock()
     FPS = 60
-    level_x, level_y = draw_location(load_level('levels/level1.txt'))
+    level_x, level_y = draw_location(load_level('levels/level_maker.txt'))
     left, right = False, False
     left_stop, right_stop = False, False
     up, down = False, False
