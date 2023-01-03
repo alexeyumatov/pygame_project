@@ -1,11 +1,10 @@
 import pygame
-from player_config import all_sprites, Player
+from player_config import Player
 import mediapipe as mp
 import cv2
-from Location import Location
-from objects import Ladder
-from groups import all_sprites, floor_group, left_walls, right_walls, ladder_group
-from load_image import load_image
+from groups import all_sprites
+from load_funcs import load_image, load_level
+from Location import draw_location
 
 mp_hands = mp.solutions.hands
 mp_drawing = mp.solutions.drawing_utils
@@ -67,15 +66,6 @@ mp_drawing = mp.solutions.drawing_utils
 
 pause_background = load_image('pause/Pause.png')
 
-floor = Location('Locations/location_floor.png', all_sprites, floor_group)
-left_wall = Location('Locations/location_left_wall.png', all_sprites,
-                     left_walls)
-right_wall = Location('Locations/location_right_wall.png', all_sprites,
-                      right_walls)
-ceiling = Location('Locations/location_ceiling.png', all_sprites)
-
-paused = False
-
 
 def draw_window():
     screen.fill((100, 100, 100))
@@ -108,15 +98,12 @@ if __name__ == '__main__':
     screen = pygame.display.set_mode(size, pygame.SCALED | pygame.FULLSCREEN)
     clock = pygame.time.Clock()
     FPS = 60
+    level_x, level_y = draw_location(load_level('levels/level1.txt'))
     left, right = False, False
     left_stop, right_stop = False, False
     up, down = False, False
     up_stop, down_stop = False, False
     onGround = False
-
-    ladder = Ladder(450, 550, all_sprites, ladder_group)
-    ladder2 = Ladder(450, 550 - 256, all_sprites, ladder_group)
-    ladder3 = Ladder(450, 550 - 256 - 256, all_sprites, ladder_group)
     hero = Player()
 
     # cap = cv2.VideoCapture(0)
@@ -142,17 +129,13 @@ if __name__ == '__main__':
                         pause()
                         pass
                     if event.key == pygame.K_LEFT or event.key == pygame.K_a:
-                        if right:
-                            pass
-                        else:
-                            left_stop, right_stop = False, False
-                            right, left = False, True
+                        left_stop, right_stop = False, False
+                        left = True
+                        right = False
                     if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
-                        if left:
-                            pass
-                        else:
-                            left_stop, right_stop = False, False
-                            right, left = True, False
+                        left_stop, right_stop = False, False
+                        right = True
+                        left = False
 
                     if event.key == pygame.K_e and not hero.onLadder:
                         hero.ladder_climb(ladder_group, floor_group)
@@ -176,13 +159,15 @@ if __name__ == '__main__':
 
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_LEFT or event.key == pygame.K_a:
-                        left_stop, right_stop = True, False
-                        left, right = False, False
-                        hero.velx = 15
+                        if right is False:
+                            left_stop = True
+                            hero.velx = 15
+                        left = False
                     if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
-                        left_stop, right_stop = False, True
-                        left, right = False, False
-                        hero.velx = 15
+                        if left is False:
+                            right_stop = True
+                            hero.velx = 15
+                        right = False
                     if hero.onLadder:
                         if event.key == pygame.K_w:
                             up, down = False, False

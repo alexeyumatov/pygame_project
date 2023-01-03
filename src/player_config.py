@@ -1,6 +1,6 @@
 import pygame
-from load_image import load_image
-from groups import all_sprites, bullets, right_walls
+from load_funcs import load_image
+from groups import all_sprites, bullets
 from objects import Bullet
 
 g = 10

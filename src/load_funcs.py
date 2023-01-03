@@ -22,3 +22,10 @@ def load_image(name, colorkey=None):
     else:
         image = image.convert_alpha()
     return image
+
+
+def load_level(name):
+    fullname = 'data/' + name
+    with open(fullname, 'r', encoding='utf-8') as level:
+        level_map = [line.rstrip('\n') for line in level]
+    return level_map
