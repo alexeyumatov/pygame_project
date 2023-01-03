@@ -1,6 +1,6 @@
 import pygame
 from load_funcs import load_image
-from groups import all_sprites, tiles_group, ladder_group
+from groups import all_sprites, tiles_group, ladder_group, walls_group, floor_group
 
 
 tile_images = {
@@ -28,7 +28,7 @@ def draw_location(level_map):
     for y in range(len(level_map)):
         for x in range(len(level_map[y])):
             if level_map[y][x] == '.':
-                Tile('background', x, y, all_sprites, tiles_group)
+                Tile('background', x, y, all_sprites)
             elif level_map[y][x] == '+':
                 Tile('dark_block', x, y, all_sprites, tiles_group)
             elif level_map[y][x] == '{':
@@ -38,23 +38,23 @@ def draw_location(level_map):
             elif level_map[y][x] == '}':
                 Tile('top_right_corner', x, y, all_sprites, tiles_group)
             elif level_map[y][x] == '$':
-                Tile('left_wall', x, y, all_sprites, tiles_group)
+                Tile('left_wall', x, y, all_sprites, tiles_group, walls_group)
             elif level_map[y][x] == '[':
                 Tile('bottom_left_corner', x, y, all_sprites, tiles_group)
             elif level_map[y][x] == '_':
-                Tile('floor', x, y, all_sprites, tiles_group)
+                Tile('floor', x, y, all_sprites, tiles_group, floor_group)
             elif level_map[y][x] == ']':
                 Tile('bottom_right_corner', x, y, all_sprites, tiles_group)
             elif level_map[y][x] == '/':
-                Tile('right_wall', x, y, all_sprites, tiles_group)
+                Tile('right_wall', x, y, all_sprites, tiles_group, walls_group)
             elif level_map[y][x] == '|':
                 Tile('ladder', x, y, all_sprites, ladder_group)
             elif level_map[y][x] == ':':
-                Tile('left_platform_corner', x, y, all_sprites, tiles_group)
+                Tile('left_platform_corner', x, y, all_sprites, tiles_group, floor_group)
             elif level_map[y][x] == ';':
-                Tile('right_platform_corner', x, y, all_sprites, tiles_group)
+                Tile('right_platform_corner', x, y, all_sprites, tiles_group, floor_group)
             elif level_map[y][x] == '\"':
-                Tile('platform', x, y, all_sprites, tiles_group)
+                Tile('platform', x, y, all_sprites, tiles_group, floor_group)
     return x, y
 
 

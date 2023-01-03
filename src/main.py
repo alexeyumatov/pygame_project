@@ -2,7 +2,7 @@ import pygame
 from player_config import Player
 import mediapipe as mp
 import cv2
-from groups import all_sprites
+from groups import all_sprites, tiles_group, walls_group, ladder_group, floor_group
 from load_funcs import load_image, load_level
 from Location import draw_location
 
@@ -98,7 +98,7 @@ if __name__ == '__main__':
     screen = pygame.display.set_mode(size, pygame.SCALED | pygame.FULLSCREEN)
     clock = pygame.time.Clock()
     FPS = 60
-    level_x, level_y = draw_location(load_level('levels/level_maker.txt'))
+    level_x, level_y = draw_location(load_level('levels/test_level.txt'))
     left, right = False, False
     left_stop, right_stop = False, False
     up, down = False, False
@@ -176,7 +176,7 @@ if __name__ == '__main__':
                             up, down = False, False
                             up_stop, down_stop = False, True
 
-            hero.collider(left_walls, right_walls)
+            hero.collider(walls_group)
             if hero.onLadder:
                 if not hero.ladder_climb(ladder_group, floor_group):
                     up, down, up_stop, down_stop = False, False, False, False
