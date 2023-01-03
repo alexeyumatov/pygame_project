@@ -3,7 +3,7 @@ from load_funcs import load_image
 
 
 class Bullet(pygame.sprite.Sprite):
-    bullet_images = [load_image(f'objects/bullet/{i}.png') for i in range(1, 31)]
+    bullet_images = [load_image(f'objects/bullet/{i}.png') for i in range(1, 7)]
 
     def __init__(self, x, y, *groups):
         super().__init__(*groups)
