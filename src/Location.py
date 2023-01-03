@@ -18,6 +18,10 @@ tile_images = {
     'platform': load_image('Locations/Platform.png'),
     'left_platform_corner': load_image('Locations/Left_Platform_Corner.png'),
     'right_platform_corner': load_image('Locations/Right_Platform_Corner.png'),
+    'top_left_exit': load_image('Locations/1_PART.png'),
+    'top_right_exit': load_image('Locations/2_PART.png'),
+    'main_left_exit': load_image('Locations/3_PART.png'),
+    'main_right_exit': load_image('Locations/4_PART.png')
 }
 
 tile_width = tile_height = 128
@@ -55,6 +59,14 @@ def draw_location(level_map):
                 Tile('right_platform_corner', x, y, all_sprites, tiles_group)
             elif level_map[y][x] == '\"':
                 Tile('platform', x, y, all_sprites, tiles_group)
+            elif level_map[y][x] == '#':
+                Tile('top_left_exit', x, y, all_sprites, tiles_group)
+            elif level_map[y][x] == '№':
+                Tile('top_right_exit', x, y, all_sprites, tiles_group)
+            elif level_map[y][x] == '!':
+                Tile('main_left_exit', x, y, all_sprites, tiles_group)
+            elif level_map[y][x] == '&':
+                Tile('main_right_exit', x, y, all_sprites, tiles_group)
     return x, y
 
 
