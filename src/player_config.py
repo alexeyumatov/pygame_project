@@ -1,6 +1,6 @@
 import pygame
-from load_funcs import load_image
-from groups import all_sprites, bullets
+from functions import load_image, flip
+from groups import all_sprites, bullets, walls_group
 from objects import Bullet
 
 g = 10
@@ -62,7 +62,7 @@ class Player(pygame.sprite.Sprite):
             self.image = Player.idle_images[self.animCount // 7]
 
             if self.view == "left":
-                self.flip()
+                self.image = flip(self.image)
 
             self.animCount += 1
 
@@ -75,7 +75,7 @@ class Player(pygame.sprite.Sprite):
             self.image = Player.walk_images[self.animCount // 6]
 
             if self.view == "left":
-                self.flip()
+                self.image = flip(self.image)
 
             self.animCount += 1
 
@@ -87,7 +87,7 @@ class Player(pygame.sprite.Sprite):
                 self.OnGround = True
                 if self.view != "left":
                     self.view = "left"
-                    self.flip()
+                    self.image = flip(self.image)
                 if self.velx < 13:
                     self.velx += 0.6
                 self.rect = self.rect.move(-self.velx, 0)
@@ -98,7 +98,7 @@ class Player(pygame.sprite.Sprite):
                 self.OnGround = True
                 if self.view != "right":
                     self.view = "right"
-                    self.flip()
+                    self.image = flip(self.image)
                 if self.velx < 13:
                     self.velx += 0.6
                 self.rect = self.rect.move(self.velx, 0)
@@ -151,21 +151,23 @@ class Player(pygame.sprite.Sprite):
     def shoot(self):
         if len(self.bulletList) > 3:
             return None
-        bullet = Bullet(self.rect.centerx, self.rect.top * 1.5, all_sprites, bullets)
+        ratio = 0
+        if self.view == "left":
+            ratio = 0.8
+        else:
+            ratio = 1.1
+        bullet = Bullet(self.rect.centerx * ratio, self.rect.top * 1.2, self.view, walls_group, all_sprites, bullets)
         self.bulletList.append(bullet)
         self.bullet_onScreen = True
 
     def bullet_update(self):
         if self.bullet_onScreen:
             for el in self.bulletList:
-                state = el.update(right_walls)
+                state = el.update()
                 if state == 'killed':
                     self.bulletList.remove(el)
             if len(bullets) == 0:
                 self.bullet_onScreen = False
-
-    def flip(self):
-        self.image = pygame.transform.flip(self.image, True, False)
 
     def collider(self, collide_group):
         if pygame.sprite.spritecollideany(self, collide_group):

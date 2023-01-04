@@ -2,9 +2,11 @@ import pygame
 from player_config import Player
 import mediapipe as mp
 import cv2
+from pygame.math import Vector2
 from groups import all_sprites, tiles_group, walls_group, ladder_group, floor_group
-from load_funcs import load_image, load_level
-from Location import draw_location
+from functions import load_image, load_level
+from location import draw_location
+from camera import Camera, camera_func
 
 mp_hands = mp.solutions.hands
 mp_drawing = mp.solutions.drawing_utils
@@ -68,8 +70,9 @@ pause_background = load_image('pause/Pause.png')
 
 
 def draw_window():
-    screen.fill((100, 100, 100))
-    all_sprites.draw(screen)
+    screen.fill((0, 30, 38))
+    for el in all_sprites:
+        screen.blit(el.image, camera.apply(el))
     pygame.display.flip()
 
 
@@ -98,12 +101,14 @@ if __name__ == '__main__':
     screen = pygame.display.set_mode(size, pygame.SCALED | pygame.FULLSCREEN)
     clock = pygame.time.Clock()
     FPS = 60
-    level_x, level_y = draw_location(load_level('levels/test_level.txt'))
+    level_x, level_y = draw_location(load_level('levels/level_1.txt'))
     left, right = False, False
     left_stop, right_stop = False, False
     up, down = False, False
     up_stop, down_stop = False, False
     onGround = False
+
+    camera = Camera(camera_func, 3840, 3072)
     hero = Player()
 
     # cap = cv2.VideoCapture(0)
@@ -189,6 +194,7 @@ if __name__ == '__main__':
                 hero.stop(left_stop, right_stop)
                 hero.bullet_update()
 
+            camera.update(hero)
             draw_window()
 
             clock.tick(FPS)

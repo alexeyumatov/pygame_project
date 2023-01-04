@@ -29,3 +29,8 @@ def load_level(name):
     with open(fullname, 'r', encoding='utf-8') as level:
         level_map = [line.rstrip('\n') for line in level]
     return level_map
+
+
+def flip(image):
+    image = pygame.transform.flip(image, True, False)
+    return image
