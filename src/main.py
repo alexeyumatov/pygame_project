@@ -9,17 +9,12 @@ from location import draw_location
 from camera import Camera, camera_func
 from menu import start_screen
 from level_choose import level_choose
+from config import *
 
 mp_hands = mp.solutions.hands
 mp_drawing = mp.solutions.drawing_utils
-font = pygame.font.Font('data/Font/Main_Font.ttf', 35)
-button_x_size = 350
-button_y_size = 70
-button_collides = []
-button_texts = []
-white_color = (255, 255, 255)
-light_color = (170, 170, 170)
-dark_color = (0, 0, 0)
+
+button_x_size, button_y_size, font = buttons(350, 70, 35)
 
 
 # def hands_detection():
@@ -81,7 +76,7 @@ pause_background = load_image('pause/Pause.png')
 
 
 def draw_window():
-    screen.fill((0, 30, 38))
+    screen.fill(level_color)
     for el in all_sprites:
         screen.blit(el.image, camera.apply(el))
     pygame.display.flip()
@@ -89,6 +84,9 @@ def draw_window():
 
 def pause():
     paused = True
+    button_collides = []
+    button_texts = []
+    width, height = resolution
 
     for i in range(3):
         button_x_pos = width / 2
@@ -100,13 +98,13 @@ def pause():
         text = ''
 
         if i == 0:
-            button_text = font.render('Resume', True, dark_color)
-            text = 'play'
+            button_text = font.render('Resume', True, black)
+            text = 'resume'
         elif i == 1:
-            button_text = font.render('Options', True, dark_color)
+            button_text = font.render('Options', True, black)
             text = 'options'
         elif i == 2:
-            button_text = font.render('Exit', True, dark_color)
+            button_text = font.render('Exit', True, black)
             text = 'exit'
 
         button_texts.append(text)
@@ -128,27 +126,23 @@ def pause():
 
                     if collide:
                         text = button_texts[button_collides.index(elem)]
-                        if text == "play":
+                        if text == "resume":
                             paused = False
                         elif text == "options":
                             pass
                         elif text == "exit":
                             pygame.quit()
                             quit()
-
-        # pygame.display.update()
+        clock.tick(MENU_FPS)
 
 
 if __name__ == '__main__':
     pygame.init()
-    size = width, height = 1920, 1080
-    screen = pygame.display.set_mode(size, pygame.SCALED | pygame.FULLSCREEN)
-    clock = pygame.time.Clock()
-    FPS = 60
+    screen = pygame.display.set_mode(resolution, pygame.SCALED | pygame.FULLSCREEN)
     doing = start_screen()
     if doing:
         level = level_choose()
-    level_x, level_y = draw_location(load_level(f'levels/level_1.txt'))
+    level_x, level_y = draw_location(load_level(f'levels/level_{level}.txt'))
     left, right = False, False
     left_stop, right_stop = False, False
     up, down = False, False
