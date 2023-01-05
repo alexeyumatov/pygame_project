@@ -4,10 +4,10 @@ import mediapipe as mp
 import cv2
 from pygame.math import Vector2
 from groups import all_sprites, tiles_group, walls_group, ladder_group, floor_group
-from functions import load_image, load_level
+from functions import load_image, load_level, display_buttons
 from location import draw_location
 from camera import Camera, camera_func
-from Menu import start_screen
+from menu import start_screen
 from level_choose import level_choose
 
 mp_hands = mp.solutions.hands
@@ -87,14 +87,6 @@ def draw_window():
     pygame.display.flip()
 
 
-def display_buttons(button_rect, button_text, button_x_pos, button_y_pos, text):
-    pygame.draw.rect(screen, white_color, button_rect)
-    if text == "options":
-        screen.blit(button_text, (button_x_pos - 75, button_y_pos - 25))
-    else:
-        screen.blit(button_text, (button_x_pos - 40, button_y_pos - 25))
-
-
 def pause():
     paused = True
 
@@ -108,7 +100,7 @@ def pause():
         text = ''
 
         if i == 0:
-            button_text = font.render('Play', True, dark_color)
+            button_text = font.render('Resume', True, dark_color)
             text = 'play'
         elif i == 1:
             button_text = font.render('Options', True, dark_color)
@@ -122,16 +114,15 @@ def pause():
 
         display_buttons(button_rect, button_text, button_x_pos, button_y_pos,
                         text)
-        pygame.display.update()
+    pygame.display.update()
 
     while paused:
-        mouse_pos = pygame.mouse.get_pos()
-
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
 
             if event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = pygame.mouse.get_pos()
                 for elem in button_collides:
                     collide = elem.collidepoint(mouse_pos)
 
@@ -145,7 +136,7 @@ def pause():
                             pygame.quit()
                             quit()
 
-        pygame.display.update()
+        # pygame.display.update()
 
 
 if __name__ == '__main__':
@@ -157,7 +148,7 @@ if __name__ == '__main__':
     doing = start_screen()
     if doing:
         level = level_choose()
-    level_x, level_y = draw_location(load_level(f'levels/level_{level}.txt'))
+    level_x, level_y = draw_location(load_level(f'levels/level_1.txt'))
     left, right = False, False
     left_stop, right_stop = False, False
     up, down = False, False

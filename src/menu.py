@@ -1,5 +1,5 @@
 import pygame
-import sys
+from functions import display_buttons
 
 pygame.init()
 # SCREEN CONST
@@ -11,7 +11,6 @@ screen.fill((0, 30, 38))
 
 
 # COLORS
-white_color = (255, 255, 255)
 light_color = (170, 170, 170)
 dark_color = (0, 0, 0)
 
@@ -21,14 +20,6 @@ button_x_size = 350
 button_y_size = 70
 button_collides = []
 button_texts = []
-
-
-def display_buttons(button_rect, button_text, button_x_pos, button_y_pos, text):
-    pygame.draw.rect(screen, white_color, button_rect)
-    if text == "options":
-        screen.blit(button_text, (button_x_pos - 75, button_y_pos - 25))
-    else:
-        screen.blit(button_text, (button_x_pos - 40, button_y_pos - 25))
 
 
 def start_screen():

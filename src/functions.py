@@ -34,3 +34,11 @@ def load_level(name):
 def flip(image):
     image = pygame.transform.flip(image, True, False)
     return image
+
+
+def display_buttons(button_rect, button_text, button_x_pos, button_y_pos, text):
+    pygame.draw.rect(screen, (255, 255, 255), button_rect)
+    if text == "options":
+        screen.blit(button_text, (button_x_pos - 75, button_y_pos - 25))
+    else:
+        screen.blit(button_text, (button_x_pos - 40, button_y_pos - 25))
