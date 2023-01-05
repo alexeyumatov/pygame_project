@@ -51,6 +51,11 @@ class Player(pygame.sprite.Sprite):
 
         if not hits:
             self.rect.y += g
+        else:
+            if self.rect.collidepoint(self.rect.topleft):
+                pass
+            else:
+                self.rect.y += g
 
         # СТОИМ НА МЕСТЕ И ОТДЫХАЕМ
         if self.state and self.OnGround is True:

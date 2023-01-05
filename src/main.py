@@ -11,6 +11,7 @@ from camera import Camera, camera_func
 mp_hands = mp.solutions.hands
 mp_drawing = mp.solutions.drawing_utils
 
+
 # def hands_detection():
 #     cords = {}
 #     last_status, hand_type = "", ""
@@ -112,7 +113,6 @@ if __name__ == '__main__':
     hero = Player()
 
     # cap = cv2.VideoCapture(0)
-
     # w, h = 640, 480
     # cap.set(3, w)
     # cap.set(4, h)
@@ -120,7 +120,6 @@ if __name__ == '__main__':
     running = True
     with mp_hands.Hands(max_num_hands=1, min_tracking_confidence=0.9, min_detection_confidence=0.9) as hands:
         while running:
-
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
