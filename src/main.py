@@ -7,6 +7,8 @@ from groups import all_sprites, tiles_group, walls_group, ladder_group, floor_gr
 from functions import load_image, load_level
 from location import draw_location
 from camera import Camera, camera_func
+from Menu import start_screen
+from level_choose import level_choose
 
 mp_hands = mp.solutions.hands
 mp_drawing = mp.solutions.drawing_utils
@@ -152,7 +154,10 @@ if __name__ == '__main__':
     screen = pygame.display.set_mode(size, pygame.SCALED | pygame.FULLSCREEN)
     clock = pygame.time.Clock()
     FPS = 60
-    level_x, level_y = draw_location(load_level('levels/level_1.txt'))
+    doing = start_screen()
+    if doing:
+        level = level_choose()
+    level_x, level_y = draw_location(load_level(f'levels/level_{level}.txt'))
     left, right = False, False
     left_stop, right_stop = False, False
     up, down = False, False

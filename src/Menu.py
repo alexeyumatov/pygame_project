@@ -7,6 +7,7 @@ res = (1920, 1080)
 screen = pygame.display.set_mode(res)
 width = screen.get_width()
 height = screen.get_height()
+screen.fill((0, 30, 38))
 
 
 # COLORS
@@ -31,6 +32,7 @@ def display_buttons(button_rect, button_text, button_x_pos, button_y_pos, text):
 
 
 def start_screen():
+    screen.fill((0, 30, 38))
     for i in range(3):
         button_x_pos = width / 2
         button_y_pos = width / (5 - i) + 50
