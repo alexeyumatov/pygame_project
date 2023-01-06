@@ -1,6 +1,6 @@
 import pygame
 from functions import load_image, flip
-from groups import all_sprites, bullets, walls_group
+from groups import all_sprites, bullets, walls_group, tiles_group
 from objects import Bullet
 
 g = 10
@@ -34,46 +34,65 @@ class Player(pygame.sprite.Sprite):
 
         self.rect.x, self.rect.y = 150, 260
         self.velx, self.vely = 0, 0
+        self.width, self.height = self.image.get_width(), self.image.get_height()
 
         self.isColided_left, self.isColided_right = False, False
         self.animCount = 0
-        self.view = "right"
-        self.state = True
+        self.view, self.isFlipped = "right", False
+        self.state = False
         self.OnGround, self.onLadder = False, False
+        self.inJump = False
 
         self.bullet_onScreen = False
         self.bulletList = []
 
     # collide_group
-    def update(self, collide_group):
-        elem = [el for el in collide_group][0]
-        hits = pygame.sprite.spritecollideany(self, collide_group)
+    def update(self):
+        vl_x, vl_y = 0, 0
+        ladder_vl_y = 0  # дополнительные переменные скорости
 
-        if not hits:
-            self.rect.y += g
-        else:
-            if self.rect.collidepoint(self.rect.topleft):
-                pass
-            else:
-                self.rect.y += g
-
-        # СТОИМ НА МЕСТЕ И ОТДЫХАЕМ
-        if self.state and self.OnGround is True:
-            self.vely = 0
-
+        # движение игрока
+        key = pygame.key.get_pressed()
+        if key[pygame.K_SPACE] and self.inJump is False:
+            vl_y = -30
+            self.inJump = True
+        if key[pygame.K_SPACE] is False:
+            self.inJump = False
+        if key[pygame.K_a]:
+            vl_x -= 12
+            self.animCount += 1
+            self.view = 'left'
+            self.state = True
+        if key[pygame.K_d]:
+            vl_x += 12
+            self.animCount += 1
+            self.view = 'right'
+            self.isFlipped, self.state = False, True
+        if not key[pygame.K_d] and not key[pygame.K_a] and not self.onLadder:
+            self.state = False
             if self.animCount + 1 >= 42:
                 self.animCount = 0
 
             self.image = Player.idle_images[self.animCount // 7]
-
-            if self.view == "left":
+            if self.view == 'left':
                 self.image = flip(self.image)
 
             self.animCount += 1
 
-        # ХОДИМ
-        if not self.state:
+        if self.onLadder:
+            self.image = Player.idle_images[0]
+            if self.view == 'left':
+                self.image = flip(self.image)
+            if key[pygame.K_w]:
+                ladder_vl_y -= 10
+            if key[pygame.K_s] and not self.ladder_collide:
+                ladder_vl_y += 10
 
+        if self.view == "left" and not self.isFlipped:
+            self.image = flip(self.image)
+            self.isFlipped = True
+
+        if self.state and not self.onLadder:
             if self.animCount + 1 >= 60:
                 self.animCount = 0
 
@@ -84,74 +103,31 @@ class Player(pygame.sprite.Sprite):
 
             self.animCount += 1
 
-    def acceleration(self, *parameters):
-        self.state = True
-        if not self.isColided_left:
-            if parameters[0]:
-                self.state = False
-                self.OnGround = True
-                if self.view != "left":
-                    self.view = "left"
-                    self.image = flip(self.image)
-                if self.velx < 13:
-                    self.velx += 0.6
-                self.rect = self.rect.move(-self.velx, 0)
+        # гравитация
+        if not self.onLadder:
+            self.vely += 1
+            if self.vely > 10:
+                self.vely = 10
+            vl_y += self.vely
+        else:
+            self.rect.y += ladder_vl_y
 
-        if not self.isColided_right:
-            if parameters[1]:
-                self.state = False
-                self.OnGround = True
-                if self.view != "right":
-                    self.view = "right"
-                    self.image = flip(self.image)
-                if self.velx < 13:
-                    self.velx += 0.6
-                self.rect = self.rect.move(self.velx, 0)
-
-        if self.onLadder:
-            if not self.ladder_collide:
-                if parameters[3]:
-                    if self.vely < 12:
-                        self.vely += 0.6
-                    self.rect = self.rect.move(0, self.vely)
-            if parameters[2]:
-                if self.vely < 12:
-                    self.vely += 0.6
-                self.rect = self.rect.move(0, -self.vely)
-
-    def stop(self, *parameters):
-        if not self.isColided_left:
-            if parameters[0]:
-                self.OnGround = True
-                if self.velx > 0:
-                    self.velx -= 2
-                else:
-                    self.velx = 0
-                self.rect = self.rect.move(-self.velx, 0)
-
-        if not self.isColided_right:
-            if parameters[1]:
-                self.OnGround = True
-                if self.velx > 0:
-                    self.velx -= 2
-                else:
-                    self.velx = 0
-                self.rect = self.rect.move(self.velx, 0)
-
-        if self.onLadder:
-            if not self.ladder_collide:
-                if parameters[3]:
-                    if self.vely > 0:
-                        self.vely -= 2
-                    else:
-                        self.vely = 0
-                    self.rect = self.rect.move(0, self.vely)
-            if parameters[2]:
-                if self.vely > 0:
-                    self.vely -= 2
-                else:
+        # проверка коллайдов
+        for tile in tiles_group:
+            if tile.rect.colliderect(self.rect.x + vl_x, self.rect.y, self.width, self.height):
+                vl_x = 0
+            if tile.rect.colliderect(self.rect.x, self.rect.y + vl_y, self.width, self.height):
+                if self.vely < 0:
+                    vl_y = tile.rect.bottom - self.rect.top
                     self.vely = 0
-                self.rect = self.rect.move(0, -self.vely)
+                elif self.vely >= 0:
+                    vl_y = tile.rect.top - self.rect.bottom
+                    self.vely = 0
+
+        self.rect.x += vl_x
+        if vl_y < -50:
+            vl_y = 10
+        self.rect.y += vl_y
 
     def shoot(self):
         if len(self.bulletList) > 3:

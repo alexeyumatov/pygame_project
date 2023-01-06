@@ -172,66 +172,16 @@ if __name__ == '__main__':
                     if event.key == pygame.K_ESCAPE:
                         pause()
                         pass
-                    if event.key == pygame.K_LEFT or event.key == pygame.K_a:
-                        left_stop, right_stop = False, False
-                        left = True
-                        right = False
-                    if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
-                        left_stop, right_stop = False, False
-                        right = True
-                        left = False
-
                     if event.key == pygame.K_e and not hero.onLadder:
                         hero.ladder_climb(ladder_group, floor_group)
                     elif event.key == pygame.K_e and hero.onLadder:
                         hero.onLadder = False
-                        up, down, up_stop, down_stop = False, False, False, False
 
-                    if hero.onLadder:
-                        if event.key == pygame.K_w:
-                            if down:
-                                pass
-                            else:
-                                up, down = True, False
-                                up_stop, down_stop = False, False
-                        elif event.key == pygame.K_s:
-                            if up:
-                                pass
-                            else:
-                                up, down = False, True
-                                up_stop, down_stop = False, False
+            hero.update()
+            hero.bullet_update()
 
-                if event.type == pygame.KEYUP:
-                    if event.key == pygame.K_LEFT or event.key == pygame.K_a:
-                        if right is False:
-                            left_stop = True
-                            hero.velx = 15
-                        left = False
-                    if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
-                        if left is False:
-                            right_stop = True
-                            hero.velx = 15
-                        right = False
-                    if hero.onLadder:
-                        if event.key == pygame.K_w:
-                            up, down = False, False
-                            up_stop, down_stop = True, False
-                        elif event.key == pygame.K_s:
-                            up, down = False, False
-                            up_stop, down_stop = False, True
-
-            hero.collider(walls_group)
             if hero.onLadder:
-                if not hero.ladder_climb(ladder_group, floor_group):
-                    up, down, up_stop, down_stop = False, False, False, False
-                hero.acceleration(left, right, up, down)
-                hero.stop(left_stop, right_stop, up_stop, down_stop)
-                hero.bullet_update()
-            else:
-                hero.update(floor_group)
-                hero.acceleration(left, right)
-                hero.stop(left_stop, right_stop)
-                hero.bullet_update()
+                hero.ladder_climb(ladder_group, floor_group)
 
             camera.update(hero)
             draw_window()
