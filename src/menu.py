@@ -1,28 +1,21 @@
 import pygame
 from functions import display_buttons
+from config import *
 
 pygame.init()
-# SCREEN CONST
-res = (1920, 1080)
-screen = pygame.display.set_mode(res)
+
+screen = pygame.display.set_mode(resolution)
 width = screen.get_width()
 height = screen.get_height()
-screen.fill((0, 30, 38))
 
+screen.fill(level_color)
 
-# COLORS
-light_color = (170, 170, 170)
-dark_color = (0, 0, 0)
-
-# BUTTON CONST
-font = pygame.font.Font('data/Font/Main_Font.ttf', 35)
-button_x_size = 350
-button_y_size = 70
-button_collides = []
-button_texts = []
+button_x_size, button_y_size, font = buttons(350, 70, 35)
 
 
 def start_screen():
+    button_collides = []
+    button_texts = []
     screen.fill((0, 30, 38))
     for i in range(3):
         button_x_pos = width / 2
@@ -34,13 +27,13 @@ def start_screen():
         text = ''
 
         if i == 0:
-            button_text = font.render('Play', True, dark_color)
+            button_text = font.render('Play', True, black)
             text = 'play'
         elif i == 1:
-            button_text = font.render('Options', True, dark_color)
+            button_text = font.render('Options', True, black)
             text = 'options'
         elif i == 2:
-            button_text = font.render('Exit', True, dark_color)
+            button_text = font.render('Exit', True, black)
             text = 'exit'
 
         button_texts.append(text)
@@ -48,17 +41,16 @@ def start_screen():
 
         display_buttons(button_rect, button_text, button_x_pos, button_y_pos,
                         text)
-        pygame.display.update()
+    pygame.display.update()
 
     while True:
-        mouse_pos = pygame.mouse.get_pos()
         for event in pygame.event.get():
 
             if event.type == pygame.QUIT:
                 pygame.quit()
 
             if event.type == pygame.MOUSEBUTTONDOWN:
-
+                mouse_pos = pygame.mouse.get_pos()
                 for elem in button_collides:
                     collide = elem.collidepoint(mouse_pos)
 
@@ -73,4 +65,4 @@ def start_screen():
                         elif text == "exit":
                             quit()
 
-        pygame.display.update()
+        clock.tick(MENU_FPS)
