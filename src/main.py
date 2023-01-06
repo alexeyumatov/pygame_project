@@ -9,6 +9,7 @@ from location import draw_location
 from camera import Camera, camera_func
 from menu import start_screen
 from level_choose import level_choose
+from options import options_screen
 
 mp_hands = mp.solutions.hands
 mp_drawing = mp.solutions.drawing_utils
@@ -101,7 +102,7 @@ def pause():
 
         if i == 0:
             button_text = font.render('Resume', True, dark_color)
-            text = 'play'
+            text = 'resume'
         elif i == 1:
             button_text = font.render('Options', True, dark_color)
             text = 'options'
@@ -131,10 +132,14 @@ def pause():
                         if text == "play":
                             paused = False
                         elif text == "options":
-                            pass
+                            return text
                         elif text == "exit":
                             pygame.quit()
                             quit()
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    paused = False
 
         # pygame.display.update()
 
@@ -146,8 +151,14 @@ if __name__ == '__main__':
     clock = pygame.time.Clock()
     FPS = 60
     doing = start_screen()
-    if doing:
+    while doing != "play":
+        if doing == "options":
+            settings = options_screen()
+            if settings == 'back':
+                doing = start_screen()
+    if doing == "play":
         level = level_choose()
+
     level_x, level_y = draw_location(load_level(f'levels/level_1.txt'))
     left, right = False, False
     left_stop, right_stop = False, False
@@ -176,8 +187,9 @@ if __name__ == '__main__':
 
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
-                        pause()
-                        pass
+                        doing = pause()
+                        if doing == "options":
+                            settings = options_screen()
                     if event.key == pygame.K_LEFT or event.key == pygame.K_a:
                         left_stop, right_stop = False, False
                         left = True
@@ -189,6 +201,7 @@ if __name__ == '__main__':
 
                     if event.key == pygame.K_e and not hero.onLadder:
                         hero.ladder_climb(ladder_group, floor_group)
+
                     elif event.key == pygame.K_e and hero.onLadder:
                         hero.onLadder = False
                         up, down, up_stop, down_stop = False, False, False, False

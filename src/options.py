@@ -22,11 +22,10 @@ button_collides = []
 button_texts = []
 
 
-def start_screen():
-    screen.fill((0, 30, 38))
-    for i in range(3):
-        button_x_pos = width / 2
-        button_y_pos = width / (5 - i) + 50
+def selection_buttons():
+    for i in range(4):
+        button_x_pos = width / 7 + i * 450
+        button_y_pos = width / 10 - 100
         button_rect = pygame.Rect(button_x_pos,
                                   button_y_pos, 0, 0).inflate(button_x_size,
                                                               button_y_size)
@@ -34,14 +33,19 @@ def start_screen():
         text = ''
 
         if i == 0:
-            button_text = font.render('Play', True, dark_color)
-            text = 'play'
+            button_text = font.render('Back', True, dark_color)
+            text = 'back'
+
         elif i == 1:
-            button_text = font.render('Options', True, dark_color)
-            text = 'options'
+            button_text = font.render('Screen', True, dark_color)
+            text = 'screen'
         elif i == 2:
-            button_text = font.render('Exit', True, dark_color)
-            text = 'exit'
+            button_text = font.render('Camera', True, dark_color)
+            text = 'camera'
+
+        elif i == 3:
+            button_text = font.render('Key Bindings', True, dark_color)
+            text = 'key bindings'
 
         button_texts.append(text)
         button_collides.append(button_rect)
@@ -50,6 +54,10 @@ def start_screen():
                         text)
         pygame.display.update()
 
+
+def options_screen():
+    screen.fill((0, 30, 38))
+    selection_buttons()
     while True:
         mouse_pos = pygame.mouse.get_pos()
         for event in pygame.event.get():
@@ -64,13 +72,13 @@ def start_screen():
 
                     if collide:
                         text = button_texts[button_collides.index(elem)]
-                        if text == "play":
-                            screen.fill((0, 30, 38))
+                        if text == 'back':
                             return text
-                        elif text == "options":
-                            screen.fill((0, 30, 38))
-                            return text
-                        elif text == "exit":
-                            quit()
+                        elif text == 'screen':
+                            pass
+                        elif text == 'camera':
+                            pass
+                        elif text == 'key bindings':
+                            pass
 
         pygame.display.update()
