@@ -83,12 +83,10 @@ def draw_window():
     pygame.display.flip()
 
 
-def pause():
-    paused = True
+def draw_pause():
     button_collides = []
     button_texts = []
     width, height = resolution
-
     for i in range(3):
         button_x_pos = width / 2
         button_y_pos = width / (5 - i) + 50
@@ -114,7 +112,12 @@ def pause():
         display_buttons(button_rect, button_text, button_x_pos, button_y_pos,
                         text)
     pygame.display.update()
+    return button_collides, button_texts
 
+
+def pause():
+    paused = True
+    button_collides, button_texts = draw_pause()
     while paused:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -129,8 +132,14 @@ def pause():
                         text = button_texts[button_collides.index(elem)]
                         if text == "resume":
                             paused = False
+                            return text
                         elif text == "options":
-                            pass
+                            settings = options_screen()
+                            if settings == 'back':
+                                paused = False
+                                draw_window()
+                                pause()
+
                         elif text == "exit":
                             pygame.quit()
                             quit()
@@ -183,8 +192,6 @@ if __name__ == '__main__':
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         doing = pause()
-                        if doing == "options":
-                            settings = options_screen()
                     if event.key == pygame.K_LEFT or event.key == pygame.K_a:
                         left_stop, right_stop = False, False
                         left = True
