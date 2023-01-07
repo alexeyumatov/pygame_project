@@ -1,14 +1,15 @@
 import pygame
 import sys
+from config import clock, FPS
 
 
-def scrollY(screenSurf, bg, offsetY):
-    width, height = bg.get_size()
-    screenSurf.blit(bg, (0, offsetY))
-    if offsetY < 0:
-        screenSurf.blit(bg, (0, height + offsetY), (0, 0, width, -offsetY))
-    else:
-        screenSurf.blit(bg, (0, 0), (0, height - offsetY, width, offsetY))
+def scrollY(screenSurf, bg, bg_rect, offsetY):
+    bg_rect[1] += offsetY
+    if abs(bg_rect[1]) >= 2100:
+        bg_rect[1] = -2100
+    if bg_rect[1] > 0:
+        bg_rect[1] = 0
+    screenSurf.blit(bg, bg_rect)
 
 
 def main():
@@ -17,7 +18,12 @@ def main():
 
     screen = pygame.display.set_mode((1920, 1080), pygame.FULLSCREEN | pygame.SCALED)
 
-    bg = pygame.image.load("level_choose.png").convert_alpha()
+    bg = pygame.image.load("level_choose.png")
+    bg_rect = bg.get_rect()
+    bg_rect[1] = -2100
+    screen.blit(bg, bg_rect)
+
+    pygame.display.update()
 
     while True:  # <-- the pyGame loop
 
@@ -30,16 +36,15 @@ def main():
 
         # handle scrolling
         if pressed[pygame.K_UP]:
-            scrollY(screen, bg, 2)
+            scrollY(screen, bg, bg_rect, 10)
         elif pressed[pygame.K_DOWN]:
-            scrollY(screen, bg, -2)
-        elif pressed[pygame.K_LEFT]:
-            screen.scroll(2, 0)
-        elif pressed[pygame.K_RIGHT]:
-            screen.scroll(-2, 0)
+            scrollY(screen, bg, bg_rect, -10)
+        elif pressed[pygame.K_q]:
+            break
 
         # updates what the window displays
         pygame.display.update()
+        clock.tick(FPS)
 
     pygame.quit()
     sys.exit(0)

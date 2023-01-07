@@ -33,10 +33,9 @@ class Player(pygame.sprite.Sprite):
         self.mask = pygame.mask.from_surface(self.image)
 
         self.rect.x, self.rect.y = 150, 260
-        self.velx, self.vely = 0, 0
+        self.velx, self.vely, self.ladder_vely = 0, 0, 0
         self.width, self.height = self.image.get_width(), self.image.get_height()
 
-        self.isColided_left, self.isColided_right = False, False
         self.animCount = 0
         self.view, self.isFlipped = "right", False
         self.state = False
@@ -53,40 +52,84 @@ class Player(pygame.sprite.Sprite):
 
         # движение игрока
         key = pygame.key.get_pressed()
-        if key[pygame.K_SPACE] and self.inJump is False:
-            vl_y = -30
+        if key[pygame.K_SPACE] and not self.inJump and not self.onLadder and self.OnGround:
+            vl_y = -2
             self.inJump = True
-        if key[pygame.K_SPACE] is False:
-            self.inJump = False
+            self.OnGround = False
+
         if key[pygame.K_a]:
-            vl_x -= 12
+            if self.velx > 0:
+                self.velx = 0
+            self.velx -= 0.5
+            if self.velx <= -14:
+                self.velx = -14
+            vl_x += self.velx
             self.animCount += 1
             self.view = 'left'
             self.state = True
+
         if key[pygame.K_d]:
-            vl_x += 12
+            if self.velx < 0:
+                self.velx = 0
+            self.velx += 0.5
+            if self.velx >= 14:
+                self.velx = 14
+            vl_x += self.velx
             self.animCount += 1
             self.view = 'right'
             self.isFlipped, self.state = False, True
-        if not key[pygame.K_d] and not key[pygame.K_a] and not self.onLadder:
+
+        if not key[pygame.K_d] and not key[pygame.K_a]:
             self.state = False
-            if self.animCount + 1 >= 42:
-                self.animCount = 0
+            if self.velx > 0:
+                self.velx -= 2
+                if self.velx <= 0:
+                    self.velx = 0
+            elif self.velx < 0:
+                self.velx += 2
+                if self.velx >= 0:
+                    self.velx = 0
+            vl_x += self.velx
 
-            self.image = Player.idle_images[self.animCount // 7]
-            if self.view == 'left':
-                self.image = flip(self.image)
+            # idle анимация
+            if not self.onLadder:
+                if self.animCount + 1 >= 42:
+                    self.animCount = 0
 
-            self.animCount += 1
+                self.image = Player.idle_images[self.animCount // 7]
+                if self.view == 'left':
+                    self.image = flip(self.image)
 
+                self.animCount += 1
+
+        # лестница
         if self.onLadder:
             self.image = Player.idle_images[0]
             if self.view == 'left':
                 self.image = flip(self.image)
+
             if key[pygame.K_w]:
-                ladder_vl_y -= 10
+                self.ladder_vely -= 0.5
+                if self.ladder_vely <= -10:
+                    self.ladder_vely = -10
+                ladder_vl_y += self.ladder_vely
+
             if key[pygame.K_s] and not self.ladder_collide:
-                ladder_vl_y += 10
+                self.ladder_vely += 0.5
+                if self.ladder_vely >= 10:
+                    self.ladder_vely = 10
+                ladder_vl_y += self.ladder_vely
+            if not key[pygame.K_s] and not key[pygame.K_w]:
+                if self.ladder_vely > 0:
+                    self.ladder_vely -= 2
+                    if self.ladder_vely <= 0:
+                        self.ladder_vely = 0
+                    ladder_vl_y += self.ladder_vely
+                if self.ladder_vely < 0:
+                    self.ladder_vely += 2
+                    if self.ladder_vely >= 0:
+                        self.ladder_vely = 0
+                    ladder_vl_y += self.ladder_vely
 
         if self.view == "left" and not self.isFlipped:
             self.image = flip(self.image)
@@ -104,7 +147,7 @@ class Player(pygame.sprite.Sprite):
             self.animCount += 1
 
         # гравитация
-        if not self.onLadder:
+        if not self.onLadder and not self.inJump:
             self.vely += 1
             if self.vely > 10:
                 self.vely = 10
@@ -116,16 +159,26 @@ class Player(pygame.sprite.Sprite):
         for tile in tiles_group:
             if tile.rect.colliderect(self.rect.x + vl_x, self.rect.y, self.width, self.height):
                 vl_x = 0
+                self.velx = 0
             if tile.rect.colliderect(self.rect.x, self.rect.y + vl_y, self.width, self.height):
                 if self.vely < 0:
                     vl_y = tile.rect.bottom - self.rect.top
                     self.vely = 0
                 elif self.vely >= 0:
                     vl_y = tile.rect.top - self.rect.bottom
+                    self.OnGround = True
                     self.vely = 0
+                    self.inJump = False
+
+        if self.inJump:
+            self.vely -= 2
+            if self.vely <= -8:
+                self.vely = -8
+                self.inJump = False
+            vl_y += self.vely
 
         self.rect.x += vl_x
-        if vl_y < -50:
+        if vl_y < -150:
             vl_y = 10
         self.rect.y += vl_y
 
@@ -149,17 +202,6 @@ class Player(pygame.sprite.Sprite):
                     self.bulletList.remove(el)
             if len(bullets) == 0:
                 self.bullet_onScreen = False
-
-    def collider(self, collide_group):
-        if pygame.sprite.spritecollideany(self, collide_group):
-            self.rect.x += 15
-            if pygame.sprite.spritecollideany(self, collide_group):
-                self.isColided_right = True
-            else:
-                self.isColided_left = True
-            self.rect.x -= 15
-        else:
-            self.isColided_left, self.isColided_right = False, False
 
     def ladder_climb(self, collide_group, floor_group):
         hits = pygame.sprite.spritecollide(self, collide_group, False)
