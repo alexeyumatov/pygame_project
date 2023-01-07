@@ -38,7 +38,10 @@ def flip(image):
 
 def display_buttons(button_rect, button_text, button_x_pos, button_y_pos, text):
     pygame.draw.rect(screen, (255, 255, 255), button_rect)
-    if text == "options":
+    if len(text) <= 5:
+        screen.blit(button_text, (button_x_pos - 40, button_y_pos - 25))
+    elif len(text) <= 8:
         screen.blit(button_text, (button_x_pos - 75, button_y_pos - 25))
     else:
-        screen.blit(button_text, (button_x_pos - 40, button_y_pos - 25))
+        screen.blit(button_text, (button_x_pos - 130, button_y_pos - 25))
+

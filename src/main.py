@@ -9,6 +9,7 @@ from location import draw_location
 from camera import Camera, camera_func
 from menu import start_screen
 from level_choose import level_choose
+from options import options_screen
 from config import *
 
 mp_hands = mp.solutions.hands
@@ -82,8 +83,7 @@ def draw_window():
     pygame.display.flip()
 
 
-def pause():
-    paused = True
+def draw_pause():
     button_collides = []
     button_texts = []
     width, height = resolution
@@ -113,7 +113,12 @@ def pause():
         display_buttons(button_rect, button_text, button_x_pos, button_y_pos,
                         text)
     pygame.display.update()
+    return button_collides, button_texts
 
+
+def pause():
+    paused = True
+    button_collides, button_texts = draw_pause()
     while paused:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -128,11 +133,23 @@ def pause():
                         text = button_texts[button_collides.index(elem)]
                         if text == "resume":
                             paused = False
+                            return text
                         elif text == "options":
-                            pass
+
+                            settings = options_screen()
+                            if settings == 'back':
+                                draw_window()
+                                draw_pause()
+
                         elif text == "exit":
                             pygame.quit()
                             quit()
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    paused = False
+
+        # pygame.display.update()
         clock.tick(MENU_FPS)
 
 
@@ -140,7 +157,12 @@ if __name__ == '__main__':
     pygame.init()
     screen = pygame.display.set_mode(resolution, pygame.SCALED | pygame.FULLSCREEN)
     doing = start_screen()
-    if doing:
+    while doing != "play":
+        if doing == "options":
+            settings = options_screen()
+            if settings == 'back':
+                doing = start_screen()
+    if doing == "play":
         level = level_choose()
     level_x, level_y = draw_location(load_level(f'levels/level_{level}.txt'))
     left, right = False, False

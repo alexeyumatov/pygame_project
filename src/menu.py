@@ -60,7 +60,8 @@ def start_screen():
                             screen.fill((0, 30, 38))
                             return text
                         elif text == "options":
-                            pass
+                            screen.fill((0, 30, 38))
+                            return text
                         elif text == "exit":
                             quit()
 
