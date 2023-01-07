@@ -54,11 +54,11 @@ def draw_location(level_map):
             elif level_map[y][x] == '|':
                 Tile('ladder', x, y, all_sprites, ladder_group)
             elif level_map[y][x] == ':':
-                Tile('left_platform_corner', x, y, all_sprites, tiles_group, floor_group)
+                Tile('left_platform_corner', x, y, all_sprites, tiles_group, walls_group)
             elif level_map[y][x] == ';':
-                Tile('right_platform_corner', x, y, all_sprites, tiles_group, floor_group)
+                Tile('right_platform_corner', x, y, all_sprites, tiles_group, walls_group)
             elif level_map[y][x] == '\"':
-                Tile('platform', x, y, all_sprites, tiles_group, floor_group)
+                Tile('platform', x, y, all_sprites, tiles_group, floor_group, walls_group)
             elif level_map[y][x] == '#':
                 Tile('top_left_exit', x, y, all_sprites, tiles_group)
             elif level_map[y][x] == '№':

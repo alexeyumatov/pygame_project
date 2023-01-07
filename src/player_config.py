@@ -32,7 +32,7 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.mask = pygame.mask.from_surface(self.image)
 
-        self.rect.x, self.rect.y = 150, 260
+        self.rect.x, self.rect.y = 150, 1080
         self.velx, self.vely, self.ladder_vely = 0, 0, 0
         self.width, self.height = self.image.get_width(), self.image.get_height()
 
@@ -185,12 +185,11 @@ class Player(pygame.sprite.Sprite):
     def shoot(self):
         if len(self.bulletList) > 3:
             return None
-        ratio = 0
         if self.view == "left":
-            ratio = 0.8
+            ratio = -30
         else:
-            ratio = 1.1
-        bullet = Bullet(self.rect.centerx * ratio, self.rect.top * 1.2, self.view, walls_group, all_sprites, bullets)
+            ratio = 150
+        bullet = Bullet(self.rect.x + ratio, self.rect.y + 145, self.view, walls_group, all_sprites, bullets)
         self.bulletList.append(bullet)
         self.bullet_onScreen = True
 
