@@ -41,7 +41,6 @@ def level_choose():
                     collide = elem.collidepoint(mouse_pos)
                     if collide:
                         level_number = button_texts[button_collides.index(elem)]
-                        print(level_number)
                         return level_number
 
         clock.tick(MENU_FPS)

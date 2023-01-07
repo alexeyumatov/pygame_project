@@ -134,11 +134,11 @@ def pause():
                             paused = False
                             return text
                         elif text == "options":
+
                             settings = options_screen()
                             if settings == 'back':
-                                paused = False
                                 draw_window()
-                                pause()
+                                draw_pause()
 
                         elif text == "exit":
                             pygame.quit()
