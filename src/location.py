@@ -1,6 +1,7 @@
 import pygame
 from functions import load_image
-from groups import all_sprites, tiles_group, ladder_group, walls_group, floor_group
+from groups import *
+from objects import Coin
 
 
 tile_images = {
@@ -67,6 +68,8 @@ def draw_location(level_map):
                 Tile('main_left_exit', x, y, all_sprites, tiles_group)
             elif level_map[y][x] == '&':
                 Tile('main_right_exit', x, y, all_sprites, tiles_group)
+            elif level_map[y][x] == '^':
+                Coin(x, y, all_sprites, coins_group)
     return x, y
 
 

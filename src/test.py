@@ -18,7 +18,7 @@ def main():
 
     screen = pygame.display.set_mode((1920, 1080), pygame.FULLSCREEN | pygame.SCALED)
 
-    bg = pygame.image.load("level_choose.png")
+    bg = pygame.image.load("data/Menu/level_choose/level_choose.png")
     bg_rect = bg.get_rect()
     bg_rect[1] = -2100
     screen.blit(bg, bg_rect)
@@ -36,9 +36,9 @@ def main():
 
         # handle scrolling
         if pressed[pygame.K_UP]:
-            scrollY(screen, bg, bg_rect, 10)
+            scrollY(screen, bg, bg_rect, 30)
         elif pressed[pygame.K_DOWN]:
-            scrollY(screen, bg, bg_rect, -10)
+            scrollY(screen, bg, bg_rect, -30)
         elif pressed[pygame.K_q]:
             break
 

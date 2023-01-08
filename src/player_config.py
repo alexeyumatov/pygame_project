@@ -1,7 +1,8 @@
 import pygame
 from functions import load_image, flip
-from groups import all_sprites, bullets, walls_group, tiles_group
+from groups import all_sprites, bullets, walls_group, tiles_group, coins_group
 from objects import Bullet
+from src.db_functions import coins_update
 
 g = 10
 
@@ -169,6 +170,9 @@ class Player(pygame.sprite.Sprite):
                     self.OnGround = True
                     self.vely = 0
                     self.inJump = False
+
+        if pygame.sprite.spritecollide(self, coins_group, True):
+            coins_update(1)
 
         if self.inJump:
             self.vely -= 2

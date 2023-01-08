@@ -5,4 +5,5 @@ tiles_group = pygame.sprite.Group()  # группа объектов с колл
 walls_group = pygame.sprite.Group()
 floor_group = pygame.sprite.Group()
 ladder_group = pygame.sprite.Group()
+coins_group = pygame.sprite.Group()
 bullets = pygame.sprite.Group()

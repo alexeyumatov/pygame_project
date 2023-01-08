@@ -45,3 +45,14 @@ class Bullet(pygame.sprite.Sprite):
                 return 'killed'
         else:
             return 'alive'
+
+
+class Coin(pygame.sprite.Sprite):
+    image = load_image("objects/coin/coin.png", -1)
+
+    def __init__(self, pos_x, pos_y, *groups):
+        super(Coin, self).__init__(*groups)
+        self.image = Coin.image
+        width, height = 50, 75
+        self.image = pygame.transform.scale(self.image, (width, height))
+        self.rect = self.image.get_rect().move(pos_x * 128, 128 * pos_y)

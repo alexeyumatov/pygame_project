@@ -3,7 +3,7 @@ from player_config import Player
 import mediapipe as mp
 import cv2
 from pygame.math import Vector2
-from groups import all_sprites, tiles_group, walls_group, ladder_group, floor_group
+from groups import all_sprites, ladder_group, floor_group
 from functions import load_image, load_level, display_buttons
 from location import draw_location
 from camera import Camera, camera_func
