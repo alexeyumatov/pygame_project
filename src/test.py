@@ -36,9 +36,9 @@ def main():
 
         # handle scrolling
         if pressed[pygame.K_UP]:
-            scrollY(screen, bg, bg_rect, 30)
+            scrollY(screen, bg, bg_rect, 40)
         elif pressed[pygame.K_DOWN]:
-            scrollY(screen, bg, bg_rect, -30)
+            scrollY(screen, bg, bg_rect, -40)
         elif pressed[pygame.K_q]:
             break
 

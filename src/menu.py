@@ -1,6 +1,8 @@
-import pygame
 from functions import display_buttons
 from config import *
+from functions import draw_pause
+from options import options_screen
+from functions import draw_window
 
 pygame.init()
 
@@ -65,4 +67,41 @@ def start_screen():
                         elif text == "exit":
                             quit()
 
+        clock.tick(MENU_FPS)
+
+
+def pause():
+    paused = True
+    button_collides, button_texts = draw_pause()
+    while paused:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = pygame.mouse.get_pos()
+                for elem in button_collides:
+                    collide = elem.collidepoint(mouse_pos)
+
+                    if collide:
+                        text = button_texts[button_collides.index(elem)]
+                        if text == "resume":
+                            paused = False
+                            return text
+                        elif text == "options":
+
+                            settings = options_screen()
+                            if settings == 'back':
+                                draw_window()
+                                draw_pause()
+
+                        elif text == "exit":
+                            pygame.quit()
+                            quit()
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    paused = False
+
+        # pygame.display.update()
         clock.tick(MENU_FPS)

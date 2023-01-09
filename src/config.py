@@ -1,10 +1,15 @@
 import pygame
+from camera import Camera, camera_func
 
 
 # SCREEN
 resolution = (1920, 1080)
 FPS = 60
 MENU_FPS = 24
+
+
+# CAMERA INITIALIZE
+camera = Camera(camera_func, 3840, 3072)
 
 
 # COLORS

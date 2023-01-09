@@ -8,7 +8,7 @@ class Bullet(pygame.sprite.Sprite):
     def __init__(self, x, y, player_view, collide_group, *groups):
         super().__init__(*groups)
         self.image = Bullet.bullet_images[0]
-        self.image = pygame.transform.scale(self.image, (320, 320))
+        self.image = pygame.transform.scale(self.image, (64, 64))
         self.rect = self.image.get_rect()
         self.mask = pygame.mask.from_surface(self.image)
         self.width, self.height = self.image.get_width(), self.image.get_height()
@@ -34,15 +34,8 @@ class Bullet(pygame.sprite.Sprite):
         self.rect.x += self.velx
 
         if pygame.sprite.spritecollide(self, self.collide_group, False):
-            if self.view == 'right':
-                if self.count > 0:
-                    self.count -= 20
-                else:
-                    self.kill()
-                    return 'killed'
-            else:
-                self.kill()
-                return 'killed'
+            self.kill()
+            return 'killed'
         else:
             return 'alive'
 

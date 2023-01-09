@@ -176,8 +176,8 @@ class Player(pygame.sprite.Sprite):
 
         if self.inJump:
             self.vely -= 2
-            if self.vely <= -8:
-                self.vely = -8
+            if self.vely <= -10:
+                self.vely = -10
                 self.inJump = False
             vl_y += self.vely
 
@@ -210,6 +210,7 @@ class Player(pygame.sprite.Sprite):
         hits = pygame.sprite.spritecollide(self, collide_group, False)
         if not hits:
             self.onLadder = False
+            self.OnGround = False
             return False
         else:
             for el in collide_group:
