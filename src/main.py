@@ -3,9 +3,9 @@ import cv2
 from groups import ladder_group, floor_group
 from functions import load_image, load_level, draw_window
 from location import draw_location
-from menu import start_screen, pause
-from level_choose import level_choose
-from options import options_screen
+from main_menu_screen import start_screen, pause
+from level_choose_screen import level_choose
+from options_screen import options_screen
 from player_config import Player
 from config import *
 
@@ -43,7 +43,7 @@ if __name__ == '__main__':
                     running = False
                     pass
 
-                if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                     hero.shoot()
 
                 if event.type == pygame.KEYDOWN:

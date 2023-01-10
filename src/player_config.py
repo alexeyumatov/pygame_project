@@ -2,7 +2,7 @@ import pygame
 from functions import load_image, flip
 from groups import all_sprites, bullets, walls_group, tiles_group, coins_group
 from objects import Bullet
-from src.db_functions import coins_update
+from src.db_functions import coins_update, bullets_amount_select
 
 g = 10
 
@@ -187,7 +187,8 @@ class Player(pygame.sprite.Sprite):
         self.rect.y += vl_y
 
     def shoot(self):
-        if len(self.bulletList) > 3:
+        print(bullets_amount_select(1))
+        if len(self.bulletList) >= bullets_amount_select(1):
             return None
         if self.view == "left":
             ratio = -30

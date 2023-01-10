@@ -30,8 +30,7 @@ def level_choose():
 
     for i in range(9):
         button_x_pos = 385
-        button_y_pos = i
-        print(button_y_pos)
+        button_y_pos = i * 180
         button_rect = pygame.Rect(button_x_pos, button_y_pos, 0, 0).inflate(button_x_size, button_y_size)
         button_text = font.render(f'{i + 1}', True, black)
         display_buttons(button_rect, button_text, button_x_pos, button_y_pos)
@@ -47,9 +46,8 @@ def level_choose():
         if event.type == pygame.QUIT:
             pygame.quit()
 
-        if event.type == pygame.MOUSEBUTTONDOWN:
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             mouse_pos = pygame.mouse.get_pos()
-            print(mouse_pos)
             for elem in button_collides:
                 collide = elem.collidepoint(mouse_pos)
                 if collide:

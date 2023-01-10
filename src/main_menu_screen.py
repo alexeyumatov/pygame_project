@@ -1,7 +1,7 @@
 from functions import display_buttons
 from config import *
 from functions import draw_pause
-from options import options_screen
+from options_screen import options_screen
 from functions import draw_window
 
 pygame.init()
@@ -51,7 +51,7 @@ def start_screen():
             if event.type == pygame.QUIT:
                 pygame.quit()
 
-            if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 mouse_pos = pygame.mouse.get_pos()
                 for elem in button_collides:
                     collide = elem.collidepoint(mouse_pos)
@@ -78,7 +78,7 @@ def pause():
             if event.type == pygame.QUIT:
                 pygame.quit()
 
-            if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 mouse_pos = pygame.mouse.get_pos()
                 for elem in button_collides:
                     collide = elem.collidepoint(mouse_pos)
