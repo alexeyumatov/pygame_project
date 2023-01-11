@@ -1,11 +1,10 @@
-import pygame
 from functions import load_image
 from groups import *
 from objects import Coin
+from enemies_config import RegularEnemy
 
 
 tile_images = {
-    'background': load_image('Locations/Background.png'),
     'left_wall': load_image('Locations/Left_Wall.png'),
     'right_wall': load_image('Locations/Right_Wall.png'),
     'roof': load_image('Locations/Roof.png'),
@@ -33,7 +32,7 @@ def draw_location(level_map):
     for y in range(len(level_map)):
         for x in range(len(level_map[y])):
             if level_map[y][x] == '.':
-                Tile('background', x, y, all_sprites)
+                pass
             elif level_map[y][x] == '+':
                 Tile('dark_block', x, y, all_sprites, tiles_group)
             elif level_map[y][x] == '{':
@@ -70,6 +69,8 @@ def draw_location(level_map):
                 Tile('main_right_exit', x, y, all_sprites, tiles_group)
             elif level_map[y][x] == '^':
                 Coin(x, y, all_sprites, coins_group)
+            elif level_map[y][x] == 'E':
+                RegularEnemy(x, y, all_sprites, enemies_group)
     return x, y
 
 

@@ -1,6 +1,6 @@
 import mediapipe as mp
 import cv2
-from groups import ladder_group, floor_group
+from groups import ladder_group, floor_group, enemies_group
 from functions import load_image, load_level, draw_window
 from location import draw_location
 from main_menu_screen import start_screen, pause
@@ -57,6 +57,7 @@ if __name__ == '__main__':
 
             hero.update()
             hero.bullet_update()
+            enemies_group.update()
 
             if hero.onLadder:
                 hero.ladder_climb(ladder_group, floor_group)

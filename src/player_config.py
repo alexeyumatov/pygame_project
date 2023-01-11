@@ -8,24 +8,11 @@ g = 10
 
 
 class Player(pygame.sprite.Sprite):
-    idle_images = [load_image('hero/hero_static/Player_Static_Animation_1.png'),
-                   load_image('hero/hero_static/Player_Static_Animation_2.png'),
-                   load_image('hero/hero_static/Player_Static_Animation_3.png'),
-                   load_image('hero/hero_static/Player_Static_Animation_4.png'),
-                   load_image('hero/hero_static/Player_Static_Animation_5.png'),
-                   load_image('hero/hero_static/Player_Static_Animation_6.png')]
+    idle_images = [
+        load_image(f'hero/hero_static/Player_Static_Animation_{i}.png') for i in range(1, 7)]
 
     walk_images = [
-        load_image('hero/hero_walk/Player_Walk_Animation_1.png'),
-        load_image('hero/hero_walk/Player_Walk_Animation_2.png'),
-        load_image('hero/hero_walk/Player_Walk_Animation_3.png'),
-        load_image('hero/hero_walk/Player_Walk_Animation_4.png'),
-        load_image('hero/hero_walk/Player_Walk_Animation_5.png'),
-        load_image('hero/hero_walk/Player_Walk_Animation_6.png'),
-        load_image('hero/hero_walk/Player_Walk_Animation_7.png'),
-        load_image('hero/hero_walk/Player_Walk_Animation_8.png'),
-        load_image('hero/hero_walk/Player_Walk_Animation_9.png'),
-        load_image('hero/hero_walk/Player_Walk_Animation_10.png')]
+        load_image(f'hero/hero_walk/Player_Walk_Animation_{i}.png') for i in range(1, 11)]
 
     def __init__(self):
         super().__init__(all_sprites)
