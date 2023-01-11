@@ -1,6 +1,6 @@
 import pygame
 from functions import load_image, flip
-from groups import all_sprites, bullets, walls_group, tiles_group, coins_group
+from groups import all_sprites, player_group, bullets, walls_group, tiles_group, coins_group
 from objects import Bullet
 from src.db_functions import coins_update, bullets_amount_select
 
@@ -15,7 +15,7 @@ class Player(pygame.sprite.Sprite):
         load_image(f'hero/hero_walk/Player_Walk_Animation_{i}.png') for i in range(1, 11)]
 
     def __init__(self):
-        super().__init__(all_sprites)
+        super().__init__(all_sprites, player_group)
         self.image = Player.idle_images[0]
         self.rect = self.image.get_rect()
         self.mask = pygame.mask.from_surface(self.image)
@@ -23,6 +23,8 @@ class Player(pygame.sprite.Sprite):
         self.rect.x, self.rect.y = 150, 1080
         self.velx, self.vely, self.ladder_vely = 0, 0, 0
         self.width, self.height = self.image.get_width(), self.image.get_height()
+
+        self.health_points = 100
 
         self.animCount = 0
         self.view, self.isFlipped = "right", False
@@ -174,14 +176,13 @@ class Player(pygame.sprite.Sprite):
         self.rect.y += vl_y
 
     def shoot(self):
-        print(bullets_amount_select(1))
         if len(self.bulletList) >= bullets_amount_select(1):
             return None
         if self.view == "left":
             ratio = -30
         else:
             ratio = 150
-        bullet = Bullet(self.rect.x + ratio, self.rect.y + 145, self.view, walls_group, all_sprites, bullets)
+        bullet = Bullet(self.rect.x + ratio, self.rect.y + 145, self.view, all_sprites, bullets)
         self.bulletList.append(bullet)
         self.bullet_onScreen = True
 
@@ -212,3 +213,8 @@ class Player(pygame.sprite.Sprite):
                     return True
                 else:
                     self.onLadder = False
+
+    def damage(self, damage_amount):
+        self.health_points -= damage_amount
+        if self.health_points <= 0:
+            print('is killed')
