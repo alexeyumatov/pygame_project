@@ -1,8 +1,7 @@
-from functions import display_buttons
 from config import *
-from functions import draw_pause
-from options_screen import options_screen
-from functions import draw_window
+from functions import display_buttons, draw_pause, draw_window
+from level_choose_screen import level_choose
+
 
 pygame.init()
 
@@ -60,10 +59,10 @@ def start_screen():
                         text = button_texts[button_collides.index(elem)]
                         if text == "play":
                             screen.fill((0, 30, 38))
-                            return text
+                            return level_choose()
                         elif text == "options":
                             screen.fill((0, 30, 38))
-                            return text
+                            return options_screen(False)
                         elif text == "exit":
                             quit()
 
@@ -72,6 +71,7 @@ def start_screen():
 
 def pause():
     paused = True
+    draw_window()
     button_collides, button_texts = draw_pause()
     while paused:
         for event in pygame.event.get():
@@ -86,18 +86,11 @@ def pause():
                     if collide:
                         text = button_texts[button_collides.index(elem)]
                         if text == "resume":
-                            paused = False
                             return text
                         elif text == "options":
-
-                            settings = options_screen()
-                            if settings == 'back':
-                                draw_window()
-                                draw_pause()
-
+                            return options_screen(True)
                         elif text == "exit":
-                            pygame.quit()
-                            quit()
+                            return start_screen()
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
@@ -105,3 +98,71 @@ def pause():
 
         # pygame.display.update()
         clock.tick(MENU_FPS)
+
+
+button_collides = []
+button_texts = []
+
+
+def selection_buttons():
+    for i in range(4):
+        button_x_pos = width / 7 + i * 450
+        button_y_pos = width / 10 - 100
+        button_rect = pygame.Rect(button_x_pos,
+                                  button_y_pos, 0, 0).inflate(button_x_size,
+                                                              button_y_size)
+        button_text = ''
+        text = ''
+
+        if i == 0:
+            button_text = font.render('Back', True, black)
+            text = 'back'
+
+        elif i == 1:
+            button_text = font.render('Screen', True, black)
+            text = 'screen'
+        elif i == 2:
+            button_text = font.render('Camera', True, black)
+            text = 'camera'
+
+        elif i == 3:
+            button_text = font.render('Key Bindings', True, black)
+            text = 'key bindings'
+
+        button_texts.append(text)
+        button_collides.append(button_rect)
+
+        display_buttons(button_rect, button_text, button_x_pos, button_y_pos,
+                        text)
+        pygame.display.update()
+
+
+def options_screen(from_pause):
+    screen.fill((0, 30, 38))
+    selection_buttons()
+    while True:
+        mouse_pos = pygame.mouse.get_pos()
+        for event in pygame.event.get():
+
+            if event.type == pygame.QUIT:
+                pygame.quit()
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+
+                for elem in button_collides:
+                    collide = elem.collidepoint(mouse_pos)
+                    if collide:
+                        text = button_texts[button_collides.index(elem)]
+                        if text == 'back':
+                            if from_pause:
+                                return pause()
+                            else:
+                                return start_screen()
+                        elif text == 'screen':
+                            pass
+                        elif text == 'camera':
+                            pass
+                        elif text == 'key bindings':
+                            pass
+
+        pygame.display.update()

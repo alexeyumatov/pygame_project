@@ -1,10 +1,8 @@
 import os
 import sys
-
-import pygame
-
 from config import *
-from groups import all_sprites
+from groups import all_sprites, player_group
+
 
 pygame.init()
 size = width, height = 1920, 1080
@@ -100,6 +98,8 @@ def draw_pause():
 def draw_window():
     screen.fill(level_color)
     for el in all_sprites:
+        screen.blit(el.image, camera.apply(el))
+    for el in player_group:
         screen.blit(el.image, camera.apply(el))
     pygame.display.flip()
 

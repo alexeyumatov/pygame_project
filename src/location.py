@@ -2,6 +2,7 @@ from functions import load_image
 from groups import *
 from objects import Coin
 from enemies_config import RegularEnemy
+from player_config import Player
 
 
 tile_images = {
@@ -60,17 +61,19 @@ def draw_location(level_map):
             elif level_map[y][x] == '\"':
                 Tile('platform', x, y, all_sprites, tiles_group, floor_group, walls_group)
             elif level_map[y][x] == '#':
-                Tile('top_left_exit', x, y, all_sprites, tiles_group)
+                Tile('top_left_exit', x, y, all_sprites, portal_group)
             elif level_map[y][x] == '№':
-                Tile('top_right_exit', x, y, all_sprites, tiles_group)
+                Tile('top_right_exit', x, y, all_sprites, portal_group)
             elif level_map[y][x] == '!':
-                Tile('main_left_exit', x, y, all_sprites, tiles_group)
+                Tile('main_left_exit', x, y, all_sprites, portal_group)
             elif level_map[y][x] == '&':
-                Tile('main_right_exit', x, y, all_sprites, tiles_group)
+                Tile('main_right_exit', x, y, all_sprites, portal_group)
             elif level_map[y][x] == '^':
                 Coin(x, y, all_sprites, coins_group)
             elif level_map[y][x] == 'E':
                 RegularEnemy(x, y, all_sprites, enemies_group)
+            elif level_map[y][x] == 'P':
+                Player(x, y)
     return x, y
 
 

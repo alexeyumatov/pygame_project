@@ -1,7 +1,6 @@
 import pygame
 from functions import load_image, flip
-from groups import player_group, bullets
-from db_functions import bullets_damage_select
+from groups import player_group
 
 
 class RegularEnemy(pygame.sprite.Sprite):
@@ -17,6 +16,7 @@ class RegularEnemy(pygame.sprite.Sprite):
         self.damage = 5
         self.view = 'right'
         self.velx = 0
+        self.counter = 0
         self.distance = 0
 
     def update(self):
@@ -51,12 +51,17 @@ class RegularEnemy(pygame.sprite.Sprite):
                 self.view = 'right'
             self.distance = 0
 
-        self.rect.x += vl_x
+        # self.rect.x += vl_x
 
         # PLAYER COLLIDE
         player_collide = pygame.sprite.spritecollideany(self, player_group)
         if player_collide:
-            player_collide.damage(self.damage)
+            if self.counter % 60 == 0:
+                player_collide.damage(self.damage)
+                self.counter = 0
+            self.counter += 1
+        else:
+            self.counter = 0
 
     def incoming_damage(self, damage_amount):
         self.health_points -= damage_amount

@@ -1,7 +1,9 @@
 import pygame.key
 
 from config import *
-from functions import scroll_function
+from functions import scroll_function, load_image, load_level
+from location import draw_location
+from groups import all_sprites, player_group
 
 pygame.init()
 
@@ -17,30 +19,44 @@ height = bg.get_height()
 button_x_size, button_y_size, font = buttons(140, 140, 65)
 
 
-def display_buttons(button_rect, button_text, button_x_pos, button_y_pos):
-    pygame.draw.rect(screen, white, button_rect)
-    screen.blit(button_text, (button_x_pos - 15, button_y_pos - 45))
+def display_buttons(button_image, button_rect):
+    screen.blit(button_image, button_rect)
 
 
 def level_choose():
-    button_collides = []
-    button_texts = []
 
     screen.blit(bg, bg_rect)
 
-    for i in range(9):
-        button_x_pos = 385
-        button_y_pos = i * 180
-        button_rect = pygame.Rect(button_x_pos, button_y_pos, 0, 0).inflate(button_x_size, button_y_size)
-        button_text = font.render(f'{i + 1}', True, black)
-        display_buttons(button_rect, button_text, button_x_pos, button_y_pos)
-        button_collides.append(button_rect)
-        button_texts.append(i + 1)
+    button_images = [load_image("Menu/buttons/level_button.png"), load_image("Menu/buttons/level_button.png")]
+    button_x_pos = 376
+    button_y_pos = [570, 115]
+    phase = 0
+
+    # for i in range(9):
+    #     button_y_pos = i * 180
+    #     display_buttons(button_image, button_rect, button_x_pos, button_y_pos)
+    #     button_collides.append(button_rect)
+    #     button_texts.append(i + 1)
 
     pygame.display.update()
 
     while True:
-        key = pygame.key.get_pressed()
+        button_texts = []
+        button_collides = []
+
+        for i in range(2):
+            button_rect = button_images[i].get_rect()
+            button_rect.x, button_rect.y = button_x_pos, button_y_pos[i]
+            display_buttons(button_images[i], button_rect)
+            button_collides.append(button_rect)
+
+        if phase == 0:
+            button_texts = [1, 2]
+        elif phase == 1:
+            button_texts = [3, 4]
+        elif phase == 2:
+            button_texts = [5, 6]
+
         event = pygame.event.poll()
 
         if event.type == pygame.QUIT:
@@ -52,15 +68,28 @@ def level_choose():
                 collide = elem.collidepoint(mouse_pos)
                 if collide:
                     level_number = button_texts[button_collides.index(elem)]
-                    return level_number
+                    for el in all_sprites:
+                        el.kill()
+                    for el in player_group:
+                        el.kill()
+                    return draw_location(load_level(f'levels/level_{level_number}.txt'))
 
-        if key[pygame.K_UP]:
-            scroll_function(screen, bg, bg_rect, 30)
-        elif key[pygame.K_DOWN]:
-            scroll_function(screen, bg, bg_rect, -30)
-        # elif key[pygame.K_ESCAPE]:
-        #     return 'back'
+        if event.type == pygame.KEYDOWN:
+            if phase == 2:
+                scroll_amount = -920
+            else:
+                scroll_amount = -953
+            if event.key == pygame.K_UP:
+                if phase < 2:
+                    if phase == 1:
+                        scroll_amount = -920
+                    phase += 1
+                    scroll_function(screen, bg, bg_rect, abs(scroll_amount))
+            elif event.key == pygame.K_DOWN:
+                if phase > 0:
+                    phase -= 1
+                    scroll_function(screen, bg, bg_rect, scroll_amount)
 
         pygame.display.update()
 
-        clock.tick(FPS)
+        clock.tick(MENU_FPS)
