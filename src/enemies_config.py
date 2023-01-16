@@ -13,7 +13,7 @@ class RegularEnemy(pygame.sprite.Sprite):
             128 * x, 128 * y)
         self.animCount = 0
         self.health_points = 30
-        self.damage = 5
+        self.damage = 25
         self.view = 'right'
         self.velx = 0
         self.counter = 0
