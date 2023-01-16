@@ -11,7 +11,7 @@ mp_hands = mp.solutions.hands
 mp_drawing = mp.solutions.drawing_utils
 
 pause_background = load_image('pause/Pause.png')
-screen = pygame.display.set_mode(resolution, pygame.SCALED | pygame.FULLSCREEN)
+screen = pygame.display.set_mode(resolution, pygame.SCALED | pygame.FULLSCREEN, vsync=1)
 
 
 def main():
@@ -56,6 +56,8 @@ def main():
 
             camera.update(hero)
             draw_window()
+            if hero.is_killed:
+                main()
 
             clock.tick(FPS)
     pygame.quit()

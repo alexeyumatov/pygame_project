@@ -1,8 +1,7 @@
 import os
 import sys
 from config import *
-from groups import all_sprites, player_group
-
+from groups import all_sprites, player_group, enemies_group
 
 pygame.init()
 size = width, height = 1920, 1080
@@ -100,6 +99,8 @@ def draw_window():
     for el in all_sprites:
         screen.blit(el.image, camera.apply(el))
     for el in player_group:
+        screen.blit(el.image, camera.apply(el))
+    for el in enemies_group:
         screen.blit(el.image, camera.apply(el))
     pygame.display.flip()
 

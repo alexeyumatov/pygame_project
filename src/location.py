@@ -71,7 +71,7 @@ def draw_location(level_map):
             elif level_map[y][x] == '^':
                 Coin(x, y, all_sprites, coins_group)
             elif level_map[y][x] == 'E':
-                RegularEnemy(x, y, all_sprites, enemies_group)
+                RegularEnemy(x, y, enemies_group)
             elif level_map[y][x] == 'P':
                 Player(x, y)
     return x, y

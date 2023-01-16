@@ -32,6 +32,8 @@ class Player(pygame.sprite.Sprite):
         self.OnGround, self.onLadder = False, False
         self.inJump = False
 
+        self.is_killed = False
+
         self.end_movement = False  # activates when hero is collided with the portal
         self.end_distance = 0  # var for stopping the hero in the middle of the portal
 
@@ -231,9 +233,8 @@ class Player(pygame.sprite.Sprite):
 
     def damage(self, damage_amount):
         self.health_points -= damage_amount
-        print(self.health_points)
         if self.health_points <= 0:
-            print('is killed')
+            self.is_killed = True
 
     def portal_collide(self):
         vl_x = 0
@@ -246,4 +247,3 @@ class Player(pygame.sprite.Sprite):
         self.rect.x += vl_x
         self.end_distance += vl_x
         return False
-
