@@ -1,3 +1,5 @@
+import sys
+
 import pygame.key
 
 from config import *
@@ -11,7 +13,6 @@ screen = screen_initialize()
 
 bg = pygame.image.load("data/Menu/level_choose/level_choose.png")
 bg_rect = bg.get_rect()
-bg_rect[1] = -2100
 
 width = bg.get_width()
 height = bg.get_height()
@@ -24,7 +25,7 @@ def display_buttons(button_image, button_rect):
 
 
 def level_choose():
-
+    bg_rect[1] = -2100
     screen.blit(bg, bg_rect)
 
     button_images = [load_image("Menu/buttons/level_button.png"), load_image("Menu/buttons/level_button.png")]
@@ -89,6 +90,9 @@ def level_choose():
                 if phase > 0:
                     phase -= 1
                     scroll_function(screen, bg, bg_rect, scroll_amount)
+
+            if event.key == pygame.K_i:
+                sys.exit()
 
         pygame.display.update()
 
