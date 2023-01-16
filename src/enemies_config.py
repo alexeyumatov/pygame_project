@@ -51,7 +51,7 @@ class RegularEnemy(pygame.sprite.Sprite):
                 self.view = 'right'
             self.distance = 0
 
-        # self.rect.x += vl_x
+        self.rect.x += vl_x
 
         # PLAYER COLLIDE
         player_collide = pygame.sprite.spritecollideany(self, player_group)
