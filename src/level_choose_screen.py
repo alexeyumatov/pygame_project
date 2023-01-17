@@ -5,7 +5,8 @@ import pygame.key
 from config import *
 from functions import scroll_function, load_image, load_level
 from location import draw_location
-from groups import all_sprites, player_group
+from groups import all_sprites, player_group, enemies_group
+from db_functions import levels_amount_select
 
 pygame.init()
 
@@ -19,6 +20,8 @@ height = bg.get_height()
 
 button_x_size, button_y_size, font = buttons(140, 140, 65)
 
+level_number = 0
+
 
 def display_buttons(button_image, button_rect):
     screen.blit(button_image, button_rect)
@@ -28,35 +31,39 @@ def level_choose():
     bg_rect[1] = -2100
     screen.blit(bg, bg_rect)
 
-    button_images = [load_image("Menu/buttons/level_button.png"), load_image("Menu/buttons/level_button.png")]
+    button_images = [load_image("Menu/buttons/level_button.png"), load_image("Menu/buttons/level_button.png"),
+                     load_image("Menu/buttons/locked_level_button.png")]
     button_x_pos = 376
     button_y_pos = [570, 115]
     phase = 0
-
-    # for i in range(9):
-    #     button_y_pos = i * 180
-    #     display_buttons(button_image, button_rect, button_x_pos, button_y_pos)
-    #     button_collides.append(button_rect)
-    #     button_texts.append(i + 1)
-
-    pygame.display.update()
+    levels_amount = levels_amount_select(1)
+    button_texts = [i for i in range(1, levels_amount + 1)]
+    if len(button_texts) < 6:
+        locked_levels = 6 - levels_amount
+        for i in range(locked_levels):
+            button_texts.append(0)
 
     while True:
-        button_texts = []
         button_collides = []
-
-        for i in range(2):
-            button_rect = button_images[i].get_rect()
-            button_rect.x, button_rect.y = button_x_pos, button_y_pos[i]
-            display_buttons(button_images[i], button_rect)
-            button_collides.append(button_rect)
+        btn = []
 
         if phase == 0:
-            button_texts = [1, 2]
+            btn = button_texts[0:2]
         elif phase == 1:
-            button_texts = [3, 4]
+            btn = button_texts[2:4]
         elif phase == 2:
-            button_texts = [5, 6]
+            btn = button_texts[4:6]
+
+        for i in range(2):
+            if btn[i] > 0:
+                button_image = button_images[i]
+            else:
+                button_image = button_images[-1]
+            button_rect = button_image.get_rect()
+            button_rect.x, button_rect.y = button_x_pos, button_y_pos[i]
+            display_buttons(button_image, button_rect)
+            if btn[i] > 0:
+                button_collides.append(button_rect)
 
         event = pygame.event.poll()
 
@@ -68,10 +75,13 @@ def level_choose():
             for elem in button_collides:
                 collide = elem.collidepoint(mouse_pos)
                 if collide:
-                    level_number = button_texts[button_collides.index(elem)]
+                    global level_number
+                    level_number = btn[button_collides.index(elem)]
                     for el in all_sprites:
                         el.kill()
                     for el in player_group:
+                        el.kill()
+                    for el in enemies_group:
                         el.kill()
                     return draw_location(load_level(f'levels/level_{level_number}.txt'))
 

@@ -3,7 +3,8 @@ import mediapipe as mp
 import cv2
 from groups import ladder_group, floor_group, enemies_group, player_group
 from functions import load_image, draw_window
-from level_choose_screen import level_choose
+from level_choose_screen import level_choose, level_number
+from db_functions import levels_amount_update, levels_amount_select
 from config import *
 
 
@@ -47,6 +48,8 @@ def main():
                         hero.onLadder = False
 
             if hero.update():
+                if levels_amount_select(1) == level_number:
+                    levels_amount_update(1)
                 level_choose()
             hero.bullet_update()
             enemies_group.update()

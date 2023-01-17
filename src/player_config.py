@@ -2,7 +2,7 @@ import pygame
 from functions import load_image, flip
 from groups import all_sprites, player_group, bullets, tiles_group, coins_group, portal_group
 from objects import Bullet
-from db_functions import coins_update, bullets_amount_select
+from db_functions import coins_update, bullets_amount_select, levels_amount_update
 
 g = 10
 
