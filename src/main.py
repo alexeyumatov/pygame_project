@@ -3,7 +3,7 @@ import mediapipe as mp
 import cv2
 from groups import ladder_group, floor_group, enemies_group, player_group
 from functions import load_image, draw_window
-from level_choose_screen import level_choose, level_number
+from level_choose_screen import level_choose
 from db_functions import levels_amount_update, levels_amount_select
 from config import *
 
@@ -16,7 +16,8 @@ screen = pygame.display.set_mode(resolution, pygame.SCALED | pygame.FULLSCREEN, 
 
 
 def main():
-    start_screen()
+    level_number = start_screen()
+    print(level_number)
 
     pygame.init()
 
@@ -50,7 +51,7 @@ def main():
             if hero.update():
                 if levels_amount_select(1) == level_number:
                     levels_amount_update(1)
-                level_choose()
+                level_number = level_choose()
             hero.bullet_update()
             enemies_group.update()
 

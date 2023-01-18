@@ -18,9 +18,12 @@ bg_rect = bg.get_rect()
 width = bg.get_width()
 height = bg.get_height()
 
-button_x_size, button_y_size, font = buttons(140, 140, 65)
+market_rect = pygame.Rect((879, 495, 620, 490))
+market = pygame.Surface((620, 490))
+market.fill(white)
+market.set_alpha(0)
 
-level_number = 0
+button_x_size, button_y_size, font = buttons(140, 140, 65)
 
 
 def display_buttons(button_image, button_rect):
@@ -31,8 +34,8 @@ def level_choose():
     bg_rect[1] = -2100
     screen.blit(bg, bg_rect)
 
-    button_images = [load_image("Menu/buttons/level_button.png"), load_image("Menu/buttons/level_button.png"),
-                     load_image("Menu/buttons/locked_level_button.png")]
+    button_images = [load_image(f"Menu/buttons/numbered_buttons/level_button_{i}.png") for i in range(1, 14)]
+    button_images.append(load_image("Menu/buttons/locked_level_button.png"))
     button_x_pos = 376
     button_y_pos = [570, 115]
     phase = 0
@@ -49,6 +52,7 @@ def level_choose():
 
         if phase == 0:
             btn = button_texts[0:2]
+            screen.blit(market, market_rect)
         elif phase == 1:
             btn = button_texts[2:4]
         elif phase == 2:
@@ -56,7 +60,7 @@ def level_choose():
 
         for i in range(2):
             if btn[i] > 0:
-                button_image = button_images[i]
+                button_image = button_images[btn[i] - 1]
             else:
                 button_image = button_images[-1]
             button_rect = button_image.get_rect()
@@ -75,7 +79,6 @@ def level_choose():
             for elem in button_collides:
                 collide = elem.collidepoint(mouse_pos)
                 if collide:
-                    global level_number
                     level_number = btn[button_collides.index(elem)]
                     for el in all_sprites:
                         el.kill()
@@ -83,7 +86,11 @@ def level_choose():
                         el.kill()
                     for el in enemies_group:
                         el.kill()
-                    return draw_location(load_level(f'levels/level_{level_number}.txt'))
+                    draw_location(load_level(f'levels/level_{level_number}.txt'))
+                    return level_number
+            market_coolide = market_rect.collidepoint(mouse_pos)
+            if market_coolide:
+                return market_window()
 
         if event.type == pygame.KEYDOWN:
             if phase == 2:
@@ -107,3 +114,18 @@ def level_choose():
         pygame.display.update()
 
         clock.tick(MENU_FPS)
+
+
+def market_window():
+    screen.fill((0, 30, 38))
+
+    while True:
+        event = pygame.event.poll()
+
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_BACKSPACE:
+                return level_choose()
+
+        pygame.display.update()
+
+
