@@ -1,8 +1,8 @@
 import pygame
 from functions import load_image, flip
-from groups import all_sprites, player_group, bullets, tiles_group, coins_group, portal_group
+from groups import all_sprites, player_group, bullets, tiles_group, coins_group, portal_group, enemies_group
 from objects import Bullet
-from db_functions import coins_update, bullets_amount_select, levels_amount_update
+from db_functions import coins_update, bullets_amount_select
 
 g = 10
 
@@ -21,10 +21,12 @@ class Player(pygame.sprite.Sprite):
         self.mask = pygame.mask.from_surface(self.image)
 
         self.rect.x, self.rect.y = x * 128, y * 128
-        self.velx, self.vely, self.ladder_vely = 0, 0, 0
         self.width, self.height = self.image.get_width(), self.image.get_height()
 
+        self.velx, self.vely, self.ladder_vely = 0, 0, 0  # velocity vars
+
         self.health_points = 100
+        self.coins_collected = 0
 
         self.animCount = 0
         self.view, self.isFlipped = "right", False
@@ -33,6 +35,7 @@ class Player(pygame.sprite.Sprite):
         self.inJump = False
 
         self.is_killed = False
+        self.able_to_shoot = True  # checks if the hero is able to shoot
 
         self.end_movement = False  # activates when hero is collided with the portal
         self.end_distance = 0  # var for stopping the hero in the middle of the portal
@@ -166,8 +169,14 @@ class Player(pygame.sprite.Sprite):
                         self.vely = 0
                         self.inJump = False
 
+            for tile in enemies_group:
+                if tile.rect.colliderect(self.rect):
+                    self.able_to_shoot = False
+                else:
+                    self.able_to_shoot = True
+
             if pygame.sprite.spritecollide(self, coins_group, True):
-                coins_update(1)
+                self.coins_collected += 1
 
             if self.inJump:
                 self.vely -= 2
@@ -193,15 +202,16 @@ class Player(pygame.sprite.Sprite):
         return False
 
     def shoot(self):
-        if len(self.bulletList) >= bullets_amount_select(1):
-            return None
-        if self.view == "left":
-            ratio = -30
-        else:
-            ratio = 150
-        bullet = Bullet(self.rect.x + ratio, self.rect.y + 145, self.view, all_sprites, bullets)
-        self.bulletList.append(bullet)
-        self.bullet_onScreen = True
+        if self.able_to_shoot:
+            if len(self.bulletList) >= bullets_amount_select(1):
+                return None
+            if self.view == "left":
+                ratio = -30
+            else:
+                ratio = 150
+            bullet = Bullet(self.rect.x + ratio, self.rect.y + 145, self.view, all_sprites, bullets)
+            self.bulletList.append(bullet)
+            self.bullet_onScreen = True
 
     def bullet_update(self):
         if self.bullet_onScreen:
@@ -243,6 +253,7 @@ class Player(pygame.sprite.Sprite):
         elif self.view == 'right':
             vl_x = 1
         if abs(self.end_distance) >= 100:
+            coins_update(1, self.coins_collected)
             return True
         self.rect.x += vl_x
         self.end_distance += vl_x

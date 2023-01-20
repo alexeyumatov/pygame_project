@@ -86,7 +86,11 @@ def level_choose():
                         el.kill()
                     for el in enemies_group:
                         el.kill()
-                    draw_location(load_level(f'levels/level_{level_number}.txt'))
+                    if level_number < levels_amount:
+                        coins = False
+                    else:
+                        coins = True
+                    draw_location(load_level(f'levels/level_{level_number}.txt'), coins)
                     return level_number
             market_coolide = market_rect.collidepoint(mouse_pos)
             if market_coolide:
@@ -127,5 +131,6 @@ def market_window():
                 return level_choose()
 
         pygame.display.update()
+        clock.tick(MENU_FPS)
 
 
