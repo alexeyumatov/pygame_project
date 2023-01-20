@@ -24,6 +24,9 @@ market.fill(white)
 market.set_alpha(0)
 
 button_x_size, button_y_size, font = buttons(140, 140, 65)
+scroll_amount = -950
+
+levels_amount = levels_amount_select(1)
 
 
 def display_buttons(button_image, button_rect):
@@ -31,18 +34,18 @@ def display_buttons(button_image, button_rect):
 
 
 def level_choose():
-    bg_rect[1] = -2100
+    global scroll_amount
+    bg_rect[1] = -6450
     screen.blit(bg, bg_rect)
 
     button_images = [load_image(f"Menu/buttons/numbered_buttons/level_button_{i}.png") for i in range(1, 14)]
     button_images.append(load_image("Menu/buttons/locked_level_button.png"))
     button_x_pos = 376
-    button_y_pos = [570, 115]
     phase = 0
     levels_amount = levels_amount_select(1)
     button_texts = [i for i in range(1, levels_amount + 1)]
-    if len(button_texts) < 6:
-        locked_levels = 6 - levels_amount
+    if len(button_texts) < 14:
+        locked_levels = 14 - levels_amount
         for i in range(locked_levels):
             button_texts.append(0)
 
@@ -50,24 +53,31 @@ def level_choose():
         button_collides = []
         btn = []
 
-        if phase == 0:
-            btn = button_texts[0:2]
-            screen.blit(market, market_rect)
-        elif phase == 1:
-            btn = button_texts[2:4]
-        elif phase == 2:
-            btn = button_texts[4:6]
-
-        for i in range(2):
-            if btn[i] > 0:
-                button_image = button_images[btn[i] - 1]
+        if phase != 7:
+            if phase == 0:
+                btn = button_texts[0:2]
+                screen.blit(market, market_rect)
             else:
-                button_image = button_images[-1]
-            button_rect = button_image.get_rect()
-            button_rect.x, button_rect.y = button_x_pos, button_y_pos[i]
-            display_buttons(button_image, button_rect)
-            if btn[i] > 0:
-                button_collides.append(button_rect)
+                btn = button_texts[phase * 2:phase * 2 + 2]
+
+            for i in range(2):
+                if btn[i] > 0:
+                    button_image = button_images[btn[i] - 1]
+                else:
+                    button_image = button_images[-1]
+                button_rect = button_image.get_rect()
+                if phase < 2:
+                    button_y_pos = [540, 80]
+                elif phase == 4 or phase == 5:
+                    button_y_pos = [595, 155]
+                else:
+                    button_y_pos = [570, 115]
+                button_rect.x, button_rect.y = button_x_pos, button_y_pos[i]
+                display_buttons(button_image, button_rect)
+                if btn[i] > 0:
+                    button_collides.append(button_rect)
+
+        pygame.display.update()
 
         event = pygame.event.poll()
 
@@ -76,6 +86,7 @@ def level_choose():
 
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             mouse_pos = pygame.mouse.get_pos()
+            print(mouse_pos)
             for elem in button_collides:
                 collide = elem.collidepoint(mouse_pos)
                 if collide:
@@ -86,32 +97,38 @@ def level_choose():
                         el.kill()
                     for el in enemies_group:
                         el.kill()
-                    draw_location(load_level(f'levels/level_{level_number}.txt'))
+                    if level_number < levels_amount:
+                        coins = False
+                    else:
+                        coins = True
+                    draw_location(load_level(f'levels/level_{level_number}.txt'), coins)
                     return level_number
             market_coolide = market_rect.collidepoint(mouse_pos)
             if market_coolide:
                 return market_window()
 
         if event.type == pygame.KEYDOWN:
-            if phase == 2:
-                scroll_amount = -920
-            else:
-                scroll_amount = -953
             if event.key == pygame.K_UP:
-                if phase < 2:
-                    if phase == 1:
-                        scroll_amount = -920
+                if phase < 7:
+                    if phase == 6:
+                        scroll_amount -= 100
+                    elif phase > 0:
+                        scroll_amount += 15
                     phase += 1
                     scroll_function(screen, bg, bg_rect, abs(scroll_amount))
             elif event.key == pygame.K_DOWN:
                 if phase > 0:
                     phase -= 1
                     scroll_function(screen, bg, bg_rect, scroll_amount)
+                    if phase == 1 or phase == 0:
+                        scroll_amount = -950
+                    elif phase == 6:
+                        scroll_amount += 100
+                    else:
+                        scroll_amount -= 15
 
             if event.key == pygame.K_i:
                 sys.exit()
-
-        pygame.display.update()
 
         clock.tick(MENU_FPS)
 
@@ -127,5 +144,6 @@ def market_window():
                 return level_choose()
 
         pygame.display.update()
+        clock.tick(MENU_FPS)
 
 

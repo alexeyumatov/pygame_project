@@ -96,7 +96,6 @@ def pause():
                 if event.key == pygame.K_ESCAPE:
                     paused = False
 
-        # pygame.display.update()
         clock.tick(MENU_FPS)
 
 
@@ -166,3 +165,4 @@ def options_screen(from_pause):
                             pass
 
         pygame.display.update()
+        clock.tick(MENU_FPS)

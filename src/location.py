@@ -28,7 +28,7 @@ tile_images = {
 tile_width = tile_height = 128
 
 
-def draw_location(level_map):
+def draw_location(level_map, coins):
     x, y = None, None
     for y in range(len(level_map)):
         for x in range(len(level_map[y])):
@@ -68,7 +68,7 @@ def draw_location(level_map):
                 Tile('main_left_exit', x, y, all_sprites, portal_group)
             elif level_map[y][x] == '&':
                 Tile('main_right_exit', x, y, all_sprites, portal_group)
-            elif level_map[y][x] == '^':
+            elif level_map[y][x] == '^' and coins:
                 Coin(x, y, all_sprites, coins_group)
             elif level_map[y][x] == 'E':
                 RegularEnemy(x, y, enemies_group)

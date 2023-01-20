@@ -49,8 +49,8 @@ def display_buttons(button_rect, button_text, button_x_pos, button_y_pos, text):
 
 def scroll_function(screenSurf, bg, bg_rect, offsetY):
     bg_rect[1] += offsetY
-    if abs(bg_rect[1]) >= 2100:
-        bg_rect[1] = -2100
+    if abs(bg_rect[1]) >= 6480:
+        bg_rect[1] = -6480
     if bg_rect[1] > 0:
         bg_rect[1] = 0
     screenSurf.blit(bg, bg_rect)

@@ -29,10 +29,10 @@ def levels_amount_select(player_id):
     return res[0][0]
 
 
-def coins_update(player_id):
+def coins_update(player_id, coins_amount):
     cursor.execute("""UPDATE player_stats
-                    SET coins_amount = coins_amount + 1
-                    WHERE id = ?""", (player_id, ))
+                    SET coins_amount = coins_amount + ?
+                    WHERE id = ?""", (coins_amount, player_id))
     conn.commit()
 
 
