@@ -2,7 +2,7 @@ import pygame
 from functions import load_image, flip
 from groups import all_sprites, player_group, bullets, tiles_group, coins_group, portal_group, enemies_group
 from objects import Bullet
-from db_functions import coins_update, bullets_amount_select
+from db_functions import coins_update, bullets_amount_select, shield_points_select
 
 g = 10
 
@@ -26,6 +26,7 @@ class Player(pygame.sprite.Sprite):
         self.velx, self.vely, self.ladder_vely = 0, 0, 0  # velocity vars
 
         self.health_points = 100
+        self.shield_points = shield_points_select(1)
         self.coins_collected = 0
 
         self.animCount = 0
@@ -242,7 +243,12 @@ class Player(pygame.sprite.Sprite):
                     self.onLadder = False
 
     def damage(self, damage_amount):
-        self.health_points -= damage_amount
+        if self.shield_points > 0:
+            self.shield_points -= damage_amount
+        else:
+            self.health_points -= damage_amount
+        if self.shield_points < 0:
+            self.shield_points = 0
         if self.health_points <= 0:
             self.is_killed = True
 

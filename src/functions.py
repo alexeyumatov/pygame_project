@@ -1,5 +1,8 @@
 import os
 import sys
+
+import pygame
+
 from config import *
 from groups import all_sprites, player_group, enemies_group
 
@@ -94,6 +97,15 @@ def draw_pause():
     return button_collides, button_texts
 
 
+def display_player_data(hp_amount: int, shield_amount: int):
+    hp_data = data_font.render(str(hp_amount), True, white)
+    shield_data = data_font.render(str(shield_amount), True, white)
+    screen.blit(hp_data, (690, 987))
+    screen.blit(heart, (600, 970))
+    screen.blit(shield_data, (1290, 987))
+    screen.blit(shield, (1200, 970))
+
+
 def draw_window():
     screen.fill(level_color)
     for el in all_sprites:
@@ -102,7 +114,6 @@ def draw_window():
         screen.blit(el.image, camera.apply(el))
     for el in enemies_group:
         screen.blit(el.image, camera.apply(el))
-    pygame.display.flip()
 
 
 # def hands_detection():

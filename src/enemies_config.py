@@ -12,7 +12,7 @@ class RegularEnemy(pygame.sprite.Sprite):
         self.rect = self.image.get_rect().move(
             128 * x, 128 * y)
         self.animCount = 0
-        self.health_points = 30
+        self.health_points = 45
         self.damage = 30
         self.view = 'right'
         self.velx = 0
@@ -67,3 +67,25 @@ class RegularEnemy(pygame.sprite.Sprite):
         self.health_points -= damage_amount
         if self.health_points <= 0:
             self.kill()
+
+
+class MiddleEnemy(pygame.sprite.Sprite):
+    images = [load_image(f'enemies/middle_enemy/Enemy_2_Idle_{i}.png') for i in range(2, 10)]
+
+    def __init__(self, x, y, *groups):
+        super(MiddleEnemy, self).__init__(*groups)
+        self.image = MiddleEnemy.images[0]
+        self.rect = self.image.get_rect().move(
+            128 * x, 128 * y)
+        self.animCount = 0
+
+        self.health_points = 150
+        self.damage = 50
+
+    def update(self):
+        if self.animCount > 49:
+            self.animCount = 0
+
+        self.image = MiddleEnemy.images[self.animCount // 7]
+        self.animCount += 1
+
