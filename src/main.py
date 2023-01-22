@@ -1,7 +1,7 @@
 from menu import start_screen, pause
 import mediapipe as mp
 import cv2
-from groups import ladder_group, floor_group, enemies_group, player_group
+from groups import ladder_group, floor_group, enemies_group, player_group, enemy_bullets
 from functions import load_image, draw_window, display_player_data
 from level_choose_screen import level_choose
 from db_functions import levels_amount_update, levels_amount_select, shield_points_select
@@ -53,6 +53,7 @@ def main():
                 level_number = level_choose()
             hero.bullet_update()
             enemies_group.update()
+            enemy_bullets.update()
 
             if hero.onLadder:
                 hero.ladder_climb(ladder_group, floor_group)

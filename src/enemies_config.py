@@ -1,6 +1,7 @@
 import pygame
 from functions import load_image, flip
-from groups import player_group
+from groups import player_group, enemy_bullets, all_sprites
+from objects import EnemyBullet
 
 
 class RegularEnemy(pygame.sprite.Sprite):
@@ -12,11 +13,13 @@ class RegularEnemy(pygame.sprite.Sprite):
         self.rect = self.image.get_rect().move(
             128 * x, 128 * y)
         self.animCount = 0
+        self.counter = 0
+
         self.health_points = 45
         self.damage = 30
+
         self.view = 'right'
         self.velx = 0
-        self.counter = 0
         self.distance = 0
 
     def update(self):
@@ -78,14 +81,71 @@ class MiddleEnemy(pygame.sprite.Sprite):
         self.rect = self.image.get_rect().move(
             128 * x, 128 * y)
         self.animCount = 0
+        self.counter = 0
+
+        self.velx = 0
+        self.distance = 0
+
+        self.view = 'right'
+        self.isCollided = False
 
         self.health_points = 150
         self.damage = 50
 
     def update(self):
+        vl_x = 0
+
         if self.animCount > 49:
             self.animCount = 0
 
         self.image = MiddleEnemy.images[self.animCount // 7]
+        if self.view == 'right':
+            self.image = flip(self.image)
+
         self.animCount += 1
 
+        if self.view == 'right':
+            self.velx += 0.5
+            if self.velx >= 8:
+                self.velx = 8
+            vl_x += self.velx
+        elif self.view == 'left':
+            self.velx -= 0.5
+            if self.velx <= -8:
+                self.velx = -8
+            vl_x += self.velx
+
+        self.distance += vl_x
+        if abs(self.distance) >= 500:
+            if not self.isCollided:
+                self.shoot()
+            if self.view == 'right':
+                self.view = 'left'
+            else:
+                self.view = 'right'
+            self.distance = 0
+
+        self.rect.x += vl_x
+
+        player_collide = pygame.sprite.spritecollideany(self, player_group)
+        if player_collide:
+            self.isCollided = True
+            if self.counter % 60 == 0:
+                player_collide.damage(self.damage)
+                self.counter = 0
+            self.counter += 1
+        else:
+            self.isCollided = False
+            self.counter = 0
+
+    def incoming_damage(self, damage_amount):
+        self.health_points -= damage_amount
+        if self.health_points <= 0:
+            self.kill()
+
+    def shoot(self):
+        if self.view == "left":
+            ratio = -30
+        else:
+            ratio = 150
+        EnemyBullet(self.rect.x + ratio, self.rect.y + 145, self.view, all_sprites, enemy_bullets)

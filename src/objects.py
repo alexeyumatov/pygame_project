@@ -1,7 +1,7 @@
 import pygame
 from functions import load_image, flip
-from groups import walls_group, enemies_group
-from db_functions import bullets_damage_select
+from groups import walls_group, enemies_group, player_group, enemy_bullets
+from db_functions import bullets_damage_select, bullet_is_collidable_select
 
 
 class Bullet(pygame.sprite.Sprite):
@@ -12,8 +12,6 @@ class Bullet(pygame.sprite.Sprite):
         self.image = Bullet.images[0]
         self.image = pygame.transform.scale(self.image, (64, 64))
         self.rect = self.image.get_rect()
-        self.mask = pygame.mask.from_surface(self.image)
-        self.width, self.height = self.image.get_width(), self.image.get_height()
         self.rect.x, self.rect.y = x, y
         if player_view == "left":
             self.velx = -20
@@ -35,11 +33,58 @@ class Bullet(pygame.sprite.Sprite):
 
         self.rect.x += self.velx
 
+        if bullet_is_collidable_select(1):
+            if pygame.sprite.spritecollide(self, enemy_bullets, True):
+                self.kill()
+                return 'killed'
+
         collided = pygame.sprite.spritecollideany(self, enemies_group)
         if collided:
             collided.incoming_damage(self.damage)
             self.kill()
             return 'killed'
+
+        if pygame.sprite.spritecollide(self, walls_group, False):
+            self.kill()
+            return 'killed'
+        else:
+            return 'alive'
+
+
+class EnemyBullet(pygame.sprite.Sprite):
+    images = [load_image(f"enemies/middle_enemy/bullets/enemy_bullet_{i}.png") for i in range(1, 7)]
+
+    def __init__(self, x, y, enemy_view, *groups):
+        super(EnemyBullet, self).__init__(*groups)
+        self.image = EnemyBullet.images[0]
+        self.image = pygame.transform.scale(self.image, (64, 64))
+        self.rect = self.image.get_rect()
+        if enemy_view == 'left':
+            self.velx = -23
+        elif enemy_view == 'right':
+            self.velx = 23
+        self.rect.x, self.rect.y = x, y
+
+        self.view = enemy_view
+        self.animCount = 0
+
+        self.damage = 30
+
+    def update(self):
+        if self.animCount + 1 >= 42:
+            self.animCount = 0
+        self.image = EnemyBullet.images[self.animCount // 7]
+        self.image = pygame.transform.scale(self.image, (64, 64))
+        if self.view == "left":
+            self.image = flip(self.image)
+        self.animCount += 1
+
+        self.rect.x += self.velx
+
+        collided = pygame.sprite.spritecollideany(self, player_group)
+        if collided:
+            collided.damage(self.damage)
+            self.kill()
 
         if pygame.sprite.spritecollide(self, walls_group, False):
             self.kill()

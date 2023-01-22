@@ -86,7 +86,6 @@ def level_choose():
 
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             mouse_pos = pygame.mouse.get_pos()
-            print(mouse_pos)
             for elem in button_collides:
                 collide = elem.collidepoint(mouse_pos)
                 if collide:
@@ -104,7 +103,7 @@ def level_choose():
                     draw_location(load_level(f'levels/level_{level_number}.txt'), coins)
                     return level_number
             market_coolide = market_rect.collidepoint(mouse_pos)
-            if market_coolide:
+            if market_coolide and phase == 0:
                 return market_window()
 
         if event.type == pygame.KEYDOWN:

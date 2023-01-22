@@ -12,15 +12,21 @@ def coins_select(player_id):
 
 
 def bullets_amount_select(player_id):
-    res = cursor.execute("""SELECT bullets_amount FROM player_stats WHERE id = ?""",
+    res = cursor.execute("""SELECT bullets_amount FROM bullet_stats WHERE player_id = ?""",
                          (player_id, )).fetchall()
     return res[0][0]
 
 
 def bullets_damage_select(player_id):
-    res = cursor.execute("""SELECT bullet_damage FROM player_stats WHERE id = ?""",
+    res = cursor.execute("""SELECT bullet_damage FROM bullet_stats WHERE player_id = ?""",
                          (player_id, )).fetchall()
     return res[0][0]
+
+
+def bullet_is_collidable_select(player_id):
+    res = cursor.execute("""SELECT bullet_is_collidable FROM bullet_stats WHERE player_id = ?""",
+                         (player_id, )).fetchall()
+    return res[0]
 
 
 def levels_amount_select(player_id):
@@ -43,9 +49,9 @@ def coins_update(player_id, coins_amount):
 
 
 def bullets_amount_update(player_id):
-    cursor.execute("""UPDATE player_stats
+    cursor.execute("""UPDATE bullet_stats
                     SET bullets_amount = bullets_amount + 1
-                    WHERE id = ?""", (player_id, ))
+                    WHERE player_id = ?""", (player_id, ))
     conn.commit()
 
 
