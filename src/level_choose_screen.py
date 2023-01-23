@@ -6,8 +6,7 @@ from config import *
 from functions import scroll_function, load_image, load_level
 from location import draw_location
 from groups import all_sprites, player_group, enemies_group
-from db_functions import levels_amount_select, shield_points_select, coins_select, \
-    bullets_amount_select, bullets_damage_select, bullet_is_collidable_select
+from db_functions import *
 
 pygame.init()
 
@@ -134,32 +133,65 @@ def level_choose():
 
 
 def market_window():
-    screen.fill((0, 30, 38))
     coins_amount = coins_select(1)
+
+    # TEXTS FOR LOTS IN THE MARKET
     texts = [f'Already Purchased: {shield_points_select(1)}', f'Already Purchased: {bullets_amount_select(1)}',
              f'Already Purchased: {bullets_damage_select(1)}',
              f'Already Purchased: {"Yes" if bullet_is_collidable_select(1) else "No"}']
 
     lots_rect = [pygame.Rect(80, 300, 270, 270), pygame.Rect(580, 300, 270, 270),
                  pygame.Rect(1080, 300, 270, 270), pygame.Rect(1580, 300, 270, 270)]
-    lots = [pygame.Surface((270, 270)) for _ in range(len(lots_rect))]
+    lots = [load_image('Menu/market/armor_upgrade.png', -1),
+            load_image('Menu/market/bullets_amount_upgrade.png', -1),
+            load_image('Menu/market/bullet_damage_upgrade.png', -1),
+            load_image('Menu/market/bullets_collide_upgrade.png', -1)]
     lots_texts = ['Shield Upgrade', 'Bullets Amount', 'Bullets Damage', 'Collision of Bullets']
-
-    for el in lots:
-        el.fill(white)
-        el.set_alpha(255)
 
     purchase_buttons_rect = [pygame.Rect(80, 700, 270, 60), pygame.Rect(580, 700, 270, 60),
                              pygame.Rect(1080, 700, 270, 60), pygame.Rect(1580, 700, 270, 60)]
     purchase_buttons = [pygame.Surface((270, 60)) for _ in range(len(purchase_buttons_rect))]
 
+    blocked_buttons = [pygame.Surface((270, 60)) for _ in range(len(purchase_buttons_rect))]
+    max_buttons = [pygame.Surface((270, 60)) for _ in range(len(purchase_buttons_rect))]
+
+    prices = [10, 5, 15, 40]
+    data = [shield_points_select(1), bullets_amount_select(1), bullets_damage_select(1), bullet_is_collidable_select(1)]
+    max_values = [50, 3, 30, 1]
+    available_buttons = []
+
+    for el in purchase_buttons_rect:
+        index = purchase_buttons_rect.index(el)
+        if prices[index] < coins_amount:
+            available_buttons.append(el)
+
+    for el in blocked_buttons:
+        el.fill(black)
+
+    for el in max_buttons:
+        el.fill(pygame.Color(255, 255, 24))
+
     for el in purchase_buttons:
         el.fill(white)
         el.set_alpha(255)
 
+    # COINS COUNTER
+    coin = load_image('objects/coin/coin.png', -1)
+    coin = pygame.transform.scale(coin, (30, 45))
+
     while True:
+        screen.fill((0, 30, 38))
         event = pygame.event.poll()
 
+        # COIN DATA
+        coin_data = big_data_font.render(str(coins_amount), True, white)
+        if coins_amount > 10:
+            screen.blit(coin_data, (1700, 58))
+        else:
+            screen.blit(coin_data, (1720, 58))
+        screen.blit(coin, (1770, 60))
+
+        # MAIN INFORMATION
         for el in lots:
             index = lots.index(el)
             elem_data = market_font.render(texts[index], True, white)
@@ -173,11 +205,38 @@ def market_window():
                 screen.blit(elem_data, (lot_rect.x - 2, lot_rect.y + 300))
             screen.blit(el, lot_rect)
 
-            screen.blit(purchase_buttons[index], purchase_buttons_rect[index])
+            if data[index] == max_values[index]:
+                screen.blit(max_buttons[index], purchase_buttons_rect[index])
+            elif prices[index] < coins_amount:
+                screen.blit(purchase_buttons[index], purchase_buttons_rect[index])
+            else:
+                screen.blit(blocked_buttons[index], purchase_buttons_rect[index])
 
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_BACKSPACE:
-                return level_choose()
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            mouse_pos = pygame.mouse.get_pos()
+            for el in available_buttons:
+                collide = el.collidepoint(mouse_pos)
+                if collide:
+                    lot = purchase_buttons_rect.index(el)
+                    if lot == 0:
+                        shield_points_update(1)
+                    elif lot == 1:
+                        bullets_amount_update(1)
+                    elif lot == 2:
+                        bullets_damage_update(1)
+                    elif lot == 3:
+                        bullet_is_collided_update(1)
+                    coins_update(1, -prices[lot])
+                texts = [f'Already Purchased: {shield_points_select(1)}',
+                         f'Already Purchased: {bullets_amount_select(1)}',
+                         f'Already Purchased: {bullets_damage_select(1)}',
+                         f'Already Purchased: {"Yes" if bullet_is_collidable_select(1) else "No"}']
+                coins_amount = coins_select(1)
+                data = [shield_points_select(1), bullets_amount_select(1), bullets_damage_select(1),
+                        bullet_is_collidable_select(1)]
+
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_BACKSPACE:
+            return level_choose()
 
         pygame.display.update()
         clock.tick(MENU_FPS)

@@ -26,7 +26,7 @@ def bullets_damage_select(player_id):
 def bullet_is_collidable_select(player_id):
     res = cursor.execute("""SELECT bullet_is_collidable FROM bullet_stats WHERE player_id = ?""",
                          (player_id, )).fetchall()
-    return res[0]
+    return res[0][0]
 
 
 def levels_amount_select(player_id):
@@ -55,6 +55,20 @@ def bullets_amount_update(player_id):
     conn.commit()
 
 
+def bullets_damage_update(player_id):
+    cursor.execute("""UPDATE bullet_stats
+                    SET bullet_damage = bullet_damage + 5
+                    WHERE player_id = ?""", (player_id, ))
+    conn.commit()
+
+
+def bullet_is_collided_update(player_id):
+    cursor.execute("""UPDATE bullet_stats
+                    SET bullet_is_collidable = TRUE
+                    WHERE player_id = ?""", (player_id, ))
+    conn.commit()
+
+
 def levels_amount_update(player_id):
     cursor.execute("""UPDATE player_stats
                     SET levels_passed = levels_passed + 1
@@ -65,4 +79,5 @@ def levels_amount_update(player_id):
 def shield_points_update(player_id):
     cursor.execute("""UPDATE player_stats
                     SET shield_points = shield_points + 10
-                    WHERE player_id = ?""")
+                    WHERE id = ?""", (player_id, ))
+    conn.commit()
