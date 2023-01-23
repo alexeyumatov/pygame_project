@@ -6,7 +6,8 @@ from config import *
 from functions import scroll_function, load_image, load_level
 from location import draw_location
 from groups import all_sprites, player_group, enemies_group
-from db_functions import levels_amount_select
+from db_functions import levels_amount_select, shield_points_select, coins_select, \
+    bullets_amount_select, bullets_damage_select, bullet_is_collidable_select
 
 pygame.init()
 
@@ -134,9 +135,45 @@ def level_choose():
 
 def market_window():
     screen.fill((0, 30, 38))
+    coins_amount = coins_select(1)
+    texts = [f'Already Purchased: {shield_points_select(1)}', f'Already Purchased: {bullets_amount_select(1)}',
+             f'Already Purchased: {bullets_damage_select(1)}',
+             f'Already Purchased: {"Yes" if bullet_is_collidable_select(1) else "No"}']
+
+    lots_rect = [pygame.Rect(80, 300, 270, 270), pygame.Rect(580, 300, 270, 270),
+                 pygame.Rect(1080, 300, 270, 270), pygame.Rect(1580, 300, 270, 270)]
+    lots = [pygame.Surface((270, 270)) for _ in range(len(lots_rect))]
+    lots_texts = ['Shield Upgrade', 'Bullets Amount', 'Bullets Damage', 'Collision of Bullets']
+
+    for el in lots:
+        el.fill(white)
+        el.set_alpha(255)
+
+    purchase_buttons_rect = [pygame.Rect(80, 700, 270, 60), pygame.Rect(580, 700, 270, 60),
+                             pygame.Rect(1080, 700, 270, 60), pygame.Rect(1580, 700, 270, 60)]
+    purchase_buttons = [pygame.Surface((270, 60)) for _ in range(len(purchase_buttons_rect))]
+
+    for el in purchase_buttons:
+        el.fill(white)
+        el.set_alpha(255)
 
     while True:
         event = pygame.event.poll()
+
+        for el in lots:
+            index = lots.index(el)
+            elem_data = market_font.render(texts[index], True, white)
+            elem_name = big_market_font.render(lots_texts[index], True, white)
+            lot_rect = lots_rect[index]
+            if el == lots[-1]:
+                screen.blit(elem_name, (lot_rect.x - 8, lot_rect.y - 64))
+                screen.blit(elem_data, (lot_rect.x - 10, lot_rect.y + 300))
+            else:
+                screen.blit(elem_name, (lot_rect.x + 16, lot_rect.y - 64))
+                screen.blit(elem_data, (lot_rect.x - 2, lot_rect.y + 300))
+            screen.blit(el, lot_rect)
+
+            screen.blit(purchase_buttons[index], purchase_buttons_rect[index])
 
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_BACKSPACE:
@@ -144,5 +181,3 @@ def market_window():
 
         pygame.display.update()
         clock.tick(MENU_FPS)
-
-

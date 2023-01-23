@@ -32,6 +32,8 @@ shield.set_alpha(210)
 
 # TEXT
 data_font = pygame.font.Font('data/Font/Main_Font.ttf', 24)
+market_font = pygame.font.Font('data/Font/Main_Font.ttf', 20)
+big_market_font = pygame.font.Font('data/Font/Main_Font.ttf', 26)
 
 
 # TIME
