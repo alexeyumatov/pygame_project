@@ -15,8 +15,8 @@ class RegularEnemy(pygame.sprite.Sprite):
         self.animCount = 0
         self.counter = 0
 
-        self.health_points = 45
-        self.damage = 30
+        self.health_points = 85
+        self.damage = 50
 
         self.view = 'right'
         self.velx = 0
@@ -37,17 +37,17 @@ class RegularEnemy(pygame.sprite.Sprite):
         # MOVEMENT
         if self.view == 'right':
             self.velx += 0.5
-            if self.velx >= 8:
-                self.velx = 8
+            if self.velx >= 20:
+                self.velx = 20
             vl_x += self.velx
         elif self.view == 'left':
             self.velx -= 0.5
-            if self.velx <= -8:
-                self.velx = -8
+            if self.velx <= -20:
+                self.velx = -20
             vl_x += self.velx
 
         self.distance += vl_x
-        if abs(self.distance) >= 500:
+        if abs(self.distance) >= 650:
             if self.view == 'right':
                 self.view = 'left'
             else:
@@ -85,12 +85,13 @@ class MiddleEnemy(pygame.sprite.Sprite):
 
         self.velx = 0
         self.distance = 0
+        self.isShoot = False
 
         self.view = 'right'
         self.isCollided = False
 
-        self.health_points = 150
-        self.damage = 50
+        self.health_points = 200
+        self.damage = 100
 
     def update(self):
         vl_x = 0
@@ -106,24 +107,34 @@ class MiddleEnemy(pygame.sprite.Sprite):
 
         if self.view == 'right':
             self.velx += 0.5
-            if self.velx >= 8:
-                self.velx = 8
+            if self.velx >= 15:
+                self.velx = 15
             vl_x += self.velx
         elif self.view == 'left':
             self.velx -= 0.5
-            if self.velx <= -8:
-                self.velx = -8
+            if self.velx <= -15:
+                self.velx = -15
             vl_x += self.velx
 
         self.distance += vl_x
         if abs(self.distance) >= 500:
-            if not self.isCollided:
-                self.shoot()
             if self.view == 'right':
                 self.view = 'left'
             else:
                 self.view = 'right'
+            self.isShoot = False
             self.distance = 0
+
+        if abs(self.distance) >= 250:
+            self.isShoot = False
+
+        elif abs(self.distance) == 250:
+            self.isShoot = True
+
+        if abs(self.distance) >= 100 and self.isShoot is False:
+            if not self.isCollided:
+                self.isShoot = True
+                self.shoot()
 
         self.rect.x += vl_x
 

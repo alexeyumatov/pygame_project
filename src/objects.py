@@ -60,9 +60,9 @@ class EnemyBullet(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(self.image, (64, 64))
         self.rect = self.image.get_rect()
         if enemy_view == 'left':
-            self.velx = -23
+            self.velx = -35
         elif enemy_view == 'right':
-            self.velx = 23
+            self.velx = 35
         self.rect.x, self.rect.y = x, y
 
         self.view = enemy_view
