@@ -1,5 +1,5 @@
 from config import *
-from functions import display_buttons, draw_pause, draw_window
+from functions import display_buttons, draw_pause, draw_window, load_image
 from level_choose_screen import level_choose
 
 
@@ -15,36 +15,44 @@ button_x_size, button_y_size, font = buttons(350, 70, 35)
 
 
 def start_screen():
+    screen.fill(level_color)
     button_collides = []
     button_texts = []
-    screen.fill((0, 30, 38))
-    for i in range(3):
-        button_x_pos = width / 2
-        button_y_pos = width / (5 - i) + 50
-        button_rect = pygame.Rect(button_x_pos,
-                                  button_y_pos, 0, 0).inflate(button_x_size,
-                                                              button_y_size)
-        button_text = ''
-        text = ''
-
-        if i == 0:
-            button_text = font.render('Play', True, black)
-            text = 'play'
-        elif i == 1:
-            button_text = font.render('Options', True, black)
-            text = 'options'
-        elif i == 2:
-            button_text = font.render('Exit', True, black)
-            text = 'exit'
-
-        button_texts.append(text)
-        button_collides.append(button_rect)
-
-        display_buttons(button_rect, button_text, button_x_pos, button_y_pos,
-                        text)
-    pygame.display.update()
+    animCount = 0
+    background = [load_image(f'Menu/main_menu/{i}.png') for i in range(1, 9)]
 
     while True:
+        if animCount + 1 >= 56:
+            animCount = 0
+
+        screen.blit(background[animCount // 7], (0, 0))
+        animCount += 1
+
+        for i in range(3):
+            button_x_pos = width / 2
+            button_y_pos = width / (5 - i) + 50
+            button_rect = pygame.Rect(button_x_pos,
+                                      button_y_pos, 0, 0).inflate(button_x_size,
+                                                                  button_y_size)
+            button_text = ''
+            text = ''
+
+            if i == 0:
+                button_text = font.render('Play', True, black)
+                text = 'play'
+            elif i == 1:
+                button_text = font.render('Options', True, black)
+                text = 'options'
+            elif i == 2:
+                button_text = font.render('Exit', True, black)
+                text = 'exit'
+
+            button_texts.append(text)
+            button_collides.append(button_rect)
+
+            display_buttons(button_rect, button_text, button_x_pos, button_y_pos,
+                            text)
+
         for event in pygame.event.get():
 
             if event.type == pygame.QUIT:
@@ -66,7 +74,8 @@ def start_screen():
                         elif text == "exit":
                             quit()
 
-        clock.tick(MENU_FPS)
+        pygame.display.update()
+        clock.tick(FPS)
 
 
 def pause():

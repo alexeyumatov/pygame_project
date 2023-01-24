@@ -35,7 +35,7 @@ def main():
                     running = False
                     pass
 
-                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and not hero.onLadder:
                     hero.shoot()
 
                 if event.type == pygame.KEYDOWN:
@@ -51,9 +51,9 @@ def main():
                 if levels_amount_select(1) == level_number:
                     levels_amount_update(1)
                 level_number = level_choose()
-            hero.bullet_update()
             enemies_group.update()
             enemy_bullets.update()
+            hero.bullet_update()
 
             if hero.onLadder:
                 hero.ladder_climb(ladder_group, floor_group)

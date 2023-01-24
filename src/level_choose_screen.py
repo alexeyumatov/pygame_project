@@ -150,10 +150,18 @@ def market_window():
 
     purchase_buttons_rect = [pygame.Rect(80, 700, 270, 60), pygame.Rect(580, 700, 270, 60),
                              pygame.Rect(1080, 700, 270, 60), pygame.Rect(1580, 700, 270, 60)]
-    purchase_buttons = [pygame.Surface((270, 60)) for _ in range(len(purchase_buttons_rect))]
+    purchase_buttons = [load_image('Menu/market/market_buttons/available/shield_points.png'),
+                        load_image('Menu/market/market_buttons/available/bullets_amount.png'),
+                        load_image('Menu/market/market_buttons/available/bullets_damage.png'),
+                        load_image('Menu/market/market_buttons/available/bullets_collide.png')]
 
-    blocked_buttons = [pygame.Surface((270, 60)) for _ in range(len(purchase_buttons_rect))]
-    max_buttons = [pygame.Surface((270, 60)) for _ in range(len(purchase_buttons_rect))]
+    blocked_buttons = [load_image('Menu/market/market_buttons/not_enough_coins/shield_points.png'),
+                       load_image('Menu/market/market_buttons/not_enough_coins/bullets_amount.png'),
+                       load_image('Menu/market/market_buttons/not_enough_coins/bullets_damage.png'),
+                       load_image('Menu/market/market_buttons/not_enough_coins/bullets_collide.png')]
+
+    max_buttons = [load_image('Menu/market/market_buttons/maximum/max_amount.png')
+                   for _ in range(len(purchase_buttons_rect))]
 
     prices = [10, 5, 15, 40]
     data = [shield_points_select(1), bullets_amount_select(1), bullets_damage_select(1), bullet_is_collidable_select(1)]
@@ -164,16 +172,6 @@ def market_window():
         index = purchase_buttons_rect.index(el)
         if prices[index] < coins_amount:
             available_buttons.append(el)
-
-    for el in blocked_buttons:
-        el.fill(black)
-
-    for el in max_buttons:
-        el.fill(pygame.Color(255, 255, 24))
-
-    for el in purchase_buttons:
-        el.fill(white)
-        el.set_alpha(255)
 
     # COINS COUNTER
     coin = load_image('objects/coin/coin.png', -1)
