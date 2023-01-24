@@ -1,31 +1,25 @@
+import asyncio
+
 import pygame.display
 
 from menu import start_screen, pause
-import mediapipe as mp
 import cv2
 from groups import ladder_group, floor_group, enemies_group, player_group, enemy_bullets
 from functions import load_image, draw_window, display_player_data
 from level_choose_screen import level_choose
 from db_functions import levels_amount_update, levels_amount_select, shield_points_select
 from config import *
+from test import hands_detection
 
-
-mp_hands = mp.solutions.hands
-mp_drawing = mp.solutions.drawing_utils
 
 pause_background = load_image('pause/Pause.png')
 screen = pygame.display.set_mode(resolution, pygame.SCALED | pygame.FULLSCREEN, vsync=1)
 
 
-def main():
+async def game_func():
     level_number = start_screen()
 
     pygame.init()
-
-    # cap = cv2.VideoCapture(0)
-    # w, h = 640, 480
-    # cap.set(3, w)
-    # cap.set(4, h)
 
     running = True
     with mp_hands.Hands(max_num_hands=1, min_tracking_confidence=0.9, min_detection_confidence=0.9) as hands:
@@ -67,14 +61,22 @@ def main():
 
             pygame.display.flip()
             if hero.is_killed:
-                main()
+                game_func()
 
             clock.tick(FPS)
+            await asyncio.sleep(0)
     pygame.quit()
+
+
+async def main():
+    task1 = asyncio.create_task(game_func())
+    task2 = asyncio.create_task(hands_detection())
+    await task1
+    await task2
 
 
 if __name__ == '__main__':
     pygame.display.set_caption('Dark Light', 'Dark Light')
     icon = load_image('icon/dark_light_icon.png')
     pygame.display.set_icon(icon)
-    main()
+    asyncio.run(main())

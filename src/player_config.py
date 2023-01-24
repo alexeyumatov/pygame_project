@@ -37,6 +37,7 @@ class Player(pygame.sprite.Sprite):
 
         self.is_killed = False
         self.able_to_shoot = True  # checks if the hero is able to shoot
+        self.shoot_cooldown = 120
 
         self.end_movement = False  # activates when hero is collided with the portal
         self.end_distance = 0  # var for stopping the hero in the middle of the portal
@@ -48,6 +49,9 @@ class Player(pygame.sprite.Sprite):
     def update(self):
         vl_x, vl_y = 0, 0
         ladder_vl_y = 0  # extra speed vars
+
+        # BULLET COOLDOWN
+        self.shoot_cooldown += 1
 
         # HERO MOVEMENT
         if not self.end_movement:
@@ -204,15 +208,17 @@ class Player(pygame.sprite.Sprite):
 
     def shoot(self):
         if self.able_to_shoot:
+            if self.shoot_cooldown >= 40:
+                if self.view == "left":
+                    ratio = -30
+                else:
+                    ratio = 150
+                bullet = Bullet(self.rect.x + ratio, self.rect.y + 145, self.view, all_sprites, bullets)
+                self.bulletList.append(bullet)
+                self.bullet_onScreen = True
+                self.shoot_cooldown = 0
             if len(self.bulletList) >= bullets_amount_select(1):
                 return None
-            if self.view == "left":
-                ratio = -30
-            else:
-                ratio = 150
-            bullet = Bullet(self.rect.x + ratio, self.rect.y + 145, self.view, all_sprites, bullets)
-            self.bulletList.append(bullet)
-            self.bullet_onScreen = True
 
     def bullet_update(self):
         if self.bullet_onScreen:

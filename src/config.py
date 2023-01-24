@@ -1,5 +1,6 @@
 import pygame
 from camera import Camera, camera_func
+import mediapipe as mp
 
 
 # SCREEN
@@ -11,6 +12,11 @@ MENU_FPS = 24
 # CAMERA INITIALIZE
 camera = Camera(camera_func, 3840, 3072)
 pygame.init()
+
+
+# HANDS
+mp_hands = mp.solutions.hands
+mp_drawing = mp.solutions.drawing_utils
 
 
 # COLORS

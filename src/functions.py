@@ -1,7 +1,7 @@
 import os
 import sys
 
-import pygame
+import cv2
 
 from config import *
 from groups import all_sprites, player_group, enemies_group
@@ -9,6 +9,14 @@ from groups import all_sprites, player_group, enemies_group
 pygame.init()
 size = width, height = 1920, 1080
 screen = pygame.display.set_mode(size)
+
+cap = cv2.VideoCapture(0)
+w, h = 640, 480
+cap.set(3, w)
+cap.set(4, h)
+
+cords = {}
+last_status, hand_type = "", ""
 
 
 def load_image(name, colorkey=None):
@@ -52,8 +60,8 @@ def display_buttons(button_rect, button_text, button_x_pos, button_y_pos, text):
 
 def scroll_function(screenSurf, bg, bg_rect, offsetY):
     bg_rect[1] += offsetY
-    if abs(bg_rect[1]) >= 6480:
-        bg_rect[1] = -6480
+    if abs(bg_rect[1]) >= 6450:
+        bg_rect[1] = -6450
     if bg_rect[1] > 0:
         bg_rect[1] = 0
     screenSurf.blit(bg, bg_rect)
@@ -116,56 +124,54 @@ def draw_window():
         screen.blit(el.image, camera.apply(el))
 
 
-# def hands_detection():
-#     cords = {}
-#     last_status, hand_type = "", ""
-#     success, frame = cap.read()
-#     frame = cv2.flip(frame, 1)
-#
-#     imgRGB = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-#     results = hands.process(imgRGB)
-#     imgRGB = cv2.cvtColor(imgRGB, cv2.COLOR_RGB2BGR)
-#
-#     if results.multi_hand_landmarks:
-#         if results.multi_handedness:
-#             hand_type = results.multi_handedness[0].classification[0].label
-#
-#         for hand_landmarks in results.multi_hand_landmarks:
-#             mp_drawing.draw_landmarks(imgRGB, hand_landmarks,
-#                                       mp_hands.HAND_CONNECTIONS,
-#                                       mp_drawing.DrawingSpec(
-#                                           color=(0, 0, 255)),
-#                                       mp_drawing.DrawingSpec(
-#                                           color=(0, 0, 0)))
-#
-#         for id, lm in enumerate(hand_landmarks.landmark):
-#             h, w, c = frame.shape
-#             cx, cy = int(lm.x * w), int(lm.y * h)
-#             cords[f"{id}"] = cx, cy
-#
-#         if len(cords) == 21:
-#             if hand_type == "Right":
-#                 if int(cords['8'][1]) > int(cords['6'][1]) \
-#                         and int(cords['12'][1]) > int(cords['10'][1]) \
-#                         and int(cords['16'][1]) > int(cords['14'][1]) \
-#                         and int(cords['20'][1]) > int(cords['18'][1]) \
-#                         and int(cords['4'][0]) > int(cords['2'][0]):
-#                     last_status = "Close"
-#                 else:
-#                     last_status = "Open"
-#
-#             elif hand_type == "Left":
-#                 if int(cords['8'][1]) > int(cords['6'][1]) \
-#                         and int(cords['12'][1]) > int(cords['10'][1]) \
-#                         and int(cords['16'][1]) > int(cords['14'][1]) \
-#                         and int(cords['20'][1]) > int(cords['18'][1]) \
-#                         and int(cords['4'][0]) < int(cords['2'][0]):
-#                     last_status = "Close"
-#                 else:
-#                     last_status = "Open"
-#
-#     else:
-#         hand_type = "-"
-#         last_status = "-"
-#
-#     return hand_type, last_status
+def hands_detection(hands):
+    success, frame = cap.read()
+    frame = cv2.flip(frame, 1)
+
+    imgRGB = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    results = hands.process(imgRGB)
+    imgRGB = cv2.cvtColor(imgRGB, cv2.COLOR_RGB2BGR)
+
+    if results.multi_hand_landmarks:
+        if results.multi_handedness:
+            hand_type = results.multi_handedness[0].classification[0].label
+
+        for hand_landmarks in results.multi_hand_landmarks:
+            mp_drawing.draw_landmarks(imgRGB, hand_landmarks,
+                                      mp_hands.HAND_CONNECTIONS,
+                                      mp_drawing.DrawingSpec(
+                                          color=(0, 0, 255)),
+                                      mp_drawing.DrawingSpec(
+                                          color=(0, 0, 0)))
+
+        for id, lm in enumerate(hand_landmarks.landmark):
+            h, w, c = frame.shape
+            cx, cy = int(lm.x * w), int(lm.y * h)
+            cords[f"{id}"] = cx, cy
+
+        if len(cords) == 21:
+            if hand_type == "Right":
+                if int(cords['8'][1]) > int(cords['6'][1]) \
+                        and int(cords['12'][1]) > int(cords['10'][1]) \
+                        and int(cords['16'][1]) > int(cords['14'][1]) \
+                        and int(cords['20'][1]) > int(cords['18'][1]) \
+                        and int(cords['4'][0]) > int(cords['2'][0]):
+                    last_status = "Close"
+                else:
+                    last_status = "Open"
+
+            elif hand_type == "Left":
+                if int(cords['8'][1]) > int(cords['6'][1]) \
+                        and int(cords['12'][1]) > int(cords['10'][1]) \
+                        and int(cords['16'][1]) > int(cords['14'][1]) \
+                        and int(cords['20'][1]) > int(cords['18'][1]) \
+                        and int(cords['4'][0]) < int(cords['2'][0]):
+                    last_status = "Close"
+                else:
+                    last_status = "Open"
+
+    else:
+        hand_type = "-"
+        last_status = "-"
+
+    return hand_type, last_status
