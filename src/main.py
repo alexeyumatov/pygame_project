@@ -1,3 +1,5 @@
+import pygame.display
+
 from menu import start_screen, pause
 import mediapipe as mp
 import cv2
@@ -72,4 +74,7 @@ def main():
 
 
 if __name__ == '__main__':
+    pygame.display.set_caption('Dark Light', 'Dark Light')
+    icon = load_image('icon/dark_light_icon.png')
+    pygame.display.set_icon(icon)
     main()
