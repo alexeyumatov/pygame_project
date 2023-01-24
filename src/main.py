@@ -1,3 +1,5 @@
+import pygame.display
+
 from menu import start_screen, pause
 import mediapipe as mp
 import cv2
@@ -35,7 +37,7 @@ def main():
                     running = False
                     pass
 
-                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and not hero.onLadder:
                     hero.shoot()
 
                 if event.type == pygame.KEYDOWN:
@@ -51,9 +53,9 @@ def main():
                 if levels_amount_select(1) == level_number:
                     levels_amount_update(1)
                 level_number = level_choose()
-            hero.bullet_update()
             enemies_group.update()
             enemy_bullets.update()
+            hero.bullet_update()
 
             if hero.onLadder:
                 hero.ladder_climb(ladder_group, floor_group)
@@ -72,4 +74,7 @@ def main():
 
 
 if __name__ == '__main__':
+    pygame.display.set_caption('Dark Light', 'Dark Light')
+    icon = load_image('icon/dark_light_icon.png')
+    pygame.display.set_icon(icon)
     main()
