@@ -1,12 +1,22 @@
 import pygame
 from camera import Camera, camera_func
 import mediapipe as mp
+import cv2
 
 
 # SCREEN
 resolution = (1920, 1080)
 FPS = 60
 MENU_FPS = 24
+
+
+# HANDS
+cords = {}
+last_status, hand_type = "", ""
+cap = cv2.VideoCapture(0)
+w, h = 640, 480
+cap.set(3, w)
+cap.set(4, h)
 
 
 # CAMERA INITIALIZE
@@ -30,6 +40,10 @@ black = (0, 0, 0)
 heart = pygame.image.load('data/player_data/heart.png')
 heart = pygame.transform.scale(heart, (74, 64))
 heart.set_alpha(210)
+
+poisoned_heart = pygame.image.load('data/player_data/poisoned_heart.png')
+poisoned_heart = pygame.transform.scale(poisoned_heart, (74, 64))
+poisoned_heart.set_alpha(210)
 
 shield = pygame.image.load('data/player_data/shield.png')
 shield = pygame.transform.scale(shield, (74, 64))

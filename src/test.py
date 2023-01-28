@@ -4,18 +4,13 @@ import cv2
 from config import *
 
 
-cap = cv2.VideoCapture(0)
-w, h = 640, 480
-cap.set(3, w)
-cap.set(4, h)
-
-
 cords = {}
 
 last_status, hand_type = "", ""
 
 
 async def hands_detection():
+    global last_status
     with mp_hands.Hands(max_num_hands=1, min_tracking_confidence=0.9, min_detection_confidence=0.9) as hands:
         while True:
             success, frame = cap.read()
@@ -68,7 +63,7 @@ async def hands_detection():
                 last_status = "-"
 
             print(last_status, hand_type, sep=' ||| ')
-            await asyncio.sleep(0.5)
+            await asyncio.sleep(1)
 
 
 async def game():

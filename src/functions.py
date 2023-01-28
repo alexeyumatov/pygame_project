@@ -10,10 +10,10 @@ pygame.init()
 size = width, height = 1920, 1080
 screen = pygame.display.set_mode(size)
 
-cap = cv2.VideoCapture(0)
-w, h = 640, 480
-cap.set(3, w)
-cap.set(4, h)
+# cap = cv2.VideoCapture(0)
+# w, h = 640, 480
+# cap.set(3, w)
+# cap.set(4, h)
 
 cords = {}
 last_status, hand_type = "", ""
@@ -105,11 +105,14 @@ def draw_pause():
     return button_collides, button_texts
 
 
-def display_player_data(hp_amount: int, shield_amount: int):
+def display_player_data(hp_amount: int, shield_amount: int, hero_is_poisoned=False):
     hp_data = data_font.render(str(hp_amount), True, white)
     shield_data = data_font.render(str(shield_amount), True, white)
     screen.blit(hp_data, (690, 987))
-    screen.blit(heart, (600, 970))
+    if hero_is_poisoned:
+        screen.blit(poisoned_heart, (600, 970))
+    else:
+        screen.blit(heart, (600, 970))
     screen.blit(shield_data, (1290, 987))
     screen.blit(shield, (1200, 970))
 
@@ -123,55 +126,3 @@ def draw_window():
     for el in enemies_group:
         screen.blit(el.image, camera.apply(el))
 
-
-def hands_detection(hands):
-    success, frame = cap.read()
-    frame = cv2.flip(frame, 1)
-
-    imgRGB = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-    results = hands.process(imgRGB)
-    imgRGB = cv2.cvtColor(imgRGB, cv2.COLOR_RGB2BGR)
-
-    if results.multi_hand_landmarks:
-        if results.multi_handedness:
-            hand_type = results.multi_handedness[0].classification[0].label
-
-        for hand_landmarks in results.multi_hand_landmarks:
-            mp_drawing.draw_landmarks(imgRGB, hand_landmarks,
-                                      mp_hands.HAND_CONNECTIONS,
-                                      mp_drawing.DrawingSpec(
-                                          color=(0, 0, 255)),
-                                      mp_drawing.DrawingSpec(
-                                          color=(0, 0, 0)))
-
-        for id, lm in enumerate(hand_landmarks.landmark):
-            h, w, c = frame.shape
-            cx, cy = int(lm.x * w), int(lm.y * h)
-            cords[f"{id}"] = cx, cy
-
-        if len(cords) == 21:
-            if hand_type == "Right":
-                if int(cords['8'][1]) > int(cords['6'][1]) \
-                        and int(cords['12'][1]) > int(cords['10'][1]) \
-                        and int(cords['16'][1]) > int(cords['14'][1]) \
-                        and int(cords['20'][1]) > int(cords['18'][1]) \
-                        and int(cords['4'][0]) > int(cords['2'][0]):
-                    last_status = "Close"
-                else:
-                    last_status = "Open"
-
-            elif hand_type == "Left":
-                if int(cords['8'][1]) > int(cords['6'][1]) \
-                        and int(cords['12'][1]) > int(cords['10'][1]) \
-                        and int(cords['16'][1]) > int(cords['14'][1]) \
-                        and int(cords['20'][1]) > int(cords['18'][1]) \
-                        and int(cords['4'][0]) < int(cords['2'][0]):
-                    last_status = "Close"
-                else:
-                    last_status = "Open"
-
-    else:
-        hand_type = "-"
-        last_status = "-"
-
-    return hand_type, last_status

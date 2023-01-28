@@ -1,7 +1,7 @@
 from functions import load_image
 from groups import *
-from objects import Coin
-from enemies_config import RegularEnemy, MiddleEnemy
+from objects import Coin, Fountain
+from enemies_config import RegularEnemy, MiddleEnemy, HardEnemy
 from player_config import Player
 
 
@@ -70,10 +70,14 @@ def draw_location(level_map, coins):
                 Tile('main_right_exit', x, y, all_sprites, portal_group)
             elif level_map[y][x] == '^' and coins:
                 Coin(x, y, all_sprites, coins_group)
+            elif level_map[y][x] == 'F':
+                Fountain(x, y, all_sprites, fountain_group)
             elif level_map[y][x] == 'E':
                 RegularEnemy(x, y, enemies_group)
             elif level_map[y][x] == 'M':
                 MiddleEnemy(x, y, enemies_group)
+            elif level_map[y][x] == 'H':
+                HardEnemy(x, y, enemies_group)
             elif level_map[y][x] == 'P':
                 Player(x, y)
     return x, y

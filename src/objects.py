@@ -5,7 +5,7 @@ from db_functions import bullets_damage_select, bullet_is_collidable_select
 
 
 class Bullet(pygame.sprite.Sprite):
-    images = [load_image(f'objects/bullet/{i}.png') for i in range(1, 7)]
+    images = [load_image(f'hero/bullet/{i}.png') for i in range(1, 7)]
 
     def __init__(self, x, y, player_view, *groups):
         super().__init__(*groups)
@@ -52,11 +52,10 @@ class Bullet(pygame.sprite.Sprite):
 
 
 class EnemyBullet(pygame.sprite.Sprite):
-    images = [load_image(f"enemies/middle_enemy/bullets/enemy_bullet_{i}.png") for i in range(1, 7)]
-
     def __init__(self, x, y, enemy_view, *groups):
         super(EnemyBullet, self).__init__(*groups)
-        self.image = EnemyBullet.images[0]
+        self.images = [load_image(f"enemies/middle_enemy/bullets/enemy_bullet_{i}.png") for i in range(1, 7)]
+        self.image = self.images[0]
         self.image = pygame.transform.scale(self.image, (64, 64))
         self.rect = self.image.get_rect()
         if enemy_view == 'left':
@@ -73,7 +72,7 @@ class EnemyBullet(pygame.sprite.Sprite):
     def update(self):
         if self.animCount + 1 >= 42:
             self.animCount = 0
-        self.image = EnemyBullet.images[self.animCount // 7]
+        self.image = self.images[self.animCount // 7]
         self.image = pygame.transform.scale(self.image, (64, 64))
         if self.view == "left":
             self.image = flip(self.image)
@@ -84,6 +83,7 @@ class EnemyBullet(pygame.sprite.Sprite):
         collided = pygame.sprite.spritecollideany(self, player_group)
         if collided:
             collided.damage(self.damage)
+            self.poison()
             self.kill()
 
         if pygame.sprite.spritecollide(self, walls_group, False):
@@ -91,6 +91,28 @@ class EnemyBullet(pygame.sprite.Sprite):
             return 'killed'
         else:
             return 'alive'
+
+    def poison(self):
+        pass
+
+
+class PoisonBullet(EnemyBullet):
+    def __init__(self, x, y, player_view, *groups):
+        super(PoisonBullet, self).__init__(x, y, player_view, *groups)
+        self.images = [load_image(f'enemies/hard_enemy/bullets/enemy_3_bullet_{i}.png') for i in range(1, 7)]
+        self.image = self.images[0]
+        self.image = pygame.transform.scale(self.image, (64, 64))
+        self.rect = self.image.get_rect()
+        self.rect.x, self.rect.y = x, y
+        self.view = player_view
+        if self.view == 'right':
+            self.velx = 30
+        elif self.view == 'left':
+            self.velx = -30
+
+    def poison(self):
+        for el in player_group:
+            el.isPoisoned = True
 
 
 class Coin(pygame.sprite.Sprite):
@@ -102,3 +124,33 @@ class Coin(pygame.sprite.Sprite):
         width, height = 50, 75
         self.image = pygame.transform.scale(self.image, (width, height))
         self.rect = self.image.get_rect().move(pos_x * 128, 128 * pos_y)
+
+
+class Fountain(pygame.sprite.Sprite):
+    images = [load_image(f"objects/fountain/{i}.png") for i in range(1, 8)]
+
+    def __init__(self, pos_x, pos_y, *groups):
+        super(Fountain, self).__init__(*groups)
+        self.image = Fountain.images[0]
+        self.rect = self.image.get_rect().move(
+            pos_x * 128, pos_y * 128 - 47)
+        self.animCount = 0
+        self.isPressed = False
+        self.heal_cooldown = 1
+
+    def update(self):
+        if self.animCount >= 49:
+            self.animCount = 0
+
+        self.image = Fountain.images[self.animCount // 7]
+
+        self.animCount += 1
+
+        if self.isPressed:
+            if self.heal_cooldown // 120 == 1:
+                for el in player_group:
+                    el.isPoisoned = False
+                self.heal_cooldown = 0
+            self.heal_cooldown += 1
+        else:
+            self.heal_cooldown = 0

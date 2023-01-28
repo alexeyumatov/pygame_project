@@ -1,6 +1,6 @@
 import pygame
 from functions import load_image, flip
-from groups import all_sprites, player_group, bullets, tiles_group, coins_group, portal_group, enemies_group
+from groups import *
 from objects import Bullet
 from db_functions import coins_update, bullets_amount_select, shield_points_select
 
@@ -28,6 +28,9 @@ class Player(pygame.sprite.Sprite):
         self.health_points = 100
         self.shield_points = shield_points_select(1)
         self.coins_collected = 0
+        self.isPoisoned = False
+        self.poison_cooldown = 0
+        self.able_to_heal = False
 
         self.animCount = 0
         self.view, self.isFlipped = "right", False
@@ -52,6 +55,9 @@ class Player(pygame.sprite.Sprite):
 
         # BULLET COOLDOWN
         self.shoot_cooldown += 1
+
+        # POISON COOLDOWN
+        self.poison_cooldown += 1
 
         # HERO MOVEMENT
         if not self.end_movement:
@@ -159,6 +165,12 @@ class Player(pygame.sprite.Sprite):
             else:
                 self.rect.y += ladder_vl_y
 
+            # POISON CHECK
+            if self.isPoisoned:
+                if self.poison_cooldown % 60 == 0:
+                    self.damage(5, from_poison=True)
+                    self.poison_cooldown = 0
+
             # COLLIDERS
             for tile in tiles_group:
                 if tile.rect.colliderect(self.rect.x + vl_x, self.rect.y, self.width, self.height):
@@ -173,6 +185,12 @@ class Player(pygame.sprite.Sprite):
                         self.OnGround = True
                         self.vely = 0
                         self.inJump = False
+
+            collide = pygame.sprite.spritecollideany(self, fountain_group)
+            if collide:
+                self.able_to_heal = True
+            else:
+                self.able_to_heal = False
 
             for tile in enemies_group:
                 if tile.rect.colliderect(self.rect):
@@ -248,9 +266,11 @@ class Player(pygame.sprite.Sprite):
                 else:
                     self.onLadder = False
 
-    def damage(self, damage_amount):
-        if self.shield_points > 0:
+    def damage(self, damage_amount, from_poison=False):
+        if self.shield_points > 0 and not from_poison:
             self.shield_points -= damage_amount
+            if self.shield_points < 0:
+                self.health_points += self.shield_points
         else:
             self.health_points -= damage_amount
         if self.shield_points < 0:
