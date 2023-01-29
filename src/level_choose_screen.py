@@ -134,14 +134,14 @@ def market_window():
     coins_amount = coins_select(1)
 
     # TEXTS FOR LOTS IN THE MARKET
-    texts = [f'Already Purchased: {shield_points_select(1)}', f'Already Purchased: {bullets_amount_select(1)}',
+    texts = [f'Already Purchased: {shield_points_select(1)}', f'Delay now: {bullet_cooldown_select(1)[1]} ms',
              f'Already Purchased: {bullets_damage_select(1)}',
              f'Already Purchased: {"Yes" if bullet_is_collidable_select(1) else "No"}']
 
     lots_rect = [pygame.Rect(80, 300, 270, 270), pygame.Rect(580, 300, 270, 270),
                  pygame.Rect(1080, 300, 270, 270), pygame.Rect(1580, 300, 270, 270)]
     lots = [load_image('Menu/market/armor_upgrade.png', -1),
-            load_image('Menu/market/bullets_amount_upgrade.png', -1),
+            load_image('Menu/market/bullet_cooldown_upgrade.png', -1),
             load_image('Menu/market/bullet_damage_upgrade.png', -1),
             load_image('Menu/market/bullets_collide_upgrade.png', -1)]
     lots_texts = ['Shield Upgrade', 'Bullets Amount', 'Bullets Damage', 'Collision of Bullets']
@@ -162,14 +162,10 @@ def market_window():
                    for _ in range(len(purchase_buttons_rect))]
 
     prices = [10, 5, 15, 40]
-    data = [shield_points_select(1), bullets_amount_select(1), bullets_damage_select(1), bullet_is_collidable_select(1)]
+    data = [shield_points_select(1), bullet_cooldown_select(1)[0], bullets_damage_select(1),
+            bullet_is_collidable_select(1)]
     max_values = [50, 3, 30, 1]
     available_buttons = []
-
-    for el in purchase_buttons_rect:
-        index = purchase_buttons_rect.index(el)
-        if prices[index] < coins_amount and data[index] < max_values[index]:
-            available_buttons.append(el)
 
     # COINS COUNTER
     coin = load_image('objects/coin/coin.png', -1)
@@ -178,6 +174,11 @@ def market_window():
     while True:
         screen.fill((0, 30, 38))
         event = pygame.event.poll()
+
+        for el in purchase_buttons_rect:
+            index = purchase_buttons_rect.index(el)
+            if prices[index] <= coins_amount and data[index] < max_values[index]:
+                available_buttons.append(el)
 
         # COIN DATA
         coin_data = big_data_font.render(str(coins_amount), True, white)
@@ -196,6 +197,9 @@ def market_window():
             if el == lots[-1]:
                 screen.blit(elem_name, (lot_rect.x - 8, lot_rect.y - 64))
                 screen.blit(elem_data, (lot_rect.x - 10, lot_rect.y + 300))
+            elif el == lots[1]:
+                screen.blit(elem_name, (lot_rect.x + 16, lot_rect.y - 64))
+                screen.blit(elem_data, (lot_rect.x + 30, lot_rect.y + 300))
             else:
                 screen.blit(elem_name, (lot_rect.x + 16, lot_rect.y - 64))
                 screen.blit(elem_data, (lot_rect.x - 2, lot_rect.y + 300))
@@ -203,7 +207,7 @@ def market_window():
 
             if data[index] == max_values[index]:
                 screen.blit(max_buttons[index], purchase_buttons_rect[index])
-            elif prices[index] < coins_amount:
+            elif prices[index] <= coins_amount:
                 screen.blit(purchase_buttons[index], purchase_buttons_rect[index])
             else:
                 screen.blit(blocked_buttons[index], purchase_buttons_rect[index])
@@ -217,22 +221,23 @@ def market_window():
                     if lot == 0:
                         shield_points_update(1)
                     elif lot == 1:
-                        bullets_amount_update(1)
+                        bullet_cooldown_update(1)
                     elif lot == 2:
                         bullets_damage_update(1)
                     elif lot == 3:
                         bullet_is_collided_update(1)
                     coins_update(1, -prices[lot])
                 texts = [f'Already Purchased: {shield_points_select(1)}',
-                         f'Already Purchased: {bullets_amount_select(1)}',
+                         f'Delay now: {bullet_cooldown_select(1)[1]} ms',
                          f'Already Purchased: {bullets_damage_select(1)}',
                          f'Already Purchased: {"Yes" if bullet_is_collidable_select(1) else "No"}']
                 coins_amount = coins_select(1)
-                data = [shield_points_select(1), bullets_amount_select(1), bullets_damage_select(1),
+                data = [shield_points_select(1), bullet_cooldown_select(1)[0], bullets_damage_select(1),
                         bullet_is_collidable_select(1)]
 
         if event.type == pygame.KEYDOWN and event.key == pygame.K_BACKSPACE:
             return level_choose()
 
         pygame.display.update()
+        available_buttons.clear()
         clock.tick(MENU_FPS)

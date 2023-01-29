@@ -11,12 +11,6 @@ def coins_select(player_id):
     return res[0][0]
 
 
-def bullets_amount_select(player_id):
-    res = cursor.execute("""SELECT bullets_amount FROM bullet_stats WHERE player_id = ?""",
-                         (player_id, )).fetchall()
-    return res[0][0]
-
-
 def bullets_damage_select(player_id):
     res = cursor.execute("""SELECT bullet_damage FROM bullet_stats WHERE player_id = ?""",
                          (player_id, )).fetchall()
@@ -41,6 +35,22 @@ def shield_points_select(player_id):
     return res[0][0]
 
 
+def bullet_cooldown_select(player_id):
+    res = cursor.execute("""SELECT bullet_cooldown FROM bullet_stats WHERE player_id = ?""",
+                         (player_id, )).fetchall()
+
+    processed_result = 0
+    if res[0][0] == 1:
+        processed_result = 60
+    elif res[0][0] == 2:
+        processed_result = 50
+    elif res[0][0] == 3:
+        processed_result = 40
+    elif res[0][0] == 4:
+        processed_result = 35
+    return [res[0][0], processed_result]
+
+
 def stamina_select(player_id):
     res = cursor.execute("""SELECT stamina FROM player_stats WHERE id = ?""",
                          (player_id, )).fetchall()
@@ -58,13 +68,6 @@ def stamina_update(player_id, stamina_amount):
     cursor.execute("""UPDATE player_stats
                     SET stamina = stamina + ?
                     WHERE id = ?""", (stamina_amount, player_id))
-    conn.commit()
-
-
-def bullets_amount_update(player_id):
-    cursor.execute("""UPDATE bullet_stats
-                    SET bullets_amount = bullets_amount + 1
-                    WHERE player_id = ?""", (player_id, ))
     conn.commit()
 
 
@@ -86,6 +89,13 @@ def levels_amount_update(player_id):
     cursor.execute("""UPDATE player_stats
                     SET levels_passed = levels_passed + 1
                     WHERE id = ?""", (player_id, ))
+    conn.commit()
+
+
+def bullet_cooldown_update(player_id):
+    cursor.execute("""UPDATE bullet_stats
+                    SET bullet_cooldown = bullet_cooldown + 1
+                    WHERE player_id = ?""", (player_id, ))
     conn.commit()
 
 

@@ -1,7 +1,8 @@
 from functions import load_image, flip
 from groups import *
 from objects import Bullet
-from db_functions import coins_update, bullets_amount_select, shield_points_select, stamina_select
+from db_functions import coins_update, shield_points_select, stamina_select, \
+    bullet_cooldown_select
 
 g = 10
 
@@ -226,7 +227,7 @@ class Player(pygame.sprite.Sprite):
 
     def shoot(self):
         if self.able_to_shoot:
-            if self.shoot_cooldown >= 40:
+            if self.shoot_cooldown >= bullet_cooldown_select(1)[1]:
                 if self.view == "left":
                     ratio = -30
                 else:
@@ -235,7 +236,7 @@ class Player(pygame.sprite.Sprite):
                 self.bulletList.append(bullet)
                 self.bullet_onScreen = True
                 self.shoot_cooldown = 0
-            if len(self.bulletList) >= bullets_amount_select(1):
+            if len(self.bulletList) >= 1:
                 return None
 
     def bullet_update(self):
