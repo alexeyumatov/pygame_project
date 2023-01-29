@@ -12,7 +12,7 @@ MENU_FPS = 24
 
 # HANDS
 cords = {}
-last_status, hand_type = "", ""
+last_status, hand_type = "-", ""
 cap = cv2.VideoCapture(0)
 w, h = 640, 480
 cap.set(3, w)

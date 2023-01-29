@@ -68,7 +68,6 @@ async def hands_detection():
                 hand_type = "-"
                 last_status = "-"
 
-            # print(last_status, hand_type, sep=' ||| ')
             await asyncio.sleep(0.5)
 
 
@@ -107,9 +106,10 @@ async def game_func():
                     hero.onLadder = False
                 if event.key == pygame.K_z:
                     super_attack = True
-            print(last_status)
-            if last_status == 'Close':
-                hero.shoot()
+                if event.key == pygame.K_x:
+                    super_attack = False
+        if last_status == 'Close':
+            hero.shoot()
 
         if hero.update():
             if levels_amount_select(1) == level_number:
