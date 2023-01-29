@@ -41,10 +41,23 @@ def shield_points_select(player_id):
     return res[0][0]
 
 
+def stamina_select(player_id):
+    res = cursor.execute("""SELECT stamina FROM player_stats WHERE id = ?""",
+                         (player_id, )).fetchall()
+    return res[0][0]
+
+
 def coins_update(player_id, coins_amount):
     cursor.execute("""UPDATE player_stats
                     SET coins_amount = coins_amount + ?
                     WHERE id = ?""", (coins_amount, player_id))
+    conn.commit()
+
+
+def stamina_update(player_id, stamina_amount):
+    cursor.execute("""UPDATE player_stats
+                    SET stamina = stamina + ?
+                    WHERE id = ?""", (stamina_amount, player_id))
     conn.commit()
 
 

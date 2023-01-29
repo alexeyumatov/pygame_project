@@ -105,9 +105,18 @@ def draw_pause():
     return button_collides, button_texts
 
 
-def display_player_data(hp_amount: int, shield_amount: int, hero_is_poisoned=False):
-    hp_data = data_font.render(str(hp_amount), True, white)
-    shield_data = data_font.render(str(shield_amount), True, white)
+def display_player_data(hero, ultimate_attack, hero_is_poisoned=False):
+    hp_data = data_font.render(str(hero.health_points), True, white)
+    shield_data = data_font.render(str(hero.shield_points), True, white)
+    if hero.stamina == 100 and ultimate_attack:
+        screen.blit(ultimate_ready, (900, 955))
+        stamina_data = data_font.render('In Use', True, white)
+    elif hero.stamina == 100:
+        stamina_data = data_font.render('Ready', True, white)
+        screen.blit(ultimate_ready, (900, 955))
+    else:
+        stamina_data = data_font.render(str(hero.stamina), True, white)
+        screen.blit(ultimate_not_ready, (900, 955))
     screen.blit(hp_data, (690, 987))
     if hero_is_poisoned:
         screen.blit(poisoned_heart, (600, 970))
@@ -115,6 +124,12 @@ def display_player_data(hp_amount: int, shield_amount: int, hero_is_poisoned=Fal
         screen.blit(heart, (600, 970))
     screen.blit(shield_data, (1290, 987))
     screen.blit(shield, (1200, 970))
+    screen.blit(stamina_data, (1006, 987))
+
+
+def ultimate_tip():
+    tip = data_font.render('Press Z to activate ultimate attack', True, white)
+    screen.blit(tip, (710, 40))
 
 
 def draw_window():

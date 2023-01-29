@@ -1,7 +1,8 @@
 import pygame
 from functions import load_image, flip
 from groups import walls_group, enemies_group, player_group, enemy_bullets
-from db_functions import bullets_damage_select, bullet_is_collidable_select
+from db_functions import bullets_damage_select, bullet_is_collidable_select, \
+    stamina_select, stamina_update
 
 
 class Bullet(pygame.sprite.Sprite):
@@ -23,6 +24,8 @@ class Bullet(pygame.sprite.Sprite):
         self.damage = bullets_damage_select(1)
 
     def update(self):
+        for el in player_group:
+            hero = el
         if self.animCount + 1 >= 42:
             self.animCount = 0
         self.image = Bullet.images[self.animCount // 7]
@@ -41,6 +44,9 @@ class Bullet(pygame.sprite.Sprite):
         collided = pygame.sprite.spritecollideany(self, enemies_group)
         if collided:
             collided.incoming_damage(self.damage)
+            if hero.stamina < 100:
+                stamina_update(1, 10)
+            hero.stamina = stamina_select(1)
             self.kill()
             return 'killed'
 

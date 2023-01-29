@@ -4,15 +4,15 @@ import pygame.display
 
 from menu import start_screen, pause
 from groups import ladder_group, floor_group, enemies_group, player_group, enemy_bullets, fountain_group
-from functions import load_image, draw_window, display_player_data
+from functions import load_image, draw_window, display_player_data, ultimate_tip
 from level_choose_screen import level_choose
-from db_functions import levels_amount_update, levels_amount_select
+from db_functions import levels_amount_update, levels_amount_select, stamina_update, stamina_select
 from config import *
 
 
 pause_background = load_image('pause/Pause.png')
 screen = pygame.display.set_mode(resolution, pygame.SCALED | pygame.FULLSCREEN, vsync=1)
-super_attack = False
+ultimate_attack, ultimate_attack_is_able = False, False
 
 
 async def hands_detection():
@@ -67,12 +67,11 @@ async def hands_detection():
             else:
                 hand_type = "-"
                 last_status = "-"
-
             await asyncio.sleep(0.5)
 
 
 async def game_func():
-    global super_attack
+    global ultimate_attack, last_status, ultimate_attack_is_able
     level_number = start_screen()
 
     pygame.init()
@@ -104,12 +103,19 @@ async def game_func():
                     hero.ladder_climb(ladder_group, floor_group)
                 elif event.key == pygame.K_e and hero.onLadder:
                     hero.onLadder = False
-                if event.key == pygame.K_z:
-                    super_attack = True
-                if event.key == pygame.K_x:
-                    super_attack = False
-        if last_status == 'Close':
+                if ultimate_attack and event.key == pygame.K_z:
+                    ultimate_attack = False
+                    ultimate_attack_is_able = True
+        if hero.stamina == 100:
+            ultimate_attack = True
+        else:
+            ultimate_attack = False
+        if last_status == 'Close' and ultimate_attack_is_able:
             hero.shoot()
+            stamina_update(1, -100)
+            hero.stamina = stamina_select(1)
+            last_status = '-'
+            ultimate_attack_is_able = False
 
         if hero.update():
             if levels_amount_select(1) == level_number:
@@ -126,16 +132,19 @@ async def game_func():
         camera.update(hero)
         draw_window()
 
+        if ultimate_attack and not ultimate_attack_is_able:
+            ultimate_tip()
+
         if hero.isPoisoned:
-            display_player_data(hero.health_points, hero.shield_points, True)
+            display_player_data(hero, ultimate_attack_is_able, True)
         else:
-            display_player_data(hero.health_points, hero.shield_points)
+            display_player_data(hero, ultimate_attack_is_able)
 
         pygame.display.flip()
         if hero.is_killed:
             await game_func()
 
-        if super_attack:
+        if ultimate_attack_is_able:
             await asyncio.sleep(0)
 
         clock.tick(FPS)

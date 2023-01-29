@@ -14,7 +14,7 @@ MENU_FPS = 24
 cords = {}
 last_status, hand_type = "-", ""
 cap = cv2.VideoCapture(0)
-w, h = 640, 480
+w, h = 1280, 720
 cap.set(3, w)
 cap.set(4, h)
 
@@ -37,17 +37,27 @@ black = (0, 0, 0)
 
 
 # IMAGES
+width, height = 74, 64
+
 heart = pygame.image.load('data/player_data/heart.png')
-heart = pygame.transform.scale(heart, (74, 64))
+heart = pygame.transform.scale(heart, (width, height))
 heart.set_alpha(210)
 
 poisoned_heart = pygame.image.load('data/player_data/poisoned_heart.png')
-poisoned_heart = pygame.transform.scale(poisoned_heart, (74, 64))
+poisoned_heart = pygame.transform.scale(poisoned_heart, (width, height))
 poisoned_heart.set_alpha(210)
 
 shield = pygame.image.load('data/player_data/shield.png')
-shield = pygame.transform.scale(shield, (74, 64))
+shield = pygame.transform.scale(shield, (width, 64))
 shield.set_alpha(210)
+
+ultimate_not_ready = pygame.image.load('data/player_data/ultimate_attack/ultimate_not_ready.png')
+ultimate_not_ready = pygame.transform.scale(ultimate_not_ready, (90, 90))
+ultimate_not_ready.set_alpha(210)
+
+ultimate_ready = pygame.image.load('data/player_data/ultimate_attack/ultimate_ready.png')
+ultimate_ready = pygame.transform.scale(ultimate_ready, (90, 90))
+ultimate_ready.set_alpha(210)
 
 
 # TEXT

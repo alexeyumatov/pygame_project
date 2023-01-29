@@ -1,8 +1,7 @@
-import pygame
 from functions import load_image, flip
 from groups import *
 from objects import Bullet
-from db_functions import coins_update, bullets_amount_select, shield_points_select
+from db_functions import coins_update, bullets_amount_select, shield_points_select, stamina_select
 
 g = 10
 
@@ -26,6 +25,7 @@ class Player(pygame.sprite.Sprite):
         self.velx, self.vely, self.ladder_vely = 0, 0, 0  # velocity vars
 
         self.health_points = 100
+        self.stamina = stamina_select(1)
         self.shield_points = shield_points_select(1)
         self.coins_collected = 0
         self.isPoisoned = False
