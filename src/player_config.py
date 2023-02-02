@@ -1,6 +1,6 @@
 from functions import load_image, flip
 from groups import *
-from objects import Bullet
+from objects import Bullet, UltimateAttack
 from db_functions import coins_update, shield_points_select, stamina_select, \
     bullet_cooldown_select
 
@@ -13,6 +13,10 @@ class Player(pygame.sprite.Sprite):
 
     walk_images = [
         load_image(f'hero/hero_walk/Player_Walk_Animation_{i}.png') for i in range(1, 11)]
+
+    death_images = [load_image(f"hero/hero_death/{i}.png") for i in range(1, 13)]
+
+    damaged_images = [load_image(f"hero/hero_damaged/{i}.png") for i in range(1, 4)]
 
     def __init__(self, x, y):
         super().__init__(player_group)
@@ -34,6 +38,9 @@ class Player(pygame.sprite.Sprite):
         self.able_to_heal = False
 
         self.animCount = 0
+        self.death_animCount = 0
+        self.death_time = 0
+        self.death_anim = False
         self.view, self.isFlipped = "right", False
         self.state = False
         self.OnGround, self.onLadder = False, False
@@ -51,179 +58,186 @@ class Player(pygame.sprite.Sprite):
 
     # collide_group
     def update(self):
-        vl_x, vl_y = 0, 0
-        ladder_vl_y = 0  # extra speed vars
+        if self.death_anim:
+            if self.death_time < 60:
+                self.death_time += 1
+                self.death()
+            elif self.death_time >= 60:
+                self.is_killed = True
+        else:
+            vl_x, vl_y = 0, 0
+            ladder_vl_y = 0  # extra speed vars
 
-        # BULLET COOLDOWN
-        self.shoot_cooldown += 1
+            # BULLET COOLDOWN
+            self.shoot_cooldown += 1
 
-        # POISON COOLDOWN
-        self.poison_cooldown += 1
+            # POISON COOLDOWN
+            self.poison_cooldown += 1
 
-        # HERO MOVEMENT
-        if not self.end_movement:
-            key = pygame.key.get_pressed()
-            if key[pygame.K_SPACE] and not self.inJump and not self.onLadder and self.OnGround:
-                vl_y = -2
-                self.inJump = True
-                self.OnGround = False
+            # HERO MOVEMENT
+            if not self.end_movement:
+                key = pygame.key.get_pressed()
+                if key[pygame.K_SPACE] and not self.inJump and not self.onLadder and self.OnGround:
+                    vl_y = -2
+                    self.inJump = True
+                    self.OnGround = False
 
-            if key[pygame.K_a] and not key[pygame.K_d]:
-                if self.velx > 0:
-                    self.velx = 0
-                self.velx -= 0.5
-                if self.velx <= -14:
-                    self.velx = -14
-                vl_x += self.velx
-                self.animCount += 1
-                self.view = 'left'
-                self.state = True
-
-            if key[pygame.K_d]:
-                if self.velx < 0:
-                    self.velx = 0
-                self.velx += 0.5
-                if self.velx >= 14:
-                    self.velx = 14
-                vl_x += self.velx
-                self.animCount += 1
-                self.view = 'right'
-                self.isFlipped, self.state = False, True
-
-            if not key[pygame.K_d] and not key[pygame.K_a]:
-                self.state = False
-                if self.velx > 0:
-                    self.velx -= 2
-                    if self.velx <= 0:
+                if key[pygame.K_a] and not key[pygame.K_d]:
+                    if self.velx > 0:
                         self.velx = 0
-                elif self.velx < 0:
-                    self.velx += 2
-                    if self.velx >= 0:
-                        self.velx = 0
-                vl_x += self.velx
+                    self.velx -= 0.5
+                    if self.velx <= -14:
+                        self.velx = -14
+                    vl_x += self.velx
+                    self.animCount += 1
+                    self.view = 'left'
+                    self.state = True
 
-                # IDLE ANIMATION
-                if not self.onLadder:
-                    if self.animCount + 1 >= 42:
+                if key[pygame.K_d]:
+                    if self.velx < 0:
+                        self.velx = 0
+                    self.velx += 0.5
+                    if self.velx >= 14:
+                        self.velx = 14
+                    vl_x += self.velx
+                    self.animCount += 1
+                    self.view = 'right'
+                    self.isFlipped, self.state = False, True
+
+                if not key[pygame.K_d] and not key[pygame.K_a]:
+                    self.state = False
+                    if self.velx > 0:
+                        self.velx -= 2
+                        if self.velx <= 0:
+                            self.velx = 0
+                    elif self.velx < 0:
+                        self.velx += 2
+                        if self.velx >= 0:
+                            self.velx = 0
+                    vl_x += self.velx
+
+                    # IDLE ANIMATION
+                    if not self.onLadder:
+                        if self.animCount + 1 >= 42:
+                            self.animCount = 0
+
+                        self.image = Player.idle_images[self.animCount // 7]
+                        if self.view == 'left':
+                            self.image = flip(self.image)
+
+                        self.animCount += 1
+
+                # LADDER PHYSICS
+                if self.onLadder:
+                    self.image = Player.idle_images[0]
+                    if self.view == 'left':
+                        self.image = flip(self.image)
+
+                    if key[pygame.K_w]:
+                        self.ladder_vely -= 0.5
+                        if self.ladder_vely <= -10:
+                            self.ladder_vely = -10
+                        ladder_vl_y += self.ladder_vely
+
+                    if key[pygame.K_s] and not self.ladder_collide and not key[pygame.K_w]:
+                        self.ladder_vely += 0.5
+                        if self.ladder_vely >= 10:
+                            self.ladder_vely = 10
+                        ladder_vl_y += self.ladder_vely
+                    if not key[pygame.K_s] and not key[pygame.K_w]:
+                        if self.ladder_vely > 0:
+                            self.ladder_vely -= 2
+                            if self.ladder_vely <= 0:
+                                self.ladder_vely = 0
+                            ladder_vl_y += self.ladder_vely
+                        if self.ladder_vely < 0:
+                            self.ladder_vely += 2
+                            if self.ladder_vely >= 0:
+                                self.ladder_vely = 0
+                            ladder_vl_y += self.ladder_vely
+
+                if self.view == "left" and not self.isFlipped:
+                    self.image = flip(self.image)
+                    self.isFlipped = True
+
+                if self.state and not self.onLadder:
+                    if self.animCount + 1 >= 60:
                         self.animCount = 0
 
-                    self.image = Player.idle_images[self.animCount // 7]
-                    if self.view == 'left':
+                    self.image = Player.walk_images[self.animCount // 6]
+
+                    if self.view == "left":
                         self.image = flip(self.image)
 
                     self.animCount += 1
 
-            # LADDER PHYSICS
-            if self.onLadder:
-                self.image = Player.idle_images[0]
-                if self.view == 'left':
-                    self.image = flip(self.image)
-
-                if key[pygame.K_w]:
-                    self.ladder_vely -= 0.5
-                    if self.ladder_vely <= -10:
-                        self.ladder_vely = -10
-                    ladder_vl_y += self.ladder_vely
-
-                if key[pygame.K_s] and not self.ladder_collide and not key[pygame.K_w]:
-                    self.ladder_vely += 0.5
-                    if self.ladder_vely >= 10:
-                        self.ladder_vely = 10
-                    ladder_vl_y += self.ladder_vely
-                if not key[pygame.K_s] and not key[pygame.K_w]:
-                    if self.ladder_vely > 0:
-                        self.ladder_vely -= 2
-                        if self.ladder_vely <= 0:
-                            self.ladder_vely = 0
-                        ladder_vl_y += self.ladder_vely
-                    if self.ladder_vely < 0:
-                        self.ladder_vely += 2
-                        if self.ladder_vely >= 0:
-                            self.ladder_vely = 0
-                        ladder_vl_y += self.ladder_vely
-
-            if self.view == "left" and not self.isFlipped:
-                self.image = flip(self.image)
-                self.isFlipped = True
-
-            if self.state and not self.onLadder:
-                if self.animCount + 1 >= 60:
-                    self.animCount = 0
-
-                self.image = Player.walk_images[self.animCount // 6]
-
-                if self.view == "left":
-                    self.image = flip(self.image)
-
-                self.animCount += 1
-
-            # GRAVITY
-            if not self.onLadder and not self.inJump:
-                self.vely += 1
-                if self.vely > 10:
-                    self.vely = 10
-                vl_y += self.vely
-            else:
-                self.rect.y += ladder_vl_y
-
-            # POISON CHECK
-            if self.isPoisoned:
-                if self.poison_cooldown % 60 == 0:
-                    self.damage(5, from_poison=True)
-                    self.poison_cooldown = 0
-
-            # COLLIDERS
-            for tile in tiles_group:
-                if tile.rect.colliderect(self.rect.x + vl_x, self.rect.y, self.width, self.height):
-                    vl_x = 0
-                    self.velx = 0
-                if tile.rect.colliderect(self.rect.x, self.rect.y + vl_y, self.width, self.height):
-                    if self.vely < 0:
-                        vl_y = tile.rect.bottom - self.rect.top
-                        self.vely = 0
-                    elif self.vely >= 0:
-                        vl_y = tile.rect.top - self.rect.bottom
-                        self.OnGround = True
-                        self.vely = 0
-                        self.inJump = False
-
-            collide = pygame.sprite.spritecollideany(self, fountain_group)
-            if collide:
-                self.able_to_heal = True
-            else:
-                self.able_to_heal = False
-
-            for tile in enemies_group:
-                if tile.rect.colliderect(self.rect):
-                    self.able_to_shoot = False
+                # GRAVITY
+                if not self.onLadder and not self.inJump:
+                    self.vely += 1
+                    if self.vely > 10:
+                        self.vely = 10
+                    vl_y += self.vely
                 else:
-                    self.able_to_shoot = True
+                    self.rect.y += ladder_vl_y
 
-            if pygame.sprite.spritecollide(self, coins_group, True):
-                self.coins_collected += 1
+                # POISON CHECK
+                if self.isPoisoned:
+                    if self.poison_cooldown % 60 == 0:
+                        self.damage(5, from_poison=True)
+                        self.poison_cooldown = 0
 
-            if self.inJump:
-                self.vely -= 2
-                if self.vely <= -10:
-                    self.vely = -10
-                    self.inJump = False
-                vl_y += self.vely
+                # COLLIDERS
+                for tile in tiles_group:
+                    if tile.rect.colliderect(self.rect.x + vl_x, self.rect.y, self.width, self.height):
+                        vl_x = 0
+                        self.velx = 0
+                    if tile.rect.colliderect(self.rect.x, self.rect.y + vl_y, self.width, self.height):
+                        if self.vely < 0:
+                            vl_y = tile.rect.bottom - self.rect.top
+                            self.vely = 0
+                        elif self.vely >= 0:
+                            vl_y = tile.rect.top - self.rect.bottom
+                            self.OnGround = True
+                            self.vely = 0
+                            self.inJump = False
 
-            self.rect.x += vl_x
-            if vl_y < -150:
-                vl_y = 10
-            self.rect.y += vl_y
+                collide = pygame.sprite.spritecollideany(self, fountain_group)
+                if collide:
+                    self.able_to_heal = True
+                else:
+                    self.able_to_heal = False
 
-        # PORTAL COLLIDERS
-        for tile in portal_group:
-            if tile.rect.colliderect(self.rect.x + vl_x, self.rect.y, self.width, self.height):
-                self.end_movement = True
-                if self.portal_collide():
-                    return True
-            else:
-                self.end_movement = False
+                for tile in enemies_group:
+                    if tile.rect.colliderect(self.rect):
+                        self.able_to_shoot = False
+                    else:
+                        self.able_to_shoot = True
 
-        return False
+                if pygame.sprite.spritecollide(self, coins_group, True):
+                    self.coins_collected += 1
+
+                if self.inJump:
+                    self.vely -= 2
+                    if self.vely <= -10:
+                        self.vely = -10
+                        self.inJump = False
+                    vl_y += self.vely
+
+                self.rect.x += vl_x
+                if vl_y < -150:
+                    vl_y = 10
+                self.rect.y += vl_y
+
+            # PORTAL COLLIDERS
+            for tile in portal_group:
+                if tile.rect.colliderect(self.rect.x + vl_x, self.rect.y, self.width, self.height):
+                    self.end_movement = True
+                    if self.portal_collide():
+                        return True
+                else:
+                    self.end_movement = False
+
+            return False
 
     def shoot(self):
         if self.able_to_shoot:
@@ -238,6 +252,16 @@ class Player(pygame.sprite.Sprite):
                 self.shoot_cooldown = 0
             if len(self.bulletList) >= 1:
                 return None
+
+    def ultimate(self):
+        if self.able_to_shoot:
+            if self.view == "left":
+                ratio = -30
+            else:
+                ratio = 150
+            ultimate = UltimateAttack(self.rect.x + ratio, self.rect.y + 140, self.view, all_sprites, bullets)
+            self.bulletList.append(ultimate)
+            self.bullet_onScreen = True
 
     def bullet_update(self):
         if self.bullet_onScreen:
@@ -277,7 +301,8 @@ class Player(pygame.sprite.Sprite):
         if self.shield_points < 0:
             self.shield_points = 0
         if self.health_points <= 0:
-            self.is_killed = True
+            self.health_points = 0
+            self.death_anim = True
 
     def portal_collide(self):
         vl_x = 0
@@ -291,3 +316,12 @@ class Player(pygame.sprite.Sprite):
         self.rect.x += vl_x
         self.end_distance += vl_x
         return False
+
+    def death(self):
+        if self.death_animCount >= 60:
+            self.death_animCount = 0
+
+        self.image = self.death_images[self.death_animCount // 5]
+
+        self.death_animCount += 1
+

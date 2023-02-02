@@ -111,11 +111,12 @@ async def game_func():
         else:
             ultimate_attack = False
         if last_status == 'Close' and ultimate_attack_is_able:
-            hero.shoot()
+            hero.ultimate()
             stamina_update(1, -100)
             hero.stamina = stamina_select(1)
             last_status = '-'
             ultimate_attack_is_able = False
+            ultimate_attack = False
 
         if hero.update():
             if levels_amount_select(1) == level_number:

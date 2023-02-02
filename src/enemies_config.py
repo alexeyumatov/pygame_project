@@ -9,14 +9,18 @@ class Enemy(pygame.sprite.Sprite):
         super(Enemy, self).__init__(*groups)
 
         self.animCount = 0
+        self.death_animCount = 0
+        self.death_time = 0
         self.view = 'right'
         self.velx = 0
         self.distance = 0
 
         self.view = 'right'
         self.isCollided = False
+        self.death_anim = False
 
         self.images = []
+        self.death_images = []
 
         self.damage = 0
         self.health_points = 0
@@ -24,48 +28,56 @@ class Enemy(pygame.sprite.Sprite):
     def update(self):
         vl_x = 0
 
-        if self.animCount > 49:
-            self.animCount = 0
-
-        self.image = self.images[self.animCount // 7]
-        if self.view == 'right':
-            self.image = flip(self.image)
-
-        self.animCount += 1
-
-        if self.view == 'right':
-            self.velx += 0.5
-            if self.velx >= 8:
-                self.velx = 8
-            vl_x += self.velx
-        elif self.view == 'left':
-            self.velx -= 0.5
-            if self.velx <= -8:
-                self.velx = -8
-            vl_x += self.velx
-
-        self.distance += vl_x
-        if abs(self.distance) >= 500:
-            if not self.isCollided:
-                self.shoot()
-            if self.view == 'right':
-                self.view = 'left'
-            else:
-                self.view = 'right'
-            self.distance = 0
-
-        self.rect.x += vl_x
-
-        player_collide = pygame.sprite.spritecollideany(self, player_group)
-        if player_collide:
-            self.isCollided = True
-            if self.counter % 60 == 0:
-                player_collide.damage(self.damage)
-                self.counter = 0
-            self.counter += 1
+        if self.death_anim:
+            if self.death_time < 60:
+                self.death_time += 1
+                self.death()
+            elif self.death_time >= 60:
+                self.kill()
         else:
-            self.isCollided = False
-            self.counter = 0
+
+            if self.animCount > 49:
+                self.animCount = 0
+
+            self.image = self.images[self.animCount // 7]
+            if self.view == 'right':
+                self.image = flip(self.image)
+
+            self.animCount += 1
+
+            if self.view == 'right':
+                self.velx += 0.5
+                if self.velx >= 8:
+                    self.velx = 8
+                vl_x += self.velx
+            elif self.view == 'left':
+                self.velx -= 0.5
+                if self.velx <= -8:
+                    self.velx = -8
+                vl_x += self.velx
+
+            self.distance += vl_x
+            if abs(self.distance) >= 500:
+                if not self.isCollided:
+                    self.shoot()
+                if self.view == 'right':
+                    self.view = 'left'
+                else:
+                    self.view = 'right'
+                self.distance = 0
+
+            self.rect.x += vl_x
+
+            player_collide = pygame.sprite.spritecollideany(self, player_group)
+            if player_collide:
+                self.isCollided = True
+                if self.counter % 60 == 0:
+                    player_collide.damage(self.damage)
+                    self.counter = 0
+                self.counter += 1
+            else:
+                self.isCollided = False
+                self.counter = 0
 
     def shoot(self):
         pass
@@ -73,7 +85,15 @@ class Enemy(pygame.sprite.Sprite):
     def incoming_damage(self, damage_amount):
         self.health_points -= damage_amount
         if self.health_points <= 0:
-            self.kill()
+            self.death_anim = True
+
+    def death(self):
+        if self.death_animCount >= 60:
+            self.death_animCount = 0
+
+        self.image = self.death_images[self.death_animCount // 5]
+
+        self.death_animCount += 1
 
 
 class RegularEnemy(Enemy):
@@ -84,6 +104,8 @@ class RegularEnemy(Enemy):
         self.image = self.images[0]
         self.rect = self.image.get_rect().move(
             128 * x, 128 * y)
+        self.death_images = \
+            [load_image(f'enemies/regular_enemy/enemy_death/{i}.png') for i in range(1, 13)]
         self.animCount = 0
         self.counter = 0
 
@@ -98,7 +120,10 @@ class RegularEnemy(Enemy):
 class MiddleEnemy(Enemy):
     def __init__(self, x, y, *groups):
         super(MiddleEnemy, self).__init__(*groups)
-        self.images = [load_image(f'enemies/middle_enemy/Enemy_2_Idle_{i}.png') for i in range(2, 10)]
+        self.images = [load_image(f'enemies/middle_enemy/Enemy_2_Idle_{i}.png')
+                       for i in range(2, 10)]
+        self.death_images = [load_image(f'enemies/middle_enemy/enemy_death/{i}.png')
+                             for i in range(1, 13)]
         self.image = self.images[0]
         self.rect = self.image.get_rect().move(
             128 * x, 128 * y)
@@ -125,7 +150,10 @@ class MiddleEnemy(Enemy):
 class HardEnemy(Enemy):
     def __init__(self, x, y, *groups):
         super(HardEnemy, self).__init__(*groups)
-        self.images = [load_image(f'enemies/hard_enemy/enemy_3_idle_{i}.png') for i in range(1, 13)]
+        self.images = [load_image(f'enemies/hard_enemy/enemy_3_idle_{i}.png')
+                       for i in range(1, 13)]
+        self.death_images = [load_image(f'enemies/hard_enemy/enemy_death/{i}.png')
+                             for i in range(1, 13)]
         self.image = self.images[0]
         self.animCount = 0
         self.rect = self.image.get_rect().move(

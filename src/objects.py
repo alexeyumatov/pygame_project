@@ -57,6 +57,57 @@ class Bullet(pygame.sprite.Sprite):
             return 'alive'
 
 
+class UltimateAttack(pygame.sprite.Sprite):
+    images = [load_image(f'hero/ultimate_attack/eye_fire_blue{i}.png', -1) for i in range(1, 8)]
+
+    def __init__(self, x, y, player_view, *groups):
+        super(UltimateAttack, self).__init__(*groups)
+        self.image = UltimateAttack.images[0]
+        self.image = pygame.transform.scale(self.image, (96, 72))
+        self.rect = self.image.get_rect()
+        self.rect.x, self.rect.y = x, y
+        self.view = player_view
+        if self.view == 'left':
+            self.velx = -28
+        elif self.view == 'right':
+            self.velx = 28
+            self.image = flip(self.image)
+
+        self.animCount = 0
+
+        self.damage = 70
+        self.collide_count = 0
+
+    def update(self):
+        if self.animCount >= 49:
+            self.animCount = 0
+        self.image = UltimateAttack.images[self.animCount // 7]
+        if self.view == 'right':
+            self.image = flip(self.image)
+        self.image = pygame.transform.scale(self.image, (96, 72))
+        self.animCount += 1
+
+        self.rect.x += self.velx
+
+        collided = pygame.sprite.spritecollideany(self, enemies_group)
+        if collided:
+            self.collide_count += 1
+            if self.collide_count == 1:
+                if self.velx > 10:
+                    self.velx -= 2
+                elif self.velx < -10:
+                    self.velx += 10
+            collided.incoming_damage(self.damage)
+        else:
+            self.collide_count = 0
+
+        if pygame.sprite.spritecollide(self, walls_group, False):
+            self.kill()
+            return 'killed'
+        else:
+            return 'alive'
+
+
 class EnemyBullet(pygame.sprite.Sprite):
     def __init__(self, x, y, enemy_view, *groups):
         super(EnemyBullet, self).__init__(*groups)

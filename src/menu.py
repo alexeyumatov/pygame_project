@@ -5,7 +5,7 @@ from level_choose_screen import level_choose
 
 pygame.init()
 
-screen = pygame.display.set_mode(resolution)
+screen = pygame.display.set_mode(resolution, pygame.FULLSCREEN | pygame.SCALED, vsync=1)
 width = screen.get_width()
 height = screen.get_height()
 
