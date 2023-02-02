@@ -1,0 +1,4 @@
+mediapipe==0.9.1.0
+mediapipe_silicon==0.8.11
+opencv_python==4.6.0.66
+pygame==2.1.2
