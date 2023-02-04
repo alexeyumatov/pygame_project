@@ -1,7 +1,8 @@
+import sys
 from config import *
-from functions import display_buttons, draw_pause, draw_window, load_image
+from functions import display_buttons, draw_pause, draw_window, load_image, draw_death_screen_buttons
 from level_choose_screen import level_choose
-
+from groups import all_sprites, player_group, enemies_group
 
 pygame.init()
 
@@ -110,6 +111,52 @@ def pause():
 
 button_collides = []
 button_texts = []
+
+
+def death_screen():
+    dead = True
+    screenAnim = 0
+    background = [load_image(f'Menu/death_screen/Death_Screen{i}.png', -1) for i in range(1, 9)]
+    background_color = pygame.Surface(resolution)
+    background_color.fill(red)
+    background_color.set_alpha(80)
+    draw_window()
+    screen.blit(background_color, (0, 0))
+    pygame.display.update()
+
+    while dead:
+        if screenAnim >= 56:
+            screenAnim = 0
+
+        background_image = background[screenAnim // 7]
+        screenAnim += 1
+        screen.blit(background_image, (0, 0))
+        buttons_rect = draw_death_screen_buttons()
+
+        pygame.display.update()
+
+        event = pygame.event.poll()
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_i:
+                sys.exit()
+
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            mouse_pos = pygame.mouse.get_pos()
+            for elem in buttons_rect:
+                collided = elem.collidepoint(mouse_pos)
+
+                if collided:
+                    for el in all_sprites:
+                        el.kill()
+                    for el in player_group:
+                        el.kill()
+                    for el in enemies_group:
+                        el.kill()
+                    if buttons_rect.index(elem) == 0:
+                        return level_choose()
+                    else:
+                        return start_screen()
+        clock.tick(FPS)
 
 
 def selection_buttons():

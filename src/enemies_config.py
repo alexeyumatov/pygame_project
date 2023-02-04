@@ -35,7 +35,6 @@ class Enemy(pygame.sprite.Sprite):
             elif self.death_time >= 60:
                 self.kill()
         else:
-
             if self.animCount > 49:
                 self.animCount = 0
 
@@ -97,7 +96,6 @@ class Enemy(pygame.sprite.Sprite):
 
 
 class RegularEnemy(Enemy):
-
     def __init__(self, x, y, *groups):
         super(RegularEnemy, self).__init__(*groups)
         self.images = [load_image(f'enemies/regular_enemy/{i}.png') for i in range(1, 9)]

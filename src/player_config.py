@@ -43,7 +43,7 @@ class Player(pygame.sprite.Sprite):
         self.death_anim = False
         self.view, self.isFlipped = "right", False
         self.state = False
-        self.OnGround, self.onLadder = False, False
+        self.OnGround, self.onLadder, self.ladder_hit = False, False, False
         self.inJump = False
 
         self.is_killed = False
@@ -58,6 +58,7 @@ class Player(pygame.sprite.Sprite):
 
     # collide_group
     def update(self):
+        # DEATH ANIMATION AND COOLDOWN
         if self.death_anim:
             if self.death_time < 60:
                 self.death_time += 1
@@ -156,6 +157,7 @@ class Player(pygame.sprite.Sprite):
                                 self.ladder_vely = 0
                             ladder_vl_y += self.ladder_vely
 
+                # WALKING ANIMATION
                 if self.view == "left" and not self.isFlipped:
                     self.image = flip(self.image)
                     self.isFlipped = True
@@ -201,21 +203,32 @@ class Player(pygame.sprite.Sprite):
                             self.vely = 0
                             self.inJump = False
 
+                # LADDER COLLIDE
+                ladder_collision = pygame.sprite.spritecollideany(self, ladder_group)
+                if ladder_collision:
+                    self.ladder_hit = True
+                else:
+                    self.ladder_hit = False
+
+                # FOUNTAIN COLLIDE
                 collide = pygame.sprite.spritecollideany(self, fountain_group)
                 if collide:
                     self.able_to_heal = True
                 else:
                     self.able_to_heal = False
 
+                # ENEMY COLLIDE (if the player touches the enemy, then he cannot shoot)
                 for tile in enemies_group:
                     if tile.rect.colliderect(self.rect):
                         self.able_to_shoot = False
                     else:
                         self.able_to_shoot = True
 
+                # COIN COLLIDE
                 if pygame.sprite.spritecollide(self, coins_group, True):
                     self.coins_collected += 1
 
+                # PHYSICS REALISATION
                 if self.inJump:
                     self.vely -= 2
                     if self.vely <= -10:

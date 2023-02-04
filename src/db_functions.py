@@ -104,3 +104,15 @@ def shield_points_update(player_id):
                     SET shield_points = shield_points + 10
                     WHERE id = ?""", (player_id, ))
     conn.commit()
+
+
+# SETTINGS
+def tips_select():
+    res = cursor.execute("""SELECT tips_enabled FROM settings""").fetchall()
+    return res[0][0]
+
+
+def tips_update(enabled):
+    cursor.execute("""UPDATE settings
+                    SET tips_enabled = ?""", (False if enabled else True, ))
+    conn.commit()

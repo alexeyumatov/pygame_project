@@ -1,14 +1,12 @@
 import os
 import sys
 
-import cv2
-
 from config import *
 from groups import all_sprites, player_group, enemies_group
 
 pygame.init()
 size = width, height = 1920, 1080
-screen = pygame.display.set_mode(size)
+screen = pygame.display.set_mode(size, pygame.FULLSCREEN | pygame.SCALED)
 
 # cap = cv2.VideoCapture(0)
 # w, h = 640, 480
@@ -127,9 +125,16 @@ def display_player_data(hero, ultimate_attack, hero_is_poisoned=False):
     screen.blit(stamina_data, (1006, 987))
 
 
-def ultimate_tip():
-    tip = data_font.render('Press Z to activate ultimate attack', True, white)
-    screen.blit(tip, (710, 40))
+def draw_death_screen_buttons():
+    # BUTTONS
+    buttons_rect = [pygame.Rect(627, 600, 656, 132), pygame.Rect(627, 840, 656, 132)]
+    buttons = [pygame.Surface((656, 132)), pygame.Surface((656, 132))]
+    for el in buttons:
+        el.set_alpha(0)
+    for i in range(len(buttons)):
+        screen.blit(buttons[i], buttons_rect[i])
+
+    return buttons_rect
 
 
 def draw_window():

@@ -34,6 +34,7 @@ level_color = (0, 30, 38)
 white = (255, 255, 255)
 light_gray = (170, 170, 170)
 black = (0, 0, 0)
+red = (230, 0, 0)
 
 
 # IMAGES
