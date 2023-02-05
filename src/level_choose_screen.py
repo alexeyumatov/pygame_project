@@ -7,6 +7,7 @@ from functions import scroll_function, load_image, load_level
 from location import draw_location
 from groups import all_sprites, player_group, enemies_group
 from db_functions import *
+from tips import market_tip, level_choose_tip
 
 pygame.init()
 
@@ -54,6 +55,7 @@ def level_choose():
 
         if phase != 7:
             if phase == 0:
+                level_choose_tip()
                 screen.blit(market, market_rect)
 
             btn = button_texts[phase * 2:phase * 2 + 2]
@@ -131,6 +133,7 @@ def level_choose():
 
 
 def market_window():
+    screen.fill((0, 30, 38))
     coins_amount = coins_select(1)
 
     # TEXTS FOR LOTS IN THE MARKET
@@ -171,8 +174,12 @@ def market_window():
     coin = load_image('objects/coin/coin.png', -1)
     coin = pygame.transform.scale(coin, (30, 45))
 
+    # TIP AND HEADER
+    market_tip()
+    header = header_font.render('MARKET', True, white)
+    screen.blit(header, (830, 48))
+
     while True:
-        screen.fill((0, 30, 38))
         event = pygame.event.poll()
 
         for el in purchase_buttons_rect:

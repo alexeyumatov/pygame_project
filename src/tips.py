@@ -6,6 +6,16 @@ size = width, height = 1920, 1080
 screen = pygame.display.set_mode(size, pygame.FULLSCREEN | pygame.SCALED)
 
 
+def market_tip():
+    tip = data_font.render('Press Backspace to return to the level selection screen', True, white)
+    screen.blit(tip, (540, 1024))
+
+
+def level_choose_tip():
+    tip = data_font.render('Use Arrow Up or Arrow Down to navigate through the level selection pages', True, white)
+    screen.blit(tip, (390, 1024))
+
+
 def ultimate_tip():
     tip = data_font.render('Press Z to activate ultimate attack', True, white)
     screen.blit(tip, (710, 40))

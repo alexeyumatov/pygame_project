@@ -8,14 +8,6 @@ pygame.init()
 size = width, height = 1920, 1080
 screen = pygame.display.set_mode(size, pygame.FULLSCREEN | pygame.SCALED)
 
-# cap = cv2.VideoCapture(0)
-# w, h = 640, 480
-# cap.set(3, w)
-# cap.set(4, h)
-
-cords = {}
-last_status, hand_type = "", ""
-
 
 def load_image(name, colorkey=None):
     fullname = os.path.join('data', name)
