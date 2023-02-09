@@ -116,3 +116,25 @@ def tips_update(enabled):
     cursor.execute("""UPDATE settings
                     SET tips_enabled = ?""", (False if enabled else True, ))
     conn.commit()
+
+
+def music_select():
+    res = cursor.execute("""SELECT music FROM settings""").fetchall()
+    return res[0][0]
+
+
+def music_update(enabled):
+    cursor.execute("""UPDATE settings
+                    SET music = ?""", (False if enabled else True, ))
+    conn.commit()
+
+
+def hands_detection_select():
+    res = cursor.execute("""SELECT hands_detection FROM settings""").fetchall()
+    return res[0][0]
+
+
+def hands_detection_update(enabled):
+    cursor.execute("""UPDATE settings
+                    SET hands_detection = ?""", (False if enabled else True, ))
+    conn.commit()

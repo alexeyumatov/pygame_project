@@ -8,6 +8,8 @@ from functions import display_buttons, draw_pause, draw_window, load_image, \
 from level_choose_screen import level_choose
 from tips import settings_tip
 from groups import all_sprites, player_group, enemies_group
+from db_functions import tips_update, hands_detection_update, music_update, \
+    tips_select, hands_detection_select, music_select
 
 pygame.init()
 
@@ -169,12 +171,15 @@ def options_screen(from_pause):
     button_on = pygame.Surface((300, 90))
     button_off = pygame.Surface((300, 90))
     button_on.fill(white)
-    buttons_information = ['on', 'on', 'off']
+    buttons_information = ['on' if tips_select() else 'off', 'on' if music_select() else 'off',
+                           'on' if hands_detection_select() else 'off']
+    buttons_on_screen = []
     for i in range(1, len(buttons_information) + 1):
         if buttons_information[i - 1] == 'on':
-            screen.blit(button_on, (800, 290 * i - i * 10))
+            screen.blit(button_on, (700, 250 * i))
         else:
-            screen.blit(button_off, (800, 290 * i - i * 10))
+            screen.blit(button_off, (700, 250 * i))
+        buttons_on_screen.append(pygame.Rect(700, 250 * i, 300, 90))
 
     header = header_font.render('OPTIONS', True, white)
     screen.blit(header, (820, 48))
@@ -194,7 +199,28 @@ def options_screen(from_pause):
                         return start_screen()
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 mouse_pos = pygame.mouse.get_pos()
-                print(mouse_pos)
+                for key, button in enumerate(buttons_on_screen):
+                    if button.collidepoint(mouse_pos):
+                        state = True
+                        if buttons_information[key] == 'on':
+                            buttons_information[key] = 'off'
+                        else:
+                            buttons_information[key] = 'on'
+                            state = False
+                        if key == 0:
+                            tips_update(state)
+                        elif key == 1:
+                            music_update(state)
+                        elif key == 2:
+                            hands_detection_update(state)
+                        buttons_on_screen.clear()
+                        for i in range(1, len(buttons_information) + 1):
+                            if buttons_information[i - 1] == 'on':
+                                screen.blit(button_on, (700, 250 * i))
+                            else:
+                                screen.blit(button_off, (700, 250 * i))
+                            buttons_on_screen.append(pygame.Rect(700, 250 * i, 300, 90))
+                        settings_update()
 
         pygame.display.update()
         clock.tick(MENU_FPS)

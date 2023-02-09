@@ -79,8 +79,6 @@ async def game_func():
 
     running = True
     health_tip = False  # True if fountain tip is on screen
-    ult_tip = False  # True if ultimate tip is on screen
-    tips_enabled = tips_select()
     while running:
         for el in player_group:
             hero = el
@@ -139,21 +137,22 @@ async def game_func():
         draw_window()
 
         # SHOWS THE ULTIMATE TIP
-        if ultimate_attack and tips_enabled \
+        if ultimate_attack and tips \
                 and not ultimate_attack_is_able and not health_tip:
             ultimate_tip()
             ult_tip = True
         else:
             ult_tip = False
 
-        if hero.ladder_hit and not hero.onLadder and tips_enabled and not ult_tip:
+        if hero.ladder_hit and not hero.onLadder and tips and not ult_tip:
+            print(tips)
             ladder_stick_tip()
-        if hero.onLadder and tips_enabled and not ult_tip:
+        if hero.onLadder and tips and not ult_tip:
             ladder_stop_tip()
 
         # SHOWS THE FOUNTAIN TIP AND PLAYER DATA (2 types of hearts: is poisoned, not poisoned)
         if hero.isPoisoned:
-            if hero.able_to_heal and tips_enabled:
+            if hero.able_to_heal and tips:
                 fountain_tip()
                 health_tip = True
             else:
