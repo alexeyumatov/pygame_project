@@ -64,6 +64,7 @@ class Enemy(pygame.sprite.Sprite):
                 else:
                     self.view = 'right'
                 self.distance = 0
+                vl_x = 0
 
             self.rect.x += vl_x
 

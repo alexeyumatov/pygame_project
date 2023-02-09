@@ -67,6 +67,7 @@ big_data_font = pygame.font.Font('data/Font/Main_Font.ttf', 36)
 market_font = pygame.font.Font('data/Font/Main_Font.ttf', 20)
 big_market_font = pygame.font.Font('data/Font/Main_Font.ttf', 26)
 header_font = pygame.font.Font('data/Font/Main_Font.ttf', 60)
+settings_font = pygame.font.Font('data/Font/Main_Font.ttf', 38)
 
 
 # TIME

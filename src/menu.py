@@ -1,7 +1,12 @@
 import sys
+
+import pygame
+
 from config import *
-from functions import display_buttons, draw_pause, draw_window, load_image, draw_death_screen_buttons
+from functions import display_buttons, draw_pause, draw_window, load_image, \
+    draw_death_screen_buttons, draw_options_texts
 from level_choose_screen import level_choose
+from tips import settings_tip
 from groups import all_sprites, player_group, enemies_group
 
 pygame.init()
@@ -161,19 +166,35 @@ def death_screen():
 
 def options_screen(from_pause):
     screen.fill((0, 30, 38))
+    button_on = pygame.Surface((300, 90))
+    button_off = pygame.Surface((300, 90))
+    button_on.fill(white)
+    buttons_information = ['on', 'on', 'off']
+    for i in range(1, len(buttons_information) + 1):
+        if buttons_information[i - 1] == 'on':
+            screen.blit(button_on, (800, 290 * i - i * 10))
+        else:
+            screen.blit(button_off, (800, 290 * i - i * 10))
+
+    header = header_font.render('OPTIONS', True, white)
+    screen.blit(header, (820, 48))
+    settings_tip()
+    draw_options_texts()
     while True:
-        mouse_pos = pygame.mouse.get_pos()
         for event in pygame.event.get():
 
             if event.type == pygame.QUIT:
                 pygame.quit()
 
             if event.type == pygame.KEYDOWN:
-                if event.button == pygame.K_BACKSPACE:
+                if event.key == pygame.K_BACKSPACE:
                     if from_pause:
                         return pause()
                     else:
                         return start_screen()
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                mouse_pos = pygame.mouse.get_pos()
+                print(mouse_pos)
 
         pygame.display.update()
         clock.tick(MENU_FPS)

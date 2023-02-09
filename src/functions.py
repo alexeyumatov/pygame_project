@@ -138,3 +138,11 @@ def draw_window():
     for el in enemies_group:
         screen.blit(el.image, camera.apply(el))
 
+
+def draw_options_texts():
+    tips_option = settings_font.render('Tips:', True, white)
+    hands_option = settings_font.render('Hands attack:', True, white)
+    music_option = settings_font.render('Music:', True, white)
+    screen.blit(tips_option, (220, 310))
+    screen.blit(music_option, (220, 560))
+    screen.blit(hands_option, (220, 810))

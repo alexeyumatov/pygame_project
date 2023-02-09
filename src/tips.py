@@ -11,6 +11,11 @@ def market_tip():
     screen.blit(tip, (540, 1024))
 
 
+def settings_tip():
+    tip = data_font.render('Press Backspace to return', True, white)
+    screen.blit(tip, (773, 1024))
+
+
 def level_choose_tip():
     tip = data_font.render('Use Arrow Up or Arrow Down to navigate through the level selection pages', True, white)
     screen.blit(tip, (390, 1024))
