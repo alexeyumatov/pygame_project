@@ -1,5 +1,7 @@
 import sys
 
+import pygame.image
+
 from config import *
 from functions import display_buttons, draw_pause, draw_window, load_image, \
     draw_death_screen_buttons, draw_options_texts, main_melody, game_melody
@@ -114,7 +116,6 @@ def pause():
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    game_melody()
                     paused = False
 
         clock.tick(MENU_FPS)
@@ -173,9 +174,8 @@ def death_screen():
 
 def options_screen(from_pause):
     screen.fill((0, 30, 38))
-    button_on = pygame.Surface((300, 90))
-    button_off = pygame.Surface((300, 90))
-    button_on.fill(white)
+    button_on = pygame.image.load('data/settings/Settings_button_on.png')
+    button_off = pygame.image.load('data/settings/Settings_button_off.png')
     buttons_information = ['on' if tips_select() else 'off', 'on' if music_select() else 'off',
                            'on' if hands_detection_select() else 'off']
     buttons_on_screen = []
@@ -190,7 +190,6 @@ def options_screen(from_pause):
     screen.blit(header, (820, 48))
     settings_tip()
     draw_options_texts()
-    key_pressed = 0
     while True:
         for event in pygame.event.get():
 
