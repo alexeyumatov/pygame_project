@@ -1,4 +1,4 @@
-from functions import load_image, flip
+from functions import load_image, flip, main_melody
 from groups import *
 from objects import Bullet, UltimateAttack
 from db_functions import coins_update, shield_points_select, stamina_select, \
@@ -246,6 +246,7 @@ class Player(pygame.sprite.Sprite):
                 if tile.rect.colliderect(self.rect.x + vl_x, self.rect.y, self.width, self.height):
                     self.end_movement = True
                     if self.portal_collide():
+                        main_melody()
                         return True
                 else:
                     self.end_movement = False
@@ -335,6 +336,8 @@ class Player(pygame.sprite.Sprite):
             self.death_animCount = 0
 
         self.image = self.death_images[self.death_animCount // 5]
+        if self.view == 'left':
+            self.image = flip(self.image)
 
         self.death_animCount += 1
 

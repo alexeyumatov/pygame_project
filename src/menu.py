@@ -1,12 +1,10 @@
 import sys
 
-import pygame
-
 from config import *
 from functions import display_buttons, draw_pause, draw_window, load_image, \
-    draw_death_screen_buttons, draw_options_texts
+    draw_death_screen_buttons, draw_options_texts, main_melody, game_melody
 from level_choose_screen import level_choose
-from tips import settings_tip
+from tips import settings_tip, restart_game_tip
 from groups import all_sprites, player_group, enemies_group
 from db_functions import tips_update, hands_detection_update, music_update, \
     tips_select, hands_detection_select, music_select
@@ -16,6 +14,9 @@ pygame.init()
 screen = pygame.display.set_mode(resolution, pygame.FULLSCREEN | pygame.SCALED, vsync=1)
 width = screen.get_width()
 height = screen.get_height()
+
+pygame.mixer.music.set_volume(0.12)
+main_melody()
 
 screen.fill(level_color)
 
@@ -105,12 +106,15 @@ def pause():
                         if text == "resume":
                             return text
                         elif text == "options":
+                            main_melody()
                             return options_screen(True)
                         elif text == "exit":
+                            main_melody()
                             return start_screen()
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
+                    game_melody()
                     paused = False
 
         clock.tick(MENU_FPS)
@@ -159,6 +163,7 @@ def death_screen():
                         el.kill()
                     for el in enemies_group:
                         el.kill()
+                    main_melody()
                     if buttons_rect.index(elem) == 0:
                         return level_choose()
                     else:
@@ -185,6 +190,7 @@ def options_screen(from_pause):
     screen.blit(header, (820, 48))
     settings_tip()
     draw_options_texts()
+    key_pressed = 0
     while True:
         for event in pygame.event.get():
 
@@ -194,6 +200,7 @@ def options_screen(from_pause):
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_BACKSPACE:
                     if from_pause:
+                        game_melody()
                         return pause()
                     else:
                         return start_screen()
@@ -211,8 +218,10 @@ def options_screen(from_pause):
                             tips_update(state)
                         elif key == 1:
                             music_update(state)
+                            main_melody()
                         elif key == 2:
                             hands_detection_update(state)
+                            restart_game_tip()
                         buttons_on_screen.clear()
                         for i in range(1, len(buttons_information) + 1):
                             if buttons_information[i - 1] == 'on':
@@ -220,7 +229,6 @@ def options_screen(from_pause):
                             else:
                                 screen.blit(button_off, (700, 250 * i))
                             buttons_on_screen.append(pygame.Rect(700, 250 * i, 300, 90))
-                        settings_update()
 
         pygame.display.update()
         clock.tick(MENU_FPS)

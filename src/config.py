@@ -2,7 +2,7 @@ import pygame
 from camera import Camera, camera_func
 import mediapipe as mp
 import cv2
-from db_functions import tips_select, music_select, hands_detection_select
+from db_functions import hands_detection_select
 
 
 # SCREEN
@@ -12,25 +12,17 @@ MENU_FPS = 24
 
 
 # SETTINGS
-def settings_update():
-    global tips, music, hands_detection
-    tips = tips_select()
-    music = music_select()
-    hands_detection = hands_detection_select()
-
-
-tips = tips_select()
-music = music_select()
-hands_detection = hands_detection_select()
+hands_detect = hands_detection_select()
 
 
 # HANDS
-cords = {}
-last_status, hand_type = "-", ""
-cap = cv2.VideoCapture(0)
-w, h = 1280, 720
-cap.set(3, w)
-cap.set(4, h)
+if hands_detect:
+    cords = {}
+    last_status, hand_type = "-", ""
+    cap = cv2.VideoCapture(0)
+    w, h = 1280, 720
+    cap.set(3, w)
+    cap.set(4, h)
 
 
 # CAMERA INITIALIZE

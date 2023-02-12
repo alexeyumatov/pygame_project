@@ -3,7 +3,7 @@ import sys
 import pygame.key
 
 from config import *
-from functions import scroll_function, load_image, load_level
+from functions import scroll_function, load_image, load_level, game_melody, market_melody, main_melody
 from location import draw_location
 from groups import all_sprites, player_group, enemies_group
 from db_functions import *
@@ -101,9 +101,11 @@ def level_choose():
                     else:
                         coins = True
                     draw_location(load_level(f'levels/level_{level_number}.txt'), coins)
+                    game_melody()
                     return level_number
             market_coolide = market_rect.collidepoint(mouse_pos)
             if market_coolide and phase == 0:
+                pygame.mixer.music.stop()
                 return market_window()
 
         if event.type == pygame.KEYDOWN:
@@ -134,6 +136,7 @@ def level_choose():
 
 def market_window():
     screen.fill((0, 30, 38))
+    market_melody()
     coins_amount = coins_select(1)
 
     # TEXTS FOR LOTS IN THE MARKET
@@ -243,6 +246,7 @@ def market_window():
                         bullet_is_collidable_select(1)]
 
         if event.type == pygame.KEYDOWN and event.key == pygame.K_BACKSPACE:
+            main_melody()
             return level_choose()
 
         pygame.display.update()

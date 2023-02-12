@@ -39,3 +39,13 @@ def ladder_stick_tip():
 def ladder_stop_tip():
     tip = data_font.render('Press E to detach from the ladder', True, white)
     screen.blit(tip, (710, 40))
+
+
+def ultimate_waiting_tip():
+    tip = data_font.render('Wait 2 seconds', True, white)
+    screen.blit(tip, (835, 40))
+
+
+def restart_game_tip():
+    tip = data_font.render('Restart the game to apply the changes', True, white)
+    screen.blit(tip, (680, 960))

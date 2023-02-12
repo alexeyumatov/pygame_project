@@ -3,6 +3,7 @@ import sys
 
 from config import *
 from groups import all_sprites, player_group, enemies_group
+from src.db_functions import music_select
 
 pygame.init()
 size = width, height = 1920, 1080
@@ -146,3 +147,23 @@ def draw_options_texts():
     screen.blit(tips_option, (220, 270))
     screen.blit(music_option, (220, 520))
     screen.blit(hands_option, (220, 770))
+
+
+def main_melody():
+    if music_select():
+        pygame.mixer.music.load('data/music/main_menu_melody.mp3')
+        pygame.mixer.music.play(-1)
+    else:
+        pygame.mixer.music.stop()
+
+
+def market_melody():
+    if music_select():
+        pygame.mixer.music.load('data/music/market_melody.mp3')
+        pygame.mixer.music.play(-1)
+
+
+def game_melody():
+    if music_select():
+        pygame.mixer.music.load('data/music/game_melody.mp3')
+        pygame.mixer.music.play(-1)
