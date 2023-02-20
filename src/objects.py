@@ -42,7 +42,7 @@ class Bullet(pygame.sprite.Sprite):
                 return 'killed'
 
         collided = pygame.sprite.spritecollideany(self, enemies_group)
-        if collided:
+        if collided and not collided.death_anim:
             collided.incoming_damage(self.damage)
             if hero.stamina < 100:
                 stamina_update(1, 10)
