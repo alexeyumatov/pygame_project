@@ -58,11 +58,14 @@ shield = pygame.image.load('data/player_data/shield.png')
 shield = pygame.transform.scale(shield, (width, 64))
 shield.set_alpha(210)
 
-ultimate_not_ready = pygame.image.load('data/player_data/ultimate_attack/ultimate_not_ready.png')
+ultimate_not_ready = \
+    pygame.image.load('data/player_data/ultimate_attack/'
+                      'ultimate_not_ready.png')
 ultimate_not_ready = pygame.transform.scale(ultimate_not_ready, (90, 90))
 ultimate_not_ready.set_alpha(210)
 
-ultimate_ready = pygame.image.load('data/player_data/ultimate_attack/ultimate_ready.png')
+ultimate_ready = \
+    pygame.image.load('data/player_data/ultimate_attack/ultimate_ready.png')
 ultimate_ready = pygame.transform.scale(ultimate_ready, (90, 90))
 ultimate_ready.set_alpha(210)
 
@@ -82,10 +85,12 @@ clock = pygame.time.Clock()
 
 # BUTTONS
 def buttons(x_size, y_size, font_size):
-    return x_size, y_size, pygame.font.Font('data/Font/Main_Font.ttf', font_size)
+    return x_size, y_size, pygame.font.Font('data/Font/'
+                                            'Main_Font.ttf', font_size)
 
 
 def screen_initialize():
-    screen = pygame.display.set_mode(resolution, pygame.SCALED | pygame.FULLSCREEN)
+    screen = \
+        pygame.display.set_mode(resolution, pygame.SCALED | pygame.FULLSCREEN)
     screen.fill(level_color)
     return screen

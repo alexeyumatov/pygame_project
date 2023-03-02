@@ -13,7 +13,8 @@ from db_functions import tips_update, hands_detection_update, music_update, \
 
 pygame.init()
 
-screen = pygame.display.set_mode(resolution, pygame.FULLSCREEN | pygame.SCALED, vsync=1)
+screen = pygame.display.set_mode(resolution, pygame.FULLSCREEN | pygame.SCALED,
+                                 vsync=1)
 width = screen.get_width()
 height = screen.get_height()
 
@@ -43,8 +44,8 @@ def start_screen():
             button_x_pos = width / 2
             button_y_pos = width / (5 - i) + 50
             button_rect = pygame.Rect(button_x_pos,
-                                      button_y_pos, 0, 0).inflate(button_x_size,
-                                                                  button_y_size)
+                                      button_y_pos, 0, 0
+                                      ).inflate(button_x_size, button_y_size)
             button_text = ''
             text = ''
 
@@ -61,8 +62,8 @@ def start_screen():
             button_texts.append(text)
             button_collides.append(button_rect)
 
-            display_buttons(button_rect, button_text, button_x_pos, button_y_pos,
-                            text)
+            display_buttons(button_rect, button_text, button_x_pos,
+                            button_y_pos, text)
 
         for event in pygame.event.get():
 
@@ -128,7 +129,8 @@ button_texts = []
 def death_screen():
     dead = True
     screenAnim = 0
-    background = [load_image(f'Menu/death_screen/Death_Screen{i}.png', -1) for i in range(1, 9)]
+    background = [load_image(f'Menu/death_screen/'
+                             f'Death_Screen{i}.png', -1) for i in range(1, 9)]
     background_color = pygame.Surface(resolution)
     background_color.fill(red)
     background_color.set_alpha(80)
@@ -176,7 +178,8 @@ def options_screen(from_pause):
     screen.fill((0, 30, 38))
     button_on = pygame.image.load('data/settings/Settings_button_on.png')
     button_off = pygame.image.load('data/settings/Settings_button_off.png')
-    buttons_information = ['on' if tips_select() else 'off', 'on' if music_select() else 'off',
+    buttons_information = ['on' if tips_select() else 'off',
+                           'on' if music_select() else 'off',
                            'on' if hands_detection_select() else 'off']
     buttons_on_screen = []
     for i in range(1, len(buttons_information) + 1):
@@ -227,7 +230,9 @@ def options_screen(from_pause):
                                 screen.blit(button_on, (700, 250 * i))
                             else:
                                 screen.blit(button_off, (700, 250 * i))
-                            buttons_on_screen.append(pygame.Rect(700, 250 * i, 300, 90))
+                            buttons_on_screen.append(pygame.Rect(700,
+                                                                 250 * i,
+                                                                 300, 90))
 
         pygame.display.update()
         clock.tick(MENU_FPS)

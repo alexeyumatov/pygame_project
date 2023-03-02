@@ -156,7 +156,10 @@ class EnemyBullet(pygame.sprite.Sprite):
 class PoisonBullet(EnemyBullet):
     def __init__(self, x, y, player_view, *groups):
         super(PoisonBullet, self).__init__(x, y, player_view, *groups)
-        self.images = [load_image(f'enemies/hard_enemy/bullets/enemy_3_bullet_{i}.png') for i in range(1, 7)]
+        self.images = [load_image(f'enemies/'
+                                  f'hard_enemy/bullets/'
+                                  f'enemy_3_bullet_{i}.png')
+                       for i in range(1, 7)]
         self.image = self.images[0]
         self.image = pygame.transform.scale(self.image, (64, 64))
         self.rect = self.image.get_rect()

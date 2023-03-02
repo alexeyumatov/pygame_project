@@ -11,7 +11,8 @@ last_status, hand_type = "", ""
 
 async def hands_detection():
     global last_status
-    with mp_hands.Hands(max_num_hands=1, min_tracking_confidence=0.9, min_detection_confidence=0.9) as hands:
+    with mp_hands.Hands(max_num_hands=1, min_tracking_confidence=0.9,
+                        min_detection_confidence=0.9) as hands:
         while True:
             success, frame = cap.read()
             frame = cv2.flip(frame, 1)
@@ -22,7 +23,8 @@ async def hands_detection():
 
             if results.multi_hand_landmarks:
                 if results.multi_handedness:
-                    hand_type = results.multi_handedness[0].classification[0].label
+                    hand_type = \
+                        results.multi_handedness[0].classification[0].label
 
                 for hand_landmarks in results.multi_hand_landmarks:
                     mp_drawing.draw_landmarks(imgRGB, hand_landmarks,

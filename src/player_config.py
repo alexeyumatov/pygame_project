@@ -9,14 +9,18 @@ g = 10
 
 class Player(pygame.sprite.Sprite):
     idle_images = [
-        load_image(f'hero/hero_static/Player_Static_Animation_{i}.png') for i in range(1, 7)]
+        load_image(f'hero/hero_static/'
+                   f'Player_Static_Animation_{i}.png') for i in range(1, 7)]
 
     walk_images = [
-        load_image(f'hero/hero_walk/Player_Walk_Animation_{i}.png') for i in range(1, 11)]
+        load_image(f'hero/hero_walk/'
+                   f'Player_Walk_Animation_{i}.png') for i in range(1, 11)]
 
-    death_images = [load_image(f"hero/hero_death/{i}.png") for i in range(1, 13)]
+    death_images = [load_image(f"hero/"
+                               f"hero_death/{i}.png") for i in range(1, 13)]
 
-    damaged_images = [load_image(f"hero/hero_damaged/{i}.png") for i in range(1, 4)]
+    damaged_images = [load_image(f"hero/"
+                                 f"hero_damaged/{i}.png") for i in range(1, 4)]
 
     def __init__(self, x, y):
         super().__init__(player_group)
@@ -25,7 +29,8 @@ class Player(pygame.sprite.Sprite):
         self.mask = pygame.mask.from_surface(self.image)
 
         self.rect.x, self.rect.y = x * 128, y * 128
-        self.width, self.height = self.image.get_width(), self.image.get_height()
+        self.width, self.height = self.image.get_width(), \
+                                  self.image.get_height()
 
         self.velx, self.vely, self.ladder_vely = 0, 0, 0  # velocity vars
 
@@ -50,8 +55,10 @@ class Player(pygame.sprite.Sprite):
         self.able_to_shoot = True  # checks if the hero is able to shoot
         self.shoot_cooldown = 120
 
-        self.end_movement = False  # activates when hero is collided with the portal
-        self.end_distance = 0  # var for stopping the hero in the middle of the portal
+        self.end_movement = False  # activates when hero is
+        # collided with the portal
+        self.end_distance = 0  # var for stopping the hero in the
+        # middle of the portal
 
         self.bullet_onScreen = False
         self.bulletList = []
@@ -78,7 +85,8 @@ class Player(pygame.sprite.Sprite):
             # HERO MOVEMENT
             if not self.end_movement:
                 key = pygame.key.get_pressed()
-                if key[pygame.K_SPACE] and not self.inJump and not self.onLadder and self.OnGround:
+                if key[pygame.K_SPACE] and not self.inJump and \
+                        not self.onLadder and self.OnGround:
                     vl_y = -2
                     self.inJump = True
                     self.OnGround = False
@@ -140,7 +148,8 @@ class Player(pygame.sprite.Sprite):
                             self.ladder_vely = -10
                         ladder_vl_y += self.ladder_vely
 
-                    if key[pygame.K_s] and not self.ladder_collide and not key[pygame.K_w]:
+                    if key[pygame.K_s] and not self.ladder_collide and \
+                            not key[pygame.K_w]:
                         self.ladder_vely += 0.5
                         if self.ladder_vely >= 10:
                             self.ladder_vely = 10
@@ -190,10 +199,12 @@ class Player(pygame.sprite.Sprite):
 
                 # COLLIDERS
                 for tile in tiles_group:
-                    if tile.rect.colliderect(self.rect.x + vl_x, self.rect.y, self.width, self.height):
+                    if tile.rect.colliderect(self.rect.x + vl_x, self.rect.y,
+                                             self.width, self.height):
                         vl_x = 0
                         self.velx = 0
-                    if tile.rect.colliderect(self.rect.x, self.rect.y + vl_y, self.width, self.height):
+                    if tile.rect.colliderect(self.rect.x, self.rect.y + vl_y,
+                                             self.width, self.height):
                         if self.vely < 0:
                             vl_y = tile.rect.bottom - self.rect.top
                             self.vely = 0
@@ -204,7 +215,8 @@ class Player(pygame.sprite.Sprite):
                             self.inJump = False
 
                 # LADDER COLLIDE
-                ladder_collision = pygame.sprite.spritecollideany(self, ladder_group)
+                ladder_collision = pygame.sprite.spritecollideany(self,
+                                                                  ladder_group)
                 if ladder_collision:
                     self.ladder_hit = True
                 else:
@@ -217,7 +229,8 @@ class Player(pygame.sprite.Sprite):
                 else:
                     self.able_to_heal = False
 
-                # ENEMY COLLIDE (if the player touches the enemy, then he cannot shoot)
+                # ENEMY COLLIDE (if the player touches the enemy,
+                # then he cannot shoot)
                 for tile in enemies_group:
                     if tile.rect.colliderect(self.rect):
                         self.able_to_shoot = False
@@ -243,7 +256,8 @@ class Player(pygame.sprite.Sprite):
 
             # PORTAL COLLIDERS
             for tile in portal_group:
-                if tile.rect.colliderect(self.rect.x + vl_x, self.rect.y, self.width, self.height):
+                if tile.rect.colliderect(self.rect.x + vl_x, self.rect.y,
+                                         self.width, self.height):
                     self.end_movement = True
                     if self.portal_collide():
                         main_melody()
@@ -260,7 +274,8 @@ class Player(pygame.sprite.Sprite):
                     ratio = -30
                 else:
                     ratio = 150
-                bullet = Bullet(self.rect.x + ratio, self.rect.y + 145, self.view, all_sprites, bullets)
+                bullet = Bullet(self.rect.x + ratio, self.rect.y + 145,
+                                self.view, all_sprites, bullets)
                 self.bulletList.append(bullet)
                 self.bullet_onScreen = True
                 self.shoot_cooldown = 0
@@ -273,7 +288,8 @@ class Player(pygame.sprite.Sprite):
                 ratio = -30
             else:
                 ratio = 150
-            ultimate = UltimateAttack(self.rect.x + ratio, self.rect.y + 140, self.view, all_sprites, bullets)
+            ultimate = UltimateAttack(self.rect.x + ratio, self.rect.y + 140,
+                                      self.view, all_sprites, bullets)
             self.bulletList.append(ultimate)
             self.bullet_onScreen = True
 

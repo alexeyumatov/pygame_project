@@ -39,7 +39,8 @@ def flip(image):
     return image
 
 
-def display_buttons(button_rect, button_text, button_x_pos, button_y_pos, text):
+def display_buttons(button_rect, button_text, button_x_pos,
+                    button_y_pos, text):
     pygame.draw.rect(screen, (255, 255, 255), button_rect)
     if len(text) <= 5:
         screen.blit(button_text, (button_x_pos - 40, button_y_pos - 25))
@@ -120,7 +121,8 @@ def display_player_data(hero, ultimate_attack, hero_is_poisoned=False):
 
 def draw_death_screen_buttons():
     # BUTTONS
-    buttons_rect = [pygame.Rect(627, 600, 656, 132), pygame.Rect(627, 840, 656, 132)]
+    buttons_rect = [pygame.Rect(627, 600, 656, 132), pygame.Rect(627, 840,
+                                                                 656, 132)]
     buttons = [pygame.Surface((656, 132)), pygame.Surface((656, 132))]
     for el in buttons:
         el.set_alpha(0)
@@ -147,6 +149,8 @@ def draw_options_texts():
     screen.blit(tips_option, (220, 270))
     screen.blit(music_option, (220, 520))
     screen.blit(hands_option, (220, 770))
+
+# MUSIC
 
 
 def main_melody():

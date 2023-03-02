@@ -99,12 +99,14 @@ class Enemy(pygame.sprite.Sprite):
 class RegularEnemy(Enemy):
     def __init__(self, x, y, *groups):
         super(RegularEnemy, self).__init__(*groups)
-        self.images = [load_image(f'enemies/regular_enemy/{i}.png') for i in range(1, 9)]
+        self.images = \
+            [load_image(f'enemies/regular_enemy/{i}.png') for i in range(1, 9)]
         self.image = self.images[0]
         self.rect = self.image.get_rect().move(
             128 * x, 128 * y)
         self.death_images = \
-            [load_image(f'enemies/regular_enemy/enemy_death/{i}.png') for i in range(1, 13)]
+            [load_image(f'enemies/regular_enemy/'
+                        f'enemy_death/{i}.png') for i in range(1, 13)]
         self.animCount = 0
         self.counter = 0
 
@@ -121,7 +123,8 @@ class MiddleEnemy(Enemy):
         super(MiddleEnemy, self).__init__(*groups)
         self.images = [load_image(f'enemies/middle_enemy/Enemy_2_Idle_{i}.png')
                        for i in range(2, 10)]
-        self.death_images = [load_image(f'enemies/middle_enemy/enemy_death/{i}.png')
+        self.death_images = [load_image(f'enemies/'
+                                        f'middle_enemy/enemy_death/{i}.png')
                              for i in range(1, 13)]
         self.image = self.images[0]
         self.rect = self.image.get_rect().move(
@@ -143,7 +146,8 @@ class MiddleEnemy(Enemy):
             ratio = -30
         else:
             ratio = 150
-        EnemyBullet(self.rect.x + ratio, self.rect.y + 145, self.view, all_sprites, enemy_bullets)
+        EnemyBullet(self.rect.x + ratio, self.rect.y + 145,
+                    self.view, all_sprites, enemy_bullets)
 
 
 class HardEnemy(Enemy):
@@ -151,7 +155,8 @@ class HardEnemy(Enemy):
         super(HardEnemy, self).__init__(*groups)
         self.images = [load_image(f'enemies/hard_enemy/enemy_3_idle_{i}.png')
                        for i in range(1, 13)]
-        self.death_images = [load_image(f'enemies/hard_enemy/enemy_death/{i}.png')
+        self.death_images = [load_image(f'enemies/hard_enemy/'
+                                        f'enemy_death/{i}.png')
                              for i in range(1, 13)]
         self.image = self.images[0]
         self.animCount = 0
@@ -172,4 +177,5 @@ class HardEnemy(Enemy):
             ratio = -30
         else:
             ratio = 150
-        PoisonBullet(self.rect.x + ratio, self.rect.y + 130, self.view, all_sprites, enemy_bullets)
+        PoisonBullet(self.rect.x + ratio, self.rect.y + 130,
+                     self.view, all_sprites, enemy_bullets)

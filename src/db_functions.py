@@ -6,38 +6,38 @@ cursor = conn.cursor()
 
 
 def coins_select(player_id):
-    res = cursor.execute("""SELECT coins_amount FROM player_stats WHERE id = ?""",
-                         (player_id, )).fetchall()
+    res = cursor.execute("""SELECT coins_amount FROM player_stats 
+    WHERE id = ?""", (player_id, )).fetchall()
     return res[0][0]
 
 
 def bullets_damage_select(player_id):
-    res = cursor.execute("""SELECT bullet_damage FROM bullet_stats WHERE player_id = ?""",
-                         (player_id, )).fetchall()
+    res = cursor.execute("""SELECT bullet_damage FROM bullet_stats 
+    WHERE player_id = ?""", (player_id, )).fetchall()
     return res[0][0]
 
 
 def bullet_is_collidable_select(player_id):
-    res = cursor.execute("""SELECT bullet_is_collidable FROM bullet_stats WHERE player_id = ?""",
-                         (player_id, )).fetchall()
+    res = cursor.execute("""SELECT bullet_is_collidable FROM bullet_stats 
+    WHERE player_id = ?""", (player_id, )).fetchall()
     return res[0][0]
 
 
 def levels_amount_select(player_id):
-    res = cursor.execute("""SELECT levels_passed FROM player_stats WHERE id = ?""",
-                         (player_id, )).fetchall()
+    res = cursor.execute("""SELECT levels_passed FROM player_stats 
+    WHERE id = ?""", (player_id, )).fetchall()
     return res[0][0]
 
 
 def shield_points_select(player_id):
-    res = cursor.execute("""SELECT shield_points FROM player_stats WHERE id = ?""",
-                         (player_id, )).fetchall()
+    res = cursor.execute("""SELECT shield_points FROM player_stats 
+    WHERE id = ?""", (player_id, )).fetchall()
     return res[0][0]
 
 
 def bullet_cooldown_select(player_id):
-    res = cursor.execute("""SELECT bullet_cooldown FROM bullet_stats WHERE player_id = ?""",
-                         (player_id, )).fetchall()
+    res = cursor.execute("""SELECT bullet_cooldown FROM bullet_stats 
+    WHERE player_id = ?""", (player_id, )).fetchall()
 
     processed_result = 0
     if res[0][0] == 1:

@@ -38,7 +38,8 @@ def level_choose():
     bg_rect[1] = -6450
     screen.blit(bg, bg_rect)
 
-    button_images = [load_image(f"Menu/buttons/numbered_buttons/level_button_{i}.png") for i in range(1, 15)]
+    button_images = [load_image(f"Menu/buttons/numbered_buttons/"
+                                f"level_button_{i}.png") for i in range(1, 15)]
     button_images.append(load_image("Menu/buttons/locked_level_button.png"))
     button_x_pos = 376
     phase = 0
@@ -100,7 +101,9 @@ def level_choose():
                         coins = False
                     else:
                         coins = True
-                    draw_location(load_level(f'levels/level_{level_number}.txt'), coins)
+                    draw_location(load_level(f'levels/'
+                                             f'level_{level_number}.txt'),
+                                  coins)
                     game_melody()
                     return level_number
             market_coolide = market_rect.collidepoint(mouse_pos)
@@ -140,35 +143,52 @@ def market_window():
     coins_amount = coins_select(1)
 
     # TEXTS FOR LOTS IN THE MARKET
-    texts = [f'Already Purchased: {shield_points_select(1)}', f'Delay now: {bullet_cooldown_select(1)[1]} ms',
+    texts = [f'Already Purchased: {shield_points_select(1)}',
+             f'Delay now: {bullet_cooldown_select(1)[1]} ms',
              f'Already Purchased: {bullets_damage_select(1)}',
-             f'Already Purchased: {"Yes" if bullet_is_collidable_select(1) else "No"}']
+             f'Already Purchased: '
+             f'{"Yes" if bullet_is_collidable_select(1) else "No"}']
 
-    lots_rect = [pygame.Rect(80, 300, 270, 270), pygame.Rect(580, 300, 270, 270),
-                 pygame.Rect(1080, 300, 270, 270), pygame.Rect(1580, 300, 270, 270)]
+    lots_rect = [pygame.Rect(80, 300, 270, 270), pygame.Rect(580, 300,
+                                                             270, 270),
+                 pygame.Rect(1080, 300, 270, 270), pygame.Rect(1580, 300,
+                                                               270, 270)]
     lots = [load_image('Menu/market/armor_upgrade.png', -1),
             load_image('Menu/market/bullet_cooldown_upgrade.png', -1),
             load_image('Menu/market/bullet_damage_upgrade.png', -1),
             load_image('Menu/market/bullets_collide_upgrade.png', -1)]
-    lots_texts = ['Shield Upgrade', 'Bullets Amount', 'Bullets Damage', 'Collision of Bullets']
+    lots_texts = ['Shield Upgrade', 'Bullets Amount', 'Bullets Damage',
+                  'Collision of Bullets']
 
-    purchase_buttons_rect = [pygame.Rect(80, 700, 270, 60), pygame.Rect(580, 700, 270, 60),
-                             pygame.Rect(1080, 700, 270, 60), pygame.Rect(1580, 700, 270, 60)]
-    purchase_buttons = [load_image('Menu/market/market_buttons/available/shield_points.png'),
-                        load_image('Menu/market/market_buttons/available/bullets_amount.png'),
-                        load_image('Menu/market/market_buttons/available/bullets_damage.png'),
-                        load_image('Menu/market/market_buttons/available/bullets_collide.png')]
+    purchase_buttons_rect = [pygame.Rect(80, 700, 270, 60),
+                             pygame.Rect(580, 700, 270, 60),
+                             pygame.Rect(1080, 700, 270, 60),
+                             pygame.Rect(1580, 700, 270, 60)]
+    purchase_buttons = [load_image('Menu/market/market_buttons'
+                                   '/available/shield_points.png'),
+                        load_image('Menu/market/market_buttons'
+                                   '/available/bullets_amount.png'),
+                        load_image('Menu/market/market_buttons'
+                                   '/available/bullets_damage.png'),
+                        load_image('Menu/market/market_buttons'
+                                   '/available/bullets_collide.png')]
 
-    blocked_buttons = [load_image('Menu/market/market_buttons/not_enough_coins/shield_points.png'),
-                       load_image('Menu/market/market_buttons/not_enough_coins/bullets_amount.png'),
-                       load_image('Menu/market/market_buttons/not_enough_coins/bullets_damage.png'),
-                       load_image('Menu/market/market_buttons/not_enough_coins/bullets_collide.png')]
+    blocked_buttons = [load_image('Menu/market/market_buttons/'
+                                  'not_enough_coins/shield_points.png'),
+                       load_image('Menu/market/market_buttons/'
+                                  'not_enough_coins/bullets_amount.png'),
+                       load_image('Menu/market/market_buttons/'
+                                  'not_enough_coins/bullets_damage.png'),
+                       load_image('Menu/market/market_buttons/'
+                                  'not_enough_coins/bullets_collide.png')]
 
-    max_buttons = [load_image('Menu/market/market_buttons/maximum/max_amount.png')
+    max_buttons = [load_image('Menu/market/market_buttons/'
+                              'maximum/max_amount.png')
                    for _ in range(len(purchase_buttons_rect))]
 
     prices = [10, 5, 15, 40]
-    data = [shield_points_select(1), bullet_cooldown_select(1)[0], bullets_damage_select(1),
+    data = [shield_points_select(1), bullet_cooldown_select(1)[0],
+            bullets_damage_select(1),
             bullet_is_collidable_select(1)]
     max_values = [50, 3, 30, 1]
     available_buttons = []
@@ -187,7 +207,8 @@ def market_window():
 
         for el in purchase_buttons_rect:
             index = purchase_buttons_rect.index(el)
-            if prices[index] <= coins_amount and data[index] < max_values[index]:
+            if prices[index] <= coins_amount and \
+                    data[index] < max_values[index]:
                 available_buttons.append(el)
 
         # COIN DATA
@@ -216,11 +237,14 @@ def market_window():
             screen.blit(el, lot_rect)
 
             if data[index] == max_values[index]:
-                screen.blit(max_buttons[index], purchase_buttons_rect[index])
+                screen.blit(max_buttons[index],
+                            purchase_buttons_rect[index])
             elif prices[index] <= coins_amount:
-                screen.blit(purchase_buttons[index], purchase_buttons_rect[index])
+                screen.blit(purchase_buttons[index],
+                            purchase_buttons_rect[index])
             else:
-                screen.blit(blocked_buttons[index], purchase_buttons_rect[index])
+                screen.blit(blocked_buttons[index],
+                            purchase_buttons_rect[index])
 
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             mouse_pos = pygame.mouse.get_pos()
@@ -240,9 +264,11 @@ def market_window():
                 texts = [f'Already Purchased: {shield_points_select(1)}',
                          f'Delay now: {bullet_cooldown_select(1)[1]} ms',
                          f'Already Purchased: {bullets_damage_select(1)}',
-                         f'Already Purchased: {"Yes" if bullet_is_collidable_select(1) else "No"}']
+                         f'Already Purchased: '
+                         f'{"Yes" if bullet_is_collidable_select(1) else "No"}']
                 coins_amount = coins_select(1)
-                data = [shield_points_select(1), bullet_cooldown_select(1)[0], bullets_damage_select(1),
+                data = [shield_points_select(1), bullet_cooldown_select(1)[0],
+                        bullets_damage_select(1),
                         bullet_is_collidable_select(1)]
 
         if event.type == pygame.KEYDOWN and event.key == pygame.K_BACKSPACE:
