@@ -2,12 +2,12 @@ import sys
 
 import pygame.key
 
-from config import *
-from functions import scroll_function, load_image, load_level, game_melody, market_melody, main_melody
-from location import draw_location
-from groups import all_sprites, player_group, enemies_group
-from db_functions import *
-from tips import market_tip, level_choose_tip
+from src.config import *
+from src.functions import scroll_function, load_image, load_level, game_melody, market_melody, main_melody
+from src.location import draw_location
+from src.groups import all_sprites, player_group, enemies_group
+from src.db_functions import *
+from src.tips import market_tip, level_choose_tip
 
 pygame.init()
 

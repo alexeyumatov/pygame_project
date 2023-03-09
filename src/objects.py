@@ -1,7 +1,7 @@
 import pygame
-from functions import load_image, flip
-from groups import walls_group, enemies_group, player_group, enemy_bullets
-from db_functions import bullets_damage_select, bullet_is_collidable_select, \
+from src.functions import load_image, flip
+from src.groups import walls_group, enemies_group, player_group, enemy_bullets
+from src.db_functions import bullets_damage_select, bullet_is_collidable_select, \
     stamina_select, stamina_update
 
 

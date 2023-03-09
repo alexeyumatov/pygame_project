@@ -1,7 +1,7 @@
-from functions import load_image, flip, main_melody
-from groups import *
-from objects import Bullet, UltimateAttack
-from db_functions import coins_update, shield_points_select, stamina_select, \
+from src.functions import load_image, flip, main_melody
+from src.groups import *
+from src.objects import Bullet, UltimateAttack
+from src.db_functions import coins_update, shield_points_select, stamina_select, \
     bullet_cooldown_select
 
 g = 10

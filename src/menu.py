@@ -2,13 +2,13 @@ import sys
 
 import pygame.image
 
-from config import *
-from functions import display_buttons, draw_pause, draw_window, load_image, \
+from src.config import *
+from src.functions import display_buttons, draw_pause, draw_window, load_image, \
     draw_death_screen_buttons, draw_options_texts, main_melody, game_melody
-from level_choose_screen import level_choose
-from tips import settings_tip, restart_game_tip
-from groups import all_sprites, player_group, enemies_group
-from db_functions import tips_update, hands_detection_update, music_update, \
+from src.level_choose_screen import level_choose
+from src.tips import settings_tip, restart_game_tip
+from src.groups import all_sprites, player_group, enemies_group
+from src.db_functions import tips_update, hands_detection_update, music_update, \
     tips_select, hands_detection_select, music_select
 
 pygame.init()
@@ -26,6 +26,7 @@ screen.fill(level_color)
 button_x_size, button_y_size, font = buttons(350, 70, 35)
 
 
+# START SCREEN FUNCTION
 def start_screen():
     screen.fill(level_color)
     button_collides = []
@@ -40,6 +41,7 @@ def start_screen():
         screen.blit(background[animCount // 7], (0, 0))
         animCount += 1
 
+        # BUTTON GENERATION
         for i in range(3):
             button_x_pos = width / 2
             button_y_pos = width / (5 - i) + 50
@@ -90,6 +92,7 @@ def start_screen():
         clock.tick(FPS)
 
 
+# PAUSE FUNCTION
 def pause():
     paused = True
     draw_window()

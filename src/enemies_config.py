@@ -1,7 +1,7 @@
 import pygame
-from functions import load_image, flip
-from groups import player_group, enemy_bullets, all_sprites
-from objects import EnemyBullet, PoisonBullet
+from src.functions import load_image, flip
+from src.groups import player_group, enemy_bullets, all_sprites
+from src.objects import EnemyBullet, PoisonBullet
 
 
 class Enemy(pygame.sprite.Sprite):

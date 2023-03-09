@@ -1,8 +1,8 @@
 import os
 import sys
 
-from config import *
-from groups import all_sprites, player_group, enemies_group
+from src.config import *
+from src.groups import all_sprites, player_group, enemies_group
 from src.db_functions import music_select
 
 pygame.init()

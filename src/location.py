@@ -1,8 +1,8 @@
-from functions import load_image
-from groups import *
-from objects import Coin, Fountain
-from enemies_config import RegularEnemy, MiddleEnemy, HardEnemy
-from player_config import Player
+from src.functions import load_image
+from src.groups import *
+from src.objects import Coin, Fountain
+from src.enemies_config import RegularEnemy, MiddleEnemy, HardEnemy
+from src.player_config import Player
 
 
 tile_images = {

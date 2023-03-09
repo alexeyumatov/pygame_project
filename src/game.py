@@ -2,15 +2,15 @@ import asyncio
 
 import pygame.display
 
-from menu import start_screen, pause, death_screen
-from groups import ladder_group, floor_group, enemies_group, player_group, \
+from src.menu import start_screen, pause, death_screen
+from src.groups import ladder_group, floor_group, enemies_group, player_group, \
     enemy_bullets, fountain_group
-from functions import load_image, draw_window, display_player_data
-from tips import *
-from level_choose_screen import level_choose
-from db_functions import levels_amount_update, levels_amount_select, \
+from src.functions import load_image, draw_window, display_player_data
+from src.tips import *
+from src.level_choose_screen import level_choose
+from src.db_functions import levels_amount_update, levels_amount_select, \
     stamina_update, stamina_select, tips_select
-from config import *
+from src.config import *
 
 pause_background = load_image('pause/Pause.png')
 screen = pygame.display.set_mode(resolution, pygame.SCALED | pygame.FULLSCREEN,

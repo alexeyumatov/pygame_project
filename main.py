@@ -1,7 +1,7 @@
 import asyncio
 import pygame
-from game import game_func, hands_detection
-from functions import load_image
+from src.game import game_func, hands_detection
+from src.functions import load_image
 
 
 async def main():

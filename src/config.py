@@ -1,8 +1,8 @@
 import pygame
-from camera import Camera, camera_func
+from src.camera import Camera, camera_func
 import mediapipe as mp
 import cv2
-from db_functions import hands_detection_select
+from src.db_functions import hands_detection_select
 
 
 # SCREEN
