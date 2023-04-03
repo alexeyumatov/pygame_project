@@ -3,8 +3,7 @@ import asyncio
 import pygame.display
 
 from src.menu import start_screen, pause, death_screen
-from src.groups import ladder_group, floor_group, enemies_group, player_group, \
-    enemy_bullets, fountain_group
+from src.groups import *
 from src.functions import load_image, draw_window, display_player_data
 from src.tips import *
 from src.level_choose_screen import level_choose
@@ -145,6 +144,7 @@ async def game_func():
         enemy_bullets.update()
         hero.bullet_update()
         fountain_group.update()
+        thorn_group.update()
 
         if hero.onLadder:
             hero.ladder_climb(ladder_group, floor_group)

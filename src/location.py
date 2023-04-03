@@ -1,6 +1,6 @@
 from src.functions import load_image
 from src.groups import *
-from src.objects import Coin, Fountain
+from src.objects import Coin, Fountain, StaticThorn, PoisonousThorn, MovingThorn
 from src.enemies_config import RegularEnemy, MiddleEnemy, HardEnemy
 from src.player_config import Player
 
@@ -75,6 +75,12 @@ def draw_location(level_map, coins):
                 Coin(x, y, all_sprites, coins_group)
             elif level_map[y][x] == 'F':
                 Fountain(x, y, all_sprites, fountain_group)
+            elif level_map[y][x] == 't':
+                StaticThorn(x, y, all_sprites, thorn_group)
+            elif level_map[y][x] == 'T':
+                PoisonousThorn(x, y, all_sprites, thorn_group)
+            elif level_map[y][x] == 'I':
+                MovingThorn(x, y, all_sprites, thorn_group)
             elif level_map[y][x] == 'E':
                 RegularEnemy(x, y, enemies_group)
             elif level_map[y][x] == 'M':

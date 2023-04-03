@@ -10,6 +10,7 @@ ladder_group = pygame.sprite.Group()
 portal_group = pygame.sprite.Group()
 coins_group = pygame.sprite.Group()
 fountain_group = pygame.sprite.Group()
+thorn_group = pygame.sprite.Group()
 
 # BULLETS
 bullets = pygame.sprite.Group()

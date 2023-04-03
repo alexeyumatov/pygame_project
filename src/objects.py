@@ -214,3 +214,119 @@ class Fountain(pygame.sprite.Sprite):
             self.heal_cooldown += 1
         else:
             self.heal_cooldown = 0
+
+
+class Thorn(pygame.sprite.Sprite):
+    def __init__(self, *groups):
+        super(Thorn, self).__init__(*groups)
+        self.damage = 40
+        self.counter = 0
+        self.animCount = 0
+        self.is_poisonous = False
+
+    def update(self):
+        player_collide = pygame.sprite.spritecollideany(self, player_group)
+        if player_collide:
+            if pygame.sprite.collide_mask(player_collide, self):
+                if self.counter % 60 == 0:
+                    player_collide.damage(self.damage)
+                    if self.is_poisonous:
+                        player_collide.isPoisoned = True
+                    self.counter = 1
+                else:
+                    self.counter += 1
+        else:
+            self.counter = 0
+
+
+class StaticThorn(Thorn):
+    image = load_image("objects/thorns/static/thorn.png")
+
+    def __init__(self, pos_x, pos_y, *groups):
+        super(StaticThorn, self).__init__(*groups)
+        self.image = StaticThorn.image
+        self.image = pygame.transform.scale(self.image, (48, 48))
+        self.mask = pygame.mask.from_surface(self.image)
+        self.rect = self.image.get_rect().move(
+            pos_x * 128 + 48, pos_y * 128 + 80
+        )
+
+
+class PoisonousThorn(Thorn):
+    image = load_image("objects/thorns/poisonous/poisonous_thorn.png")
+
+    def __init__(self, pos_x, pos_y, *groups):
+        super(PoisonousThorn, self).__init__(*groups)
+        self.image = PoisonousThorn.image
+        self.image = pygame.transform.scale(self.image, (48, 48))
+        self.mask = pygame.mask.from_surface(self.image)
+        self.rect = self.image.get_rect().move(
+            pos_x * 128 + 48, pos_y * 128 + 80
+        )
+        self.is_poisonous = True
+
+
+class MovingThorn(Thorn):
+    image = [load_image(f"objects/thorns/moving/thorn_{i}.png") for i in range(1, 26)]
+
+    def __init__(self, pos_x, pos_y, *groups):
+        super(MovingThorn, self).__init__(*groups)
+        self.image = MovingThorn.image[0]
+        self.image = pygame.transform.scale(self.image, (64, 64))
+        self.mask = pygame.mask.from_surface(self.image)
+        self.rect = self.image.get_rect().move(
+            pos_x * 128, pos_y * 128 + 64
+        )
+        self.velx = 0
+        self.view = 'right'
+        self.distance = 0
+
+    def update(self):
+        vl_x = 0
+
+        if self.animCount >= 50:
+            self.animCount = 0
+
+        self.image = MovingThorn.image[self.animCount // 2]
+        self.image = pygame.transform.scale(self.image, (64, 64))
+
+        if self.view == 'right':
+            self.image = flip(self.image)
+
+        self.animCount += 1
+
+        if self.view == 'right':
+            self.velx += 0.5
+            if self.velx >= 8:
+                self.velx = 8
+            vl_x += self.velx
+        elif self.view == 'left':
+            self.velx -= 0.5
+            if self.velx <= -8:
+                self.velx = -8
+            vl_x += self.velx
+
+        self.distance += vl_x
+
+        if abs(self.distance) >= 500:
+            if self.view == 'right':
+                self.view = 'left'
+            else:
+                self.view = 'right'
+            self.distance = 0
+            vl_x = 0
+
+        self.rect.x += vl_x
+
+        player_collide = pygame.sprite.spritecollideany(self, player_group)
+        if player_collide:
+            if pygame.sprite.collide_mask(player_collide, self):
+                if self.counter % 60 == 0:
+                    player_collide.damage(self.damage)
+                    if self.is_poisonous:
+                        player_collide.isPoisoned = True
+                    self.counter = 1
+                else:
+                    self.counter += 1
+        else:
+            self.counter = 0
