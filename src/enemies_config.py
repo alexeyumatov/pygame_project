@@ -1,6 +1,6 @@
 import pygame
 from src.functions import load_image, flip
-from src.groups import player_group, enemy_bullets, all_sprites
+from src.groups import player_group, enemy_bullets, all_sprites, tiles_group
 from src.objects import EnemyBullet, PoisonBullet
 
 
@@ -11,9 +11,14 @@ class Enemy(pygame.sprite.Sprite):
         self.animCount = 0
         self.death_animCount = 0
         self.death_time = 0
+
+        self.width, self.height = 0, 0
+
         self.view = 'right'
         self.velx = 0
+        self.vely = 0
         self.distance = 0
+        self.OnGround = False
 
         self.view = 'right'
         self.isCollided = False
@@ -26,7 +31,7 @@ class Enemy(pygame.sprite.Sprite):
         self.health_points = 0
 
     def update(self):
-        vl_x = 0
+        vl_x, vl_y = 0, 0
 
         if self.death_anim:
             if self.death_time < 60:
@@ -55,6 +60,32 @@ class Enemy(pygame.sprite.Sprite):
                     self.velx = -8
                 vl_x += self.velx
 
+            self.vely += 1
+            if self.vely > 10:
+                self.vely = 10
+            vl_y += self.vely
+
+            # COLLIDERS
+            for tile in tiles_group:
+                if tile.rect.colliderect(self.rect.x + vl_x, self.rect.y,
+                                         self.width, self.height):
+                    vl_x = 0
+                    self.velx = 0
+                    if self.view == 'right':
+                        self.view = 'left'
+                    else:
+                        self.view = 'right'
+                    self.distance = 0
+                if tile.rect.colliderect(self.rect.x, self.rect.y + vl_y,
+                                         self.width, self.height):
+                    if self.vely < 0:
+                        vl_y = tile.rect.bottom - self.rect.top
+                        self.vely = 0
+                    elif self.vely >= 0:
+                        vl_y = tile.rect.top - self.rect.bottom
+                        self.OnGround = True
+                        self.vely = 0
+
             self.distance += vl_x
             if abs(self.distance) >= 500:
                 if not self.isCollided:
@@ -67,6 +98,9 @@ class Enemy(pygame.sprite.Sprite):
                 vl_x = 0
 
             self.rect.x += vl_x
+            if vl_y < -150:
+                vl_y = 10
+            self.rect.y += vl_y
 
             player_collide = pygame.sprite.spritecollideany(self, player_group)
             if player_collide:
@@ -102,6 +136,7 @@ class RegularEnemy(Enemy):
         self.images = \
             [load_image(f'enemies/regular_enemy/{i}.png') for i in range(1, 9)]
         self.image = self.images[0]
+        self.width, self.height = self.image.get_width(), self.image.get_height()
         self.rect = self.image.get_rect().move(
             128 * x, 128 * y)
         self.death_images = \
@@ -109,6 +144,7 @@ class RegularEnemy(Enemy):
                         f'enemy_death/{i}.png') for i in range(1, 13)]
         self.animCount = 0
         self.counter = 0
+
 
         self.health_points = 45
         self.damage = 30
@@ -127,6 +163,7 @@ class MiddleEnemy(Enemy):
                                         f'middle_enemy/enemy_death/{i}.png')
                              for i in range(1, 13)]
         self.image = self.images[0]
+        self.width, self.height = self.image.get_width(), self.image.get_height()
         self.rect = self.image.get_rect().move(
             128 * x, 128 * y)
         self.animCount = 0
@@ -159,6 +196,7 @@ class HardEnemy(Enemy):
                                         f'enemy_death/{i}.png')
                              for i in range(1, 13)]
         self.image = self.images[0]
+        self.width, self.height = self.image.get_width(), self.image.get_height()
         self.animCount = 0
         self.rect = self.image.get_rect().move(
             x * 128, y * 128)
