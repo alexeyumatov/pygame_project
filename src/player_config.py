@@ -24,6 +24,7 @@ class Player(pygame.sprite.Sprite):
 
     def __init__(self, x, y):
         super().__init__(player_group)
+        self.counter = 0
         self.image = Player.idle_images[0]
         self.rect = self.image.get_rect()
         self.mask = pygame.mask.from_surface(self.image)
@@ -50,6 +51,9 @@ class Player(pygame.sprite.Sprite):
         self.state = False
         self.OnGround, self.onLadder, self.ladder_hit = False, False, False
         self.inJump = False
+
+        self.dash = False
+        self.dash_cooldown = 0
 
         self.is_killed = False
         self.able_to_shoot = True  # checks if the hero is able to shoot
@@ -78,6 +82,9 @@ class Player(pygame.sprite.Sprite):
 
             # BULLET COOLDOWN
             self.shoot_cooldown += 1
+
+            # DASH COOLDOWN
+            self.dash_cooldown += 1
 
             # POISON COOLDOWN
             self.poison_cooldown += 1
@@ -196,6 +203,22 @@ class Player(pygame.sprite.Sprite):
                     if self.poison_cooldown % 60 == 0:
                         self.damage(5, from_poison=True)
                         self.poison_cooldown = 0
+
+                if self.dash and not self.onLadder and self.dash_cooldown > 60:
+                    self.counter += 1
+                    if self.counter == 8:
+                        self.dash = False
+                        self.dash_cooldown = 0
+                        self.counter = 0
+                    else:
+                        if self.view == 'right':
+                            vl_x += 20
+                            self.velx = 14
+                        else:
+                            vl_x -= 20
+                            self.velx = -14
+                else:
+                    self.counter = 0
 
                 # COLLIDERS
                 for tile in tiles_group:

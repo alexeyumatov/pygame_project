@@ -11,7 +11,7 @@ screen = pygame.display.set_mode(size, pygame.FULLSCREEN | pygame.SCALED)
 
 
 def load_image(name, colorkey=None):
-    fullname = os.path.join('data', name)
+    fullname = os.path.join('src/data', name)
     if not os.path.isfile(fullname):
         print(f"Файл с изображением '{fullname}' не найден")
         sys.exit()
@@ -28,7 +28,7 @@ def load_image(name, colorkey=None):
 
 
 def load_level(name):
-    fullname = 'data/' + name
+    fullname = 'src/data/' + name
     with open(fullname, 'r', encoding='utf-8') as level:
         level_map = [line.rstrip('\n') for line in level]
     return level_map
@@ -155,7 +155,7 @@ def draw_options_texts():
 
 def main_melody():
     if music_select():
-        pygame.mixer.music.load('data/music/main_menu_melody.mp3')
+        pygame.mixer.music.load('src/data/music/main_menu_melody.mp3')
         pygame.mixer.music.play(-1)
     else:
         pygame.mixer.music.stop()
@@ -163,11 +163,11 @@ def main_melody():
 
 def market_melody():
     if music_select():
-        pygame.mixer.music.load('data/music/market_melody.mp3')
+        pygame.mixer.music.load('src/data/music/market_melody.mp3')
         pygame.mixer.music.play(-1)
 
 
 def game_melody():
     if music_select():
-        pygame.mixer.music.load('data/music/game_melody.mp3')
+        pygame.mixer.music.load('src/data/music/game_melody.mp3')
         pygame.mixer.music.play(-1)

@@ -124,6 +124,8 @@ async def game_func():
                 if event.key == pygame.K_ESCAPE:
                     pause()
                     pass
+                if event.key == pygame.K_LSHIFT and not hero.onLadder and hero.dash_cooldown > 60:
+                    hero.dash = True
                 if event.key == pygame.K_e and not hero.onLadder:
                     hero.ladder_climb(ladder_group, floor_group)
                 elif event.key == pygame.K_e and hero.onLadder:

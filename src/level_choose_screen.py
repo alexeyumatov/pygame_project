@@ -13,7 +13,7 @@ pygame.init()
 
 screen = screen_initialize()
 
-bg = pygame.image.load("data/Menu/level_choose/level_choose.png")
+bg = pygame.image.load("src/data/Menu/level_choose/level_choose.png")
 bg_rect = bg.get_rect()
 
 width = bg.get_width()

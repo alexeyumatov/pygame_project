@@ -179,8 +179,8 @@ def death_screen():
 
 def options_screen(from_pause):
     screen.fill((0, 30, 38))
-    button_on = pygame.image.load('data/settings/Settings_button_on.png')
-    button_off = pygame.image.load('data/settings/Settings_button_off.png')
+    button_on = pygame.image.load('src/data/settings/Settings_button_on.png')
+    button_off = pygame.image.load('src/data/settings/Settings_button_off.png')
     buttons_information = ['on' if tips_select() else 'off',
                            'on' if music_select() else 'off',
                            'on' if hands_detection_select() else 'off']

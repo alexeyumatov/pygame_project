@@ -1,7 +1,7 @@
 import sqlite3
 
 
-conn = sqlite3.connect('database/gameconfig.db')
+conn = sqlite3.connect('src/database/gameconfig.db')
 cursor = conn.cursor()
 
 

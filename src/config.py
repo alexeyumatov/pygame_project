@@ -46,37 +46,37 @@ red = (230, 0, 0)
 # IMAGES
 width, height = 74, 64
 
-heart = pygame.image.load('data/player_data/heart.png')
+heart = pygame.image.load('src/data/player_data/heart.png')
 heart = pygame.transform.scale(heart, (width, height))
 heart.set_alpha(210)
 
-poisoned_heart = pygame.image.load('data/player_data/poisoned_heart.png')
+poisoned_heart = pygame.image.load('src/data/player_data/poisoned_heart.png')
 poisoned_heart = pygame.transform.scale(poisoned_heart, (width, height))
 poisoned_heart.set_alpha(210)
 
-shield = pygame.image.load('data/player_data/shield.png')
+shield = pygame.image.load('src/data/player_data/shield.png')
 shield = pygame.transform.scale(shield, (width, 64))
 shield.set_alpha(210)
 
 ultimate_not_ready = \
-    pygame.image.load('data/player_data/ultimate_attack/'
+    pygame.image.load('src/data/player_data/ultimate_attack/'
                       'ultimate_not_ready.png')
 ultimate_not_ready = pygame.transform.scale(ultimate_not_ready, (90, 90))
 ultimate_not_ready.set_alpha(210)
 
 ultimate_ready = \
-    pygame.image.load('data/player_data/ultimate_attack/ultimate_ready.png')
+    pygame.image.load('src/data/player_data/ultimate_attack/ultimate_ready.png')
 ultimate_ready = pygame.transform.scale(ultimate_ready, (90, 90))
 ultimate_ready.set_alpha(210)
 
 
 # TEXT
-data_font = pygame.font.Font('data/Font/Main_Font.ttf', 24)
-big_data_font = pygame.font.Font('data/Font/Main_Font.ttf', 36)
-market_font = pygame.font.Font('data/Font/Main_Font.ttf', 20)
-big_market_font = pygame.font.Font('data/Font/Main_Font.ttf', 26)
-header_font = pygame.font.Font('data/Font/Main_Font.ttf', 60)
-settings_font = pygame.font.Font('data/Font/Main_Font.ttf', 38)
+data_font = pygame.font.Font('src/data/Font/Main_Font.ttf', 24)
+big_data_font = pygame.font.Font('src/data/Font/Main_Font.ttf', 36)
+market_font = pygame.font.Font('src/data/Font/Main_Font.ttf', 20)
+big_market_font = pygame.font.Font('src/data/Font/Main_Font.ttf', 26)
+header_font = pygame.font.Font('src/data/Font/Main_Font.ttf', 60)
+settings_font = pygame.font.Font('src/data/Font/Main_Font.ttf', 38)
 
 
 # TIME
@@ -85,7 +85,7 @@ clock = pygame.time.Clock()
 
 # BUTTONS
 def buttons(x_size, y_size, font_size):
-    return x_size, y_size, pygame.font.Font('data/Font/'
+    return x_size, y_size, pygame.font.Font('src/data/Font/'
                                             'Main_Font.ttf', font_size)
 
 
