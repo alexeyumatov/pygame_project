@@ -106,7 +106,8 @@ class Enemy(pygame.sprite.Sprite):
             if player_collide:
                 self.isCollided = True
                 if self.counter % 60 == 0:
-                    player_collide.damage(self.damage)
+                    if not player_collide.dash:
+                        player_collide.damage(self.damage)
                     self.counter = 0
                 self.counter += 1
             else:
@@ -144,7 +145,6 @@ class RegularEnemy(Enemy):
                         f'enemy_death/{i}.png') for i in range(1, 13)]
         self.animCount = 0
         self.counter = 0
-
 
         self.health_points = 45
         self.damage = 30

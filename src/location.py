@@ -1,6 +1,6 @@
 from src.functions import load_image
 from src.groups import *
-from src.objects import Coin, Fountain, StaticThorn, PoisonousThorn, MovingThorn
+from src.objects import Coin, Fountain, StaticThorn, PoisonousThorn, MovingThorn, HostileBlock
 from src.enemies_config import RegularEnemy, MiddleEnemy, HardEnemy
 from src.player_config import Player
 
@@ -48,6 +48,8 @@ def draw_location(level_map, coins):
                 Tile('bottom_left_corner', x, y, all_sprites, tiles_group)
             elif level_map[y][x] == '_':
                 Tile('floor', x, y, all_sprites, tiles_group, floor_group)
+            elif level_map[y][x] == '*':
+                HostileBlock(x, y, all_sprites, hostile_block_group, floor_group)
             elif level_map[y][x] == ']':
                 Tile('bottom_right_corner', x, y, all_sprites, tiles_group)
             elif level_map[y][x] == '/':
@@ -61,7 +63,7 @@ def draw_location(level_map, coins):
                 Tile('right_platform_corner', x, y, all_sprites, tiles_group,
                      walls_group)
             elif level_map[y][x] == '\"':
-                Tile('platform', x, y, all_sprites, tiles_group, floor_group,
+                Tile('platform', x, y, all_sprites, tiles_group,
                      walls_group)
             elif level_map[y][x] == '#':
                 Tile('top_left_exit', x, y, all_sprites, portal_group)

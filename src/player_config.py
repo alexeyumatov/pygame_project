@@ -257,6 +257,8 @@ class Player(pygame.sprite.Sprite):
                 for tile in enemies_group:
                     if tile.rect.colliderect(self.rect):
                         self.able_to_shoot = False
+                        if self.dash:
+                            tile.incoming_damage(20)
                     else:
                         self.able_to_shoot = True
 

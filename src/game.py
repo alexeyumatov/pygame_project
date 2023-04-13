@@ -147,6 +147,7 @@ async def game_func():
         hero.bullet_update()
         fountain_group.update()
         thorn_group.update()
+        hostile_block_group.update()
 
         if hero.onLadder:
             hero.ladder_climb(ladder_group, floor_group)

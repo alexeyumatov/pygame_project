@@ -1,6 +1,7 @@
 import pygame
+import random
 from src.functions import load_image, flip
-from src.groups import walls_group, enemies_group, player_group, enemy_bullets
+from src.groups import walls_group, enemies_group, player_group, enemy_bullets, floor_group, thorn_group, all_sprites
 from src.db_functions import bullets_damage_select, bullet_is_collidable_select, \
     stamina_select, stamina_update
 
@@ -330,3 +331,55 @@ class MovingThorn(Thorn):
                     self.counter += 1
         else:
             self.counter = 0
+
+
+class FallingThorn(Thorn):
+    image = load_image("objects/thorns/static/thorn.png")
+
+    def __init__(self, pos_x, pos_y, *groups):
+        super(FallingThorn, self).__init__(*groups)
+        self.image = FallingThorn.image
+        self.image = pygame.transform.scale(self.image, (64, 64))
+        self.image = pygame.transform.rotate(self.image, 180)
+        self.mask = pygame.mask.from_surface(self.image)
+        self.rect = self.image.get_rect().move(
+            pos_x, pos_y
+        )
+        self.vel_y = 60
+
+    def update(self):
+        player_collide = pygame.sprite.spritecollideany(self, player_group)
+        if player_collide:
+            if pygame.sprite.collide_mask(self, player_collide):
+                if self.counter % 60 == 0:
+                    player_collide.damage(self.damage)
+                    self.counter = 1
+                else:
+                    self.counter += 1
+        else:
+            self.counter = 0
+        for tile in floor_group:
+            if tile.rect.colliderect(self.rect.x, self.rect.y, 64, 64):
+                self.kill()
+        self.rect.y += self.vel_y
+
+
+class HostileBlock(pygame.sprite.Sprite):
+    image = load_image('Locations/hostile_block.png')
+
+    def __init__(self, pos_x, pos_y, *groups):
+        super(HostileBlock, self).__init__(*groups)
+        self.image = HostileBlock.image
+        self.rect = self.image.get_rect().move(
+            pos_x * 128, pos_y * 128
+        )
+        self.mask = pygame.mask.from_surface(self.image)
+
+    def update(self):
+        coords = [[random.randint(130, 3540), 160] for _ in range(10)]
+        collide = pygame.sprite.spritecollideany(self, player_group)
+        if collide:
+            for i in range(10):
+                pos_x, pos_y = coords[i][0], coords[i][1]
+                FallingThorn(pos_x, pos_y, all_sprites, thorn_group)
+            self.kill()
