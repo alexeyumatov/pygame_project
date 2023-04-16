@@ -35,7 +35,7 @@ class Player(pygame.sprite.Sprite):
 
         self.velx, self.vely, self.ladder_vely = 0, 0, 0  # velocity vars
 
-        self.health_points = 100
+        self.health_points = 1000
         self.stamina = stamina_select(1)
         self.shield_points = shield_points_select(1)
         self.coins_collected = 0

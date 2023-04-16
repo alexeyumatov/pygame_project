@@ -20,6 +20,9 @@ class Enemy(pygame.sprite.Sprite):
         self.distance = 0
         self.OnGround = False
 
+        self.type = 'tank'
+        self.bullet_count = 1
+
         self.view = 'right'
         self.isCollided = False
         self.death_anim = False
@@ -31,6 +34,7 @@ class Enemy(pygame.sprite.Sprite):
         self.health_points = 0
 
     def update(self):
+        hero = [el for el in player_group][0]
         vl_x, vl_y = 0, 0
 
         if self.death_anim:
@@ -64,6 +68,27 @@ class Enemy(pygame.sprite.Sprite):
             if self.vely > 10:
                 self.vely = 10
             vl_y += self.vely
+
+            if abs(hero.rect.y - self.rect.y) < 200 and abs(hero.rect.x - self.rect.x) < 2500:
+                distance = 20 if self.type == 'tank' else 800
+                if self.type == 'shooter':
+                    if self.bullet_count % 70 == 0:
+                        self.shoot()
+                        self.bullet_count = 1
+                    else:
+                        self.bullet_count += 1
+                if abs(hero.rect.x - self.rect.x) < distance:
+                    vl_x = 0
+                    self.view = 'right' if hero.rect.x >= self.rect.x else 'left'
+                elif hero.rect.x > self.rect.x:
+                    vl_x = 8
+                    self.view = 'right'
+                else:
+                    vl_x = -8
+                    self.view = 'left'
+                self.distance = 0
+            else:
+                vl_x = 0
 
             # COLLIDERS
             for tile in tiles_group:
@@ -149,6 +174,8 @@ class RegularEnemy(Enemy):
         self.health_points = 45
         self.damage = 30
 
+        self.type = 'tank'
+
         self.view = 'right'
         self.velx = 0
         self.distance = 0
@@ -174,6 +201,8 @@ class MiddleEnemy(Enemy):
 
         self.view = 'right'
         self.isCollided = False
+
+        self.type = 'shooter'
 
         self.health_points = 150
         self.damage = 50
@@ -205,6 +234,8 @@ class HardEnemy(Enemy):
 
         self.health_points = 200
         self.damage = 70
+
+        self.type = 'shooter'
 
         self.velx = 0
         self.distance = 0
