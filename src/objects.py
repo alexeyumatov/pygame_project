@@ -334,13 +334,12 @@ class MovingThorn(Thorn):
 
 
 class FallingThorn(Thorn):
-    image = load_image("objects/thorns/static/thorn.png")
+    image = load_image("objects/thorns/falling/falling_thorn.png")
 
     def __init__(self, pos_x, pos_y, *groups):
         super(FallingThorn, self).__init__(*groups)
         self.image = FallingThorn.image
         self.image = pygame.transform.scale(self.image, (64, 64))
-        self.image = pygame.transform.rotate(self.image, 180)
         self.mask = pygame.mask.from_surface(self.image)
         self.rect = self.image.get_rect().move(
             pos_x, pos_y
@@ -379,7 +378,8 @@ class HostileBlock(pygame.sprite.Sprite):
         coords = [[random.randint(130, 3540), 160] for _ in range(10)]
         collide = pygame.sprite.spritecollideany(self, player_group)
         if collide:
-            for i in range(10):
-                pos_x, pos_y = coords[i][0], coords[i][1]
-                FallingThorn(pos_x, pos_y, all_sprites, thorn_group)
-            self.kill()
+            if pygame.sprite.collide_mask(self, collide):
+                for i in range(10):
+                    pos_x, pos_y = coords[i][0], coords[i][1]
+                    FallingThorn(pos_x, pos_y, all_sprites, thorn_group)
+                self.kill()

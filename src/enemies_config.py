@@ -69,7 +69,7 @@ class Enemy(pygame.sprite.Sprite):
                 self.vely = 10
             vl_y += self.vely
 
-            if abs(hero.rect.y - self.rect.y) < 200 and abs(hero.rect.x - self.rect.x) < 2500:
+            if abs(hero.rect.y - self.rect.y) < 300 and abs(hero.rect.x - self.rect.x) < 2500:
                 distance = 20 if self.type == 'tank' else 800
                 if self.type == 'shooter':
                     if self.bullet_count % 70 == 0:
@@ -87,8 +87,6 @@ class Enemy(pygame.sprite.Sprite):
                     vl_x = -8
                     self.view = 'left'
                 self.distance = 0
-            else:
-                vl_x = 0
 
             # COLLIDERS
             for tile in tiles_group:
