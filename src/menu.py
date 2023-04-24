@@ -130,7 +130,6 @@ button_texts = []
 
 
 def death_screen():
-    dead = True
     screenAnim = 0
     background = [load_image(f'Menu/death_screen/'
                              f'Death_Screen{i}.png', -1) for i in range(1, 9)]
@@ -141,7 +140,7 @@ def death_screen():
     screen.blit(background_color, (0, 0))
     pygame.display.update()
 
-    while dead:
+    while True:
         if screenAnim >= 56:
             screenAnim = 0
 
