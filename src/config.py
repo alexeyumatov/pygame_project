@@ -5,6 +5,8 @@ import cv2
 from src.db_functions import hands_detection_select
 
 
+global screen
+
 # SCREEN
 resolution = (1920, 1080)
 FPS = 60
@@ -89,8 +91,3 @@ def buttons(x_size, y_size, font_size):
                                             'Main_Font.ttf', font_size)
 
 
-def screen_initialize():
-    screen = \
-        pygame.display.set_mode(resolution, pygame.SCALED | pygame.FULLSCREEN)
-    screen.fill(level_color)
-    return screen

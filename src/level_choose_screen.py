@@ -9,9 +9,6 @@ from src.groups import all_sprites, player_group, enemies_group
 from src.db_functions import *
 from src.tips import market_tip, level_choose_tip
 
-pygame.init()
-
-screen = screen_initialize()
 
 bg = pygame.image.load("src/data/Menu/level_choose/level_choose.png")
 bg_rect = bg.get_rect()

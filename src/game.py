@@ -1,4 +1,4 @@
-import asyncio
+import multiprocessing
 
 import pygame.display
 
@@ -12,90 +12,82 @@ from src.db_functions import levels_amount_update, levels_amount_select, \
 from src.config import *
 
 pause_background = load_image('pause/Pause.png')
-screen = pygame.display.set_mode(resolution, pygame.SCALED | pygame.FULLSCREEN,
-                                 vsync=1)
 ultimate_attack, ultimate_attack_is_able = False, False
 
 
-async def hands_detection():
-    global last_status
-    if hands_detect:
-        with mp_hands.Hands(max_num_hands=1, min_tracking_confidence=0.9,
-                            min_detection_confidence=0.9) as hands:
-            while True:
-                # LOAD CAMERA
-                success, frame = cap.read()
-                frame = cv2.flip(frame, 1)
-                # GET IMAGE FROM CAMERA
-                imgRGB = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                results = hands.process(imgRGB)
-                imgRGB = cv2.cvtColor(imgRGB, cv2.COLOR_RGB2BGR)
+def hands_detection(last_status, event):
+    with mp_hands.Hands(max_num_hands=1, min_tracking_confidence=0.9,
+                        min_detection_confidence=0.9) as hands:
+        while True:
+            if event.is_set():
+                break
+            success, frame = cap.read()
+            frame = cv2.flip(frame, 1)
+            imgRGB = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            results = hands.process(imgRGB)
+            imgRGB = cv2.cvtColor(imgRGB, cv2.COLOR_RGB2BGR)
 
-                if results.multi_hand_landmarks:
-                    if results.multi_handedness:
-                        # DETERMINE HAND (LEFT OR RIGHT)
-                        hand_type = \
-                            results.multi_handedness[0].classification[0].label
+            if results.multi_hand_landmarks:
+                if results.multi_handedness:
+                    # DETERMINE HAND (LEFT OR RIGHT)
+                    hand_type = \
+                        results.multi_handedness[0].classification[0].label
 
-                    for hand_landmarks in results.multi_hand_landmarks:
-                        # BUILDING A SKELETON OF A HAND
-                        mp_drawing.draw_landmarks(imgRGB, hand_landmarks,
-                                                  mp_hands.HAND_CONNECTIONS,
-                                                  mp_drawing.DrawingSpec(
-                                                      color=(0, 0, 255)),
-                                                  mp_drawing.DrawingSpec(
-                                                      color=(0, 0, 0)))
+                for hand_landmarks in results.multi_hand_landmarks:
+                    # BUILDING A SKELETON OF A HAND
+                    mp_drawing.draw_landmarks(imgRGB, hand_landmarks,
+                                              mp_hands.HAND_CONNECTIONS,
+                                              mp_drawing.DrawingSpec(
+                                                  color=(0, 0, 255)),
+                                              mp_drawing.DrawingSpec(
+                                                  color=(0, 0, 0)))
 
-                    for id, lm in enumerate(hand_landmarks.landmark):
-                        # GET THE COORDINATES OF THE HAND SECTIONS
-                        h, w, c = frame.shape
-                        cx, cy = int(lm.x * w), int(lm.y * h)
-                        cords[f"{id}"] = cx, cy
+                for id, lm in enumerate(hand_landmarks.landmark):
+                    # GET THE COORDINATES OF THE HAND SECTIONS
+                    h, w, c = frame.shape
+                    cx, cy = int(lm.x * w), int(lm.y * h)
+                    cords[f"{id}"] = cx, cy
 
-                    if len(cords) == 21:  # CHECKING IF ALL COORDINATES
-                        # ARE FOUND
+                if len(cords) == 21:  # CHECKING IF ALL COORDINATES
+                    # ARE FOUND
 
-                        # DETERMINE THE STATE OF THE HAND BY THE COORDINATES
-                        if hand_type == "Right":
-                            if int(cords['8'][1]) > int(cords['6'][1]) \
-                                    and \
-                                    int(cords['12'][1]) > int(cords['10'][1]) \
-                                    and \
-                                    int(cords['16'][1]) > int(cords['14'][1]) \
-                                    and \
-                                    int(cords['20'][1]) > int(cords['18'][1]) \
-                                    and \
-                                    int(cords['4'][0]) > int(cords['2'][0]):
-                                last_status = "Close"
-                            else:
-                                last_status = "Open"
+                    # DETERMINE THE STATE OF THE HAND BY THE COORDINATES
+                    if hand_type == "Right":
+                        if int(cords['8'][1]) > int(cords['6'][1]) \
+                                and \
+                                int(cords['12'][1]) > int(cords['10'][1]) \
+                                and \
+                                int(cords['16'][1]) > int(cords['14'][1]) \
+                                and \
+                                int(cords['20'][1]) > int(cords['18'][1]) \
+                                and \
+                                int(cords['4'][0]) > int(cords['2'][0]):
+                            last_status.value = "Close"
+                        else:
+                            last_status.value = "Open"
 
-                        elif hand_type == "Left":
-                            if int(cords['8'][1]) > int(cords['6'][1]) \
-                                    and \
-                                    int(cords['12'][1]) > int(cords['10'][1]) \
-                                    and \
-                                    int(cords['16'][1]) > int(cords['14'][1]) \
-                                    and \
-                                    int(cords['20'][1]) > int(cords['18'][1]) \
-                                    and \
-                                    int(cords['4'][0]) < int(cords['2'][0]):
-                                last_status = "Close"
-                            else:
-                                last_status = "Open"
+                    elif hand_type == "Left":
+                        if int(cords['8'][1]) > int(cords['6'][1]) \
+                                and \
+                                int(cords['12'][1]) > int(cords['10'][1]) \
+                                and \
+                                int(cords['16'][1]) > int(cords['14'][1]) \
+                                and \
+                                int(cords['20'][1]) > int(cords['18'][1]) \
+                                and \
+                                int(cords['4'][0]) < int(cords['2'][0]):
+                            last_status.value = "Close"
+                        else:
+                            last_status.value = "Open"
 
-                else:
-                    hand_type = "-"
-                    last_status = "-"
-                await asyncio.sleep(0.5)
+            else:
+                hand_type = "-"
+                last_status.value = "-"
 
 
-async def game_func():
-    global ultimate_attack, last_status, ultimate_attack_is_able
+def game_func(last_status, stop_ev):
+    global ultimate_attack, task2, ultimate_attack_is_able, screen
     level_number = start_screen()
-
-    pygame.init()
-    last_status = '-'
 
     running = True
     health_tip = False  # True if fountain tip is on screen
@@ -107,7 +99,7 @@ async def game_func():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-                pass
+                task2.kill()
 
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 \
                     and not hero.onLadder and not hero.death_anim:
@@ -131,6 +123,9 @@ async def game_func():
                 elif event.key == pygame.K_e and hero.onLadder:
                     hero.onLadder = False
                 if ultimate_attack and event.key == pygame.K_z:
+                    stop_ev.clear()
+                    task2 = multiprocessing.Process(target=hands_detection, args=(last_status, stop_ev))
+                    task2.start()
                     ultimate_attack = False
                     ultimate_attack_is_able = True
         if hero.stamina == 100:
@@ -156,13 +151,14 @@ async def game_func():
         draw_window()
 
         if ultimate_attack_is_able:
-            if last_status == 'Close' and hands_detect:
+            if last_status.value == 'Close' and hands_detect:
                 hero.ultimate()
                 stamina_update(1, -100)
                 hero.stamina = stamina_select(1)
-                last_status = '-'
+                last_status.value = '-'
                 ultimate_attack_is_able = False
                 ultimate_attack = False
+                task2.kill()
             elif not hands_detect:
                 if tips_select():
                     ultimate_waiting_tip()
@@ -206,10 +202,6 @@ async def game_func():
         pygame.display.flip()
         if hero.is_killed:
             death_screen()
-
-        # ASYNCHRONY WITH HANDS DETECTION
-        if ultimate_attack_is_able and hands_detect:
-            await asyncio.sleep(0)
 
         clock.tick(FPS)
     pygame.quit()

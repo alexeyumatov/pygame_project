@@ -11,10 +11,7 @@ from src.groups import all_sprites, player_group, enemies_group
 from src.db_functions import tips_update, hands_detection_update, music_update, \
     tips_select, hands_detection_select, music_select
 
-pygame.init()
 
-screen = pygame.display.set_mode(resolution, pygame.FULLSCREEN | pygame.SCALED,
-                                 vsync=1)
 width = screen.get_width()
 height = screen.get_height()
 

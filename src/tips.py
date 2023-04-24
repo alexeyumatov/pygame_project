@@ -1,11 +1,6 @@
 from src.config import *
 
 
-pygame.init()
-size = width, height = 1920, 1080
-screen = pygame.display.set_mode(size, pygame.FULLSCREEN | pygame.SCALED)
-
-
 def market_tip():
     tip = data_font.render('Press Backspace to return to the level '
                            'selection screen', True, white)

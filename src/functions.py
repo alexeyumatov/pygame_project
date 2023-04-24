@@ -5,10 +5,6 @@ from src.config import *
 from src.groups import all_sprites, player_group, enemies_group
 from src.db_functions import music_select
 
-pygame.init()
-size = width, height = 1920, 1080
-screen = pygame.display.set_mode(size, pygame.FULLSCREEN | pygame.SCALED)
-
 
 def load_image(name, colorkey=None):
     fullname = os.path.join('src/data', name)
