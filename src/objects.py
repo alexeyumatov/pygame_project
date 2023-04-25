@@ -241,7 +241,7 @@ class Thorn(pygame.sprite.Sprite):
 
 
 class StaticThorn(Thorn):
-    image = load_image("objects/thorns/static/thorn.png")
+    image = load_image("objects/thorns/static/poisonous_thorn.png")
 
     def __init__(self, pos_x, pos_y, *groups):
         super(StaticThorn, self).__init__(*groups)
