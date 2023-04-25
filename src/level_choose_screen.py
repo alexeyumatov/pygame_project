@@ -203,6 +203,7 @@ def market_window():
     screen.blit(header, (830, 48))
 
     while True:
+        screen.fill((0, 30, 38))
         event = pygame.event.poll()
 
         for el in purchase_buttons_rect:
