@@ -1,4 +1,4 @@
-import pygame
+from src.config import *
 from src.functions import load_image, flip
 from src.groups import player_group, enemy_bullets, all_sprites, tiles_group
 from src.objects import EnemyBullet, PoisonBullet

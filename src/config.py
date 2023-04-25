@@ -4,18 +4,17 @@ import mediapipe as mp
 import cv2
 from src.db_functions import hands_detection_select
 
-
-global screen
+pygame.init()
+screen = pygame.display.set_mode((1920, 1080), pygame.SCALED | pygame.FULLSCREEN,
+                                 vsync=1)
 
 # SCREEN
 resolution = (1920, 1080)
 FPS = 60
 MENU_FPS = 24
 
-
 # SETTINGS
 hands_detect = hands_detection_select()
-
 
 # HANDS
 if hands_detect:
@@ -26,16 +25,13 @@ if hands_detect:
     cap.set(3, w)
     cap.set(4, h)
 
-
 # CAMERA INITIALIZE
 camera = Camera(camera_func, 3840, 3072)
 pygame.init()
 
-
 # HANDS
 mp_hands = mp.solutions.hands
 mp_drawing = mp.solutions.drawing_utils
-
 
 # COLORS
 level_color = (0, 30, 38)
@@ -43,7 +39,6 @@ white = (255, 255, 255)
 light_gray = (170, 170, 170)
 black = (0, 0, 0)
 red = (230, 0, 0)
-
 
 # IMAGES
 width, height = 74, 64
@@ -71,7 +66,6 @@ ultimate_ready = \
 ultimate_ready = pygame.transform.scale(ultimate_ready, (90, 90))
 ultimate_ready.set_alpha(210)
 
-
 # TEXT
 data_font = pygame.font.Font('src/data/Font/Main_Font.ttf', 24)
 big_data_font = pygame.font.Font('src/data/Font/Main_Font.ttf', 36)
@@ -79,7 +73,6 @@ market_font = pygame.font.Font('src/data/Font/Main_Font.ttf', 20)
 big_market_font = pygame.font.Font('src/data/Font/Main_Font.ttf', 26)
 header_font = pygame.font.Font('src/data/Font/Main_Font.ttf', 60)
 settings_font = pygame.font.Font('src/data/Font/Main_Font.ttf', 38)
-
 
 # TIME
 clock = pygame.time.Clock()
@@ -89,5 +82,3 @@ clock = pygame.time.Clock()
 def buttons(x_size, y_size, font_size):
     return x_size, y_size, pygame.font.Font('src/data/Font/'
                                             'Main_Font.ttf', font_size)
-
-

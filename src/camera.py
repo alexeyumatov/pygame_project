@@ -1,4 +1,4 @@
-import pygame
+from src.config import pygame
 
 
 class Camera:

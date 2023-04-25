@@ -1,7 +1,5 @@
 import sys
 
-import pygame.key
-
 from src.config import *
 from src.functions import scroll_function, load_image, load_level, game_melody, market_melody, main_melody
 from src.location import draw_location

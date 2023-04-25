@@ -1,4 +1,4 @@
-import pygame
+from src.config import pygame
 import random
 from src.functions import load_image, flip
 from src.groups import walls_group, enemies_group, player_group, enemy_bullets, floor_group, thorn_group, all_sprites

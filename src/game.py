@@ -1,7 +1,5 @@
 import multiprocessing
 
-import pygame.display
-
 from src.menu import start_screen, pause, death_screen
 from src.groups import *
 from src.functions import load_image, draw_window, display_player_data
@@ -86,7 +84,7 @@ def hands_detection(last_status, event):
 
 
 def game_func(last_status, stop_ev):
-    global ultimate_attack, task2, ultimate_attack_is_able, screen
+    global ultimate_attack, task2, ultimate_attack_is_able
     level_number = start_screen()
 
     running = True

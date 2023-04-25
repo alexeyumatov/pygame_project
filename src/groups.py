@@ -1,5 +1,4 @@
-import pygame
-
+from src.config import pygame
 all_sprites = pygame.sprite.Group()
 
 # OBJECTS

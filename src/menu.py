@@ -1,7 +1,5 @@
 import sys
 
-import pygame.image
-
 from src.config import *
 from src.functions import display_buttons, draw_pause, draw_window, load_image, \
     draw_death_screen_buttons, draw_options_texts, main_melody, game_melody
