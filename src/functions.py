@@ -97,9 +97,13 @@ def draw_pause():
     return button_collides, button_texts
 
 
-def display_player_data(hero, ultimate_attack, hero_is_poisoned=False):
+def display_player_data(hero, ultimate_attack, hero_is_poisoned=False, dash_is_ready=False):
     hp_data = data_font.render(str(hero.health_points), True, white)
     shield_data = data_font.render(str(hero.shield_points), True, white)
+    if dash_is_ready:
+        screen.blit(dash_ready, (1400, 970))
+    else:
+        screen.blit(dash_not_ready, (1400, 970))
     if hero.stamina == 100 and ultimate_attack:
         screen.blit(ultimate_ready, (900, 955))
         stamina_data = data_font.render('In Use', True, white)

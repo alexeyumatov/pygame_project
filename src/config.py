@@ -70,6 +70,10 @@ ultimate_ready = pygame.transform.scale(ultimate_ready, (90, 90))
 ultimate_ready.set_alpha(210)
 
 
+dash_ready = pygame.image.load('src/data/player_data/dash/dash_is_ready.png')
+dash_not_ready = pygame.image.load('src/data/player_data/dash/dash_is_not_ready.png')
+
+
 # TEXT
 data_font = pygame.font.Font('src/data/Font/Main_Font.ttf', 24)
 big_data_font = pygame.font.Font('src/data/Font/Main_Font.ttf', 36)

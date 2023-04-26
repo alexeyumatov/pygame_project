@@ -199,9 +199,9 @@ async def game_func():
                     health_tip = True
             else:
                 health_tip = False
-            display_player_data(hero, ultimate_attack_is_able, True)
+            display_player_data(hero, ultimate_attack_is_able, True, False if hero.dash_cooldown <= 60 else True)
         else:
-            display_player_data(hero, ultimate_attack_is_able)
+            display_player_data(hero, ultimate_attack_is_able, False, False if hero.dash_cooldown <= 60 else True)
 
         pygame.display.flip()
         if hero.is_killed:
