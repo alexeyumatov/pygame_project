@@ -71,7 +71,6 @@ ultimate_ready.set_alpha(210)
 
 
 dash_ready = pygame.image.load('src/data/player_data/dash/dash_is_ready.png')
-dash_not_ready = pygame.image.load('src/data/player_data/dash/dash_is_not_ready.png')
 
 
 # TEXT
